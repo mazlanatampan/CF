@@ -1246,8 +1246,8 @@ let baseHTML = `
         notification.show();
       };
 
-      const registerDomain = () => {
-        const domain = document.getElementById("new-domain-input").value;
+      function registerDomain() {
+        const domainInputElement = document.getElementById("new-domain-input");
         const rawDomain = domainInputElement.value.toLowerCase();
         const domain = domainInputElement.value + "." + rootDomain;
 
@@ -1255,14 +1255,25 @@ let baseHTML = `
           windowInfoContainer.innerText = "Invalid URL!";
           return;
         }
-        if (domain) {
-          const list = document.createElement("li");
-          list.classList.add("flex", "justify-between", "py-1", "pl-1", "pr-2", "dark:text-white");
-          list.innerHTML = "${domain}" <button class="px-2 py-1 rounded-full text-sm bg-blue-400 text-white hover:bg-blue-500" onclick="deleteDomain(this)">Remove</button>;
-          document.getElementById("wildcards-list").appendChild(list);
-          document.getElementById("new-domain-input").value = "";
-        }
-      };
+
+        windowInfoContainer.innerText = "Pushing request...";
+
+        const url = "https://" + rootDomain + "/api/v1/domains/put?domain=" + domain;
+        const res = fetch(url).then((res) => {
+          if (res.status == 200) {
+            windowInfoContainer.innerText = "Done!";
+            domainInputElement.value = "";
+            isDomainListFetched = false;
+            getDomainList();
+          } else {
+            if (res.status == 409) {
+              windowInfoContainer.innerText = "Domain exists!";
+            } else {
+              windowInfoContainer.innerText = "Error " + res.status;
+            }
+          }
+        });
+      }
 
       const deleteDomain = (btn) => {
         btn.parentElement.remove();
