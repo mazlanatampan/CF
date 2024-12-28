@@ -1248,6 +1248,13 @@ let baseHTML = `
 
       const registerDomain = () => {
         const domain = document.getElementById("new-domain-input").value;
+        const rawDomain = domainInputElement.value.toLowerCase();
+        const domain = domainInputElement.value + "." + rootDomain;
+
+        if (!rawDomain.match(/\\w+\\.\\w+$/) || rawDomain.endsWith(rootDomain)) {
+          windowInfoContainer.innerText = "Invalid URL!";
+          return;
+        }
         if (domain) {
           const list = document.createElement("li");
           list.classList.add("flex", "justify-between", "py-1", "pl-1", "pr-2", "dark:text-white");
