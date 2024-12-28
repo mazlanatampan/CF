@@ -1251,7 +1251,7 @@ let baseHTML = `
         if (domain) {
           const list = document.createElement("li");
           list.classList.add("flex", "justify-between", "py-1", "pl-1", "pr-2", "dark:text-white");
-          list.innerHTML = `${domain} <button class="px-2 py-1 rounded-full text-sm bg-blue-400 text-white hover:bg-blue-500" onclick="deleteDomain(this)">Remove</button>`;
+          list.innerHTML = "${domain}" <button class="px-2 py-1 rounded-full text-sm bg-blue-400 text-white hover:bg-blue-500" onclick="deleteDomain(this)">Remove</button>;
           document.getElementById("wildcards-list").appendChild(list);
           document.getElementById("new-domain-input").value = "";
         }
