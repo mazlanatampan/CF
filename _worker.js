@@ -115,7 +115,7 @@ function getAllConfig(request, hostName, proxyList, page = 0) {
 
     // Build HTML
     const document = new Document(request);
-    document.setTitle("Welcome to <span class='text-blue-500 font-semibold'>Nautica</span>");
+    document.setTitle("Welcome to <span class='text-blue-500 font-semibold'>Mazlana</span>");
     document.addInfo(`Total: ${proxyList.length}`);
     document.addInfo(`Page: ${page}/${Math.floor(proxyList.length / PROXY_PER_PAGE)}`);
 
@@ -558,6 +558,8 @@ async function handleTCPOutBound(
 
   remoteSocketToWS(tcpSocket, webSocket, responseHeader, retry, log);
 }
+
+##
 
 async function handleUDPOutbound(targetAddress, targetPort, udpChunk, webSocket, responseHeader, log) {
   try {
@@ -1028,15 +1030,15 @@ let baseHTML = `
     <title>Proxy List</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      /* For Webkit-based browsers (Chrome, Safari and Opera) */
+      /* For Webkit-based browsers (Chrome, Safari, and Opera) */
       .scrollbar-hide::-webkit-scrollbar {
-          display: none;
+        display: none;
       }
 
-      /* For IE, Edge and Firefox */
+      /* For IE, Edge, and Firefox */
       .scrollbar-hide {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
       }
     </style>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
@@ -1158,7 +1160,9 @@ let baseHTML = `
             </div>
           </div>
           <div class="basis-1/6 w-full h-full rounded-md">
-            <div class="flex w-full h-full gap-1 justify-center">
+            <div
+              class="flex w-full h-full gap-1 justify-center"
+            >
               <button
                 onclick="toggleOutputWindow()"
                 class="basis-1/2 border-2 border-indigo-400 hover:bg-indigo-400 dark:text-white p-2 rounded-full flex justify-center items-center"
@@ -1182,306 +1186,88 @@ let baseHTML = `
               />
               <button
                 onclick="registerDomain()"
-                class="p-2 rounded-full bg-amber-400 flex justify-center items-center"
+                class="p-2 rounded-full bg-amber-400 flex justify-center items-center basis-1/12"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                  <path
-                    fill-rule="evenodd"
-                    d="M16.72 7.72a.75.75 0 0 1 1.06 0l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 1 1-1.06-1.06l2.47-2.47H3a.75.75 0 0 1 0-1.5h16.19l-2.47-2.47a.75.75 0 0 1 0-1.06Z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
+                Add
               </button>
             </div>
           </div>
-          <div class="basis-5/6 w-full h-full rounded-md">
-            <div
-              id="container-domains"
-              class="w-full h-full rounded-md flex flex-col gap-1 overflow-scroll scrollbar-hide"
-            ></div>
+          <div class="basis-1/6 w-full h-full rounded-md">
+            <div class="flex w-full h-full gap-1 justify-center">
+              <button
+                onclick="toggleWildcardsWindow()"
+                class="basis-1/2 border-2 border-indigo-400 hover:bg-indigo-400 dark:text-white p-2 rounded-full flex justify-center items-center"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <footer>
-      <div class="fixed bottom-3 right-3 flex flex-col gap-1 z-50">
-        <a href="${DONATE_LINK}" target="_blank">
-          <button class="bg-green-500 rounded-full border-2 border-neutral-800 p-1 block">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-              <path
-                d="M10.464 8.746c.227-.18.497-.311.786-.394v2.795a2.252 2.252 0 0 1-.786-.393c-.394-.313-.546-.681-.546-1.004 0-.323.152-.691.546-1.004ZM12.75 15.662v-2.824c.347.085.664.228.921.421.427.32.579.686.579.991 0 .305-.152.671-.579.991a2.534 2.534 0 0 1-.921.42Z"
-              />
-              <path
-                fill-rule="evenodd"
-                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v.816a3.836 3.836 0 0 0-1.72.756c-.712.566-1.112 1.35-1.112 2.178 0 .829.4 1.612 1.113 2.178.502.4 1.102.647 1.719.756v2.978a2.536 2.536 0 0 1-.921-.421l-.879-.66a.75.75 0 0 0-.9 1.2l.879.66c.533.4 1.169.645 1.821.75V18a.75.75 0 0 0 1.5 0v-.81a4.124 4.124 0 0 0 1.821-.749c.745-.559 1.179-1.344 1.179-2.191 0-.847-.434-1.632-1.179-2.191a4.122 4.122 0 0 0-1.821-.75V8.354c.29.082.559.213.786.393l.415.33a.75.75 0 0 0 .933-1.175l-.415-.33a3.836 3.836 0 0 0-1.719-.755V6Z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </button>
-        </a>
-        <button onclick="toggleWildcardsWindow()" class="bg-indigo-400 rounded-full border-2 border-neutral-800 p-1 PLACEHOLDER_API_READY">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="size-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25"
-            />
-          </svg>
-        </button>
-        <button onclick="toggleDarkMode()" class="bg-amber-400 rounded-full border-2 border-neutral-800 p-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="size-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-            ></path>
-          </svg>
-        </button>
-      </div>
-    </footer>
-
-    <script>
-      // Shared
-      const rootDomain = "${serviceName}.${rootDomain}";
-      const notification = document.getElementById("notification-badge");
-      const windowContainer = document.getElementById("container-window");
-      const windowInfoContainer = document.getElementById("container-window-info");
-      const converterUrl =
-        "https://script.google.com/macros/s/AKfycbwwVeHNUlnP92syOP82p1dOk_-xwBgRIxkTjLhxxZ5UXicrGOEVNc5JaSOu0Bgsx_gG/exec";
-
-
-      // Switches
-      let isDomainListFetched = false;
-
-      // Local variable
-      let rawConfig = "";
-
-      function getDomainList() {
-        if (isDomainListFetched) return;
-        isDomainListFetched = true;
-
-        windowInfoContainer.innerText = "Fetching data...";
-
-        const url = "https://" + rootDomain + "/api/v1/domains/get";
-        const res = fetch(url).then(async (res) => {
-          const domainListContainer = document.getElementById("container-domains");
-          domainListContainer.innerHTML = "";
-
-          if (res.status == 200) {
-            windowInfoContainer.innerText = "Done!";
-            const respJson = await res.json();
-            for (const domain of respJson) {
-              const domainElement = document.createElement("p");
-              domainElement.classList.add("w-full", "bg-amber-400", "rounded-md");
-              domainElement.innerText = domain;
-              domainListContainer.appendChild(domainElement);
-            }
-          } else {
-            windowInfoContainer.innerText = "Failed!";
-          }
-        });
-      }
-
-      function registerDomain() {
-        const domainInputElement = document.getElementById("new-domain-input");
-        const rawDomain = domainInputElement.value.toLowerCase();
-        const domain = domainInputElement.value + "." + rootDomain;
-
-        if (!rawDomain.match(/\\w+\\.\\w+$/) || rawDomain.endsWith(rootDomain)) {
-          windowInfoContainer.innerText = "Invalid URL!";
-          return;
-        }
-
-        windowInfoContainer.innerText = "Pushing request...";
-
-        const url = "https://" + rootDomain + "/api/v1/domains/put?domain=" + domain;
-        const res = fetch(url).then((res) => {
-          if (res.status == 200) {
-            windowInfoContainer.innerText = "Done!";
-            domainInputElement.value = "";
-            isDomainListFetched = false;
-            getDomainList();
-          } else {
-            if (res.status == 409) {
-              windowInfoContainer.innerText = "Domain exists!";
-            } else {
-              windowInfoContainer.innerText = "Error " + res.status;
-            }
-          }
-        });
-      }
-
-      function copyToClipboard(text) {
-        toggleOutputWindow();
-        rawConfig = text;
-      }
-
-      function copyToClipboardAsRaw() {
-        navigator.clipboard.writeText(rawConfig);
-
-        notification.classList.remove("opacity-0");
-        setTimeout(() => {
-          notification.classList.add("opacity-0");
-        }, 2000);
-      }
-
-      async function copyToClipboardAsTarget(target) {
-        windowInfoContainer.innerText = "Generating config...";
-        const url = converterUrl + "?target=" + target + "&url=" + encodeURIComponent(rawConfig);;
-        const res = await fetch(url, {
-          redirect: "follow",
-        });
-
-        if (res.status == 200) {
-          windowInfoContainer.innerText = "Done!";
-          navigator.clipboard.writeText(await res.text());
-
-          notification.classList.remove("opacity-0");
+    <script type="text/javascript">
+      const notificationElement = document.getElementById("notification-badge");
+      const notification = {
+        show: (content) => {
+          notificationElement.classList.remove("opacity-0");
+          notificationElement.classList.add("opacity-100");
           setTimeout(() => {
-            notification.classList.add("opacity-0");
-          }, 2000);
-        } else {
-          windowInfoContainer.innerText = "Error " + res.statusText;
-        }
-      }
-
-      function navigateTo(link) {
-        window.location.href = link + window.location.search;
-      }
-
-      function toggleOutputWindow() {
-        windowInfoContainer.innerText = "Select output:";
-        toggleWindow();
-        const rootElement = document.getElementById("output-window");
-        if (rootElement.classList.contains("hidden")) {
-          rootElement.classList.remove("hidden");
-        } else {
-          rootElement.classList.add("hidden");
-        }
-      }
-
-      function toggleWildcardsWindow() {
-        windowInfoContainer.innerText = "Domain list";
-        toggleWindow();
-        getDomainList();
-        const rootElement = document.getElementById("wildcards-window");
-        if (rootElement.classList.contains("hidden")) {
-          rootElement.classList.remove("hidden");
-        } else {
-          rootElement.classList.add("hidden");
-        }
-      }
-
-      function toggleWindow() {
-        if (windowContainer.classList.contains("hidden")) {
-          windowContainer.classList.remove("hidden");
-        } else {
-          windowContainer.classList.add("hidden");
-        }
-      }
-
-      function toggleDarkMode() {
-        const rootElement = document.getElementById("html");
-        if (rootElement.classList.contains("dark")) {
-          rootElement.classList.remove("dark");
-        } else {
-          rootElement.classList.add("dark");
-        }
-      }
-
-      function checkProxy() {
-        for (let i = 0; ; i++) {
-          const pingElement = document.getElementById("ping-"+i);
-          if (pingElement == undefined) return;
-
-          const target = pingElement.textContent.split(" ").filter((ipPort) => ipPort.match(":"))[0];
-          if (target) {
-            pingElement.textContent = "Checking...";
-          } else {
-            continue;
-          }
-
-          let isActive = false;
-          new Promise(async (resolve) => {
-            const res = await fetch("https://${serviceName}.${rootDomain}/check?target=" + target)
-              .then(async (res) => {
-                if (isActive) return;
-                if (res.status == 200) {
-                  pingElement.classList.remove("dark:text-white");
-                  const jsonResp = await res.json();
-                  if (jsonResp.proxyip === true) {
-                    isActive = true;
-                    pingElement.textContent = "Active " + jsonResp.delay + " ms";
-                    pingElement.classList.add("text-green-600");
-                  } else {
-                    pingElement.textContent = "Inactive";
-                    pingElement.classList.add("text-red-600");
-                  }
-                } else {
-                  pingElement.textContent = "Check Failed!";
-                }
-              })
-              .finally(() => {
-                resolve(0);
-              });
-          });
-        }
-      }
-
-      function checkGeoip() {
-        const containerIP = document.getElementById("container-info-ip");
-        const containerCountry = document.getElementById("container-info-country");
-        const containerISP = document.getElementById("container-info-isp");
-        const res = fetch("https://" + rootDomain + "/api/v1/myip").then(async (res) => {
-          if (res.status == 200) {
-            const respJson = await res.json();
-            containerIP.innerText = "IP: " + respJson.ip;
-            containerCountry.innerText = "Country: " + respJson.country;
-            containerISP.innerText = "ISP: " + respJson.asOrganization;
-          }
-        });
-      }
-
-      window.onload = () => {
-        checkGeoip();
-        checkProxy();
-
-        const observer = lozad(".lozad", {
-          load: function (el) {
-            el.classList.remove("scale-95");
-          },
-        });
-        observer.observe();
+            notificationElement.classList.remove("opacity-100");
+            notificationElement.classList.add("opacity-0");
+          }, 3000);
+        },
       };
 
-      window.onscroll = () => {
-        const paginationContainer = document.getElementById("container-pagination");
+      const toggleOutputWindow = () => {
+        document.getElementById("output-window").classList.toggle("hidden");
+      };
+      const toggleWildcardsWindow = () => {
+        document.getElementById("wildcards-window").classList.toggle("hidden");
+      };
 
-        if (window.innerHeight + Math.round(window.scrollY) >= document.body.offsetHeight) {
-          paginationContainer.classList.remove("-translate-y-6");
-        } else {
-          paginationContainer.classList.add("-translate-y-6");
+      const copyToClipboardAsTarget = (target) => {
+        const textArea = document.createElement("textarea");
+        textArea.value = "PLACEHOLDER_PROXY_TARGET_" + target;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        notification.show();
+      };
+
+      const copyToClipboardAsRaw = () => {
+        const textArea = document.createElement("textarea");
+        textArea.value = "PLACEHOLDER_RAW_PROXY";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        notification.show();
+      };
+
+      const registerDomain = () => {
+        const domain = document.getElementById("new-domain-input").value;
+        if (domain) {
+          const list = document.createElement("li");
+          list.classList.add("flex", "justify-between", "py-1", "pl-1", "pr-2", "dark:text-white");
+          list.innerHTML = `${domain} <button class="px-2 py-1 rounded-full text-sm bg-blue-400 text-white hover:bg-blue-500" onclick="deleteDomain(this)">Remove</button>`;
+          document.getElementById("wildcards-list").appendChild(list);
+          document.getElementById("new-domain-input").value = "";
         }
       };
+
+      const deleteDomain = (btn) => {
+        btn.parentElement.remove();
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("output-window").addEventListener("click", toggleOutputWindow);
+      });
     </script>
-    </body>
-
+  </body>
 </html>
+
 `;
 
 class Document {
