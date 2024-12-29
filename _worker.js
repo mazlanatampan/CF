@@ -1039,7 +1039,7 @@ let baseHTML = `
           scrollbar-width: none;  /* Firefox */
       }
       
-          body {
+          .body {
             background-image: url('https://github.com/mazlanatampan/managercf/blob/main/background.jpg');
             background-position: center center;
             background-repeat: no-repeat;
@@ -1056,8 +1056,7 @@ let baseHTML = `
       }
     </script>
   </head>
-    <body class="bg-white dark:bg-neutral-800 bg-fixed" style="background-image: url('https://github.com/mazlanatampan/managercf/blob/main/background.jpg'); background-position: center center; background-repeat: no-repeat; background-attachment: fixed; background-size: cover;"/>
-  <!-- Konten lainnya -->
+      <body class="bg-white dark:bg-neutral-800 bg-fixed"/>
     <!-- Notification -->
     <div
       id="notification-badge"
