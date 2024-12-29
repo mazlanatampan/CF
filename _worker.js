@@ -1038,6 +1038,16 @@ let baseHTML = `
           -ms-overflow-style: none;  /* IE and Edge */
           scrollbar-width: none;  /* Firefox */
       }
+      
+          body {
+            background-image: url('https://github.com/mazlanatampan/managercf/blob/main/background.jpg');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            margin: 0;
+            height: 100vh;
+          }
     </style>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
     <script>
@@ -1046,7 +1056,7 @@ let baseHTML = `
       }
     </script>
   </head>
-  <body class="bg-white dark:bg-neutral-800 bg-fixed">
+  /*<body class="bg-white dark:bg-neutral-800 bg-fixed">*/
     <!-- Notification -->
     <div
       id="notification-badge"
