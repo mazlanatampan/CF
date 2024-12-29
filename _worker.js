@@ -1056,7 +1056,8 @@ let baseHTML = `
       }
     </script>
   </head>
-  /*<body class="bg-white dark:bg-neutral-800 bg-fixed">*/
+    <body class="bg-white dark:bg-neutral-800 bg-fixed" style="background-image: url('https://github.com/mazlanatampan/managercf/blob/main/background.jpg'); background-position: center center; background-repeat: no-repeat; background-attachment: fixed; background-size: cover;"/>
+  <!-- Konten lainnya -->
     <!-- Notification -->
     <div
       id="notification-badge"
