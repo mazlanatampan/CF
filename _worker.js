@@ -1386,6 +1386,71 @@ let baseHTML = `
     transform: translateX(-100%);
   }
 }
+
+
+.container {
+  width: 100%; /* Full width */
+  max-width: 1200px; /* Max width for the container */
+  margin: 0 auto; /* Center the container */
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Create two columns */
+  gap: 20px; /* Space between cards */
+  width: 100%;
+}
+/* Style untuk card */
+.card {
+  background: rgba(255, 255, 255, 0.6); /* Background putih transparan */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 200px;  /* Menyesuaikan tinggi card */
+  width: 150px;   /* Menyesuaikan lebar card */
+  transition: transform 0.3s ease;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column; /* Menyusun elemen secara vertikal */
+  align-items: center;    /* Bendera dan nama di tengah secara horizontal */
+  justify-content: center;/* Menyusun bendera dan nama di tengah secara vertikal */
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center; /* Teks berada di tengah */
+  position: relative;  /* Agar bisa mengatur posisi elemen lainnya */
+}
+
+/* Efek hover untuk kartu */
+.card:hover {
+  transform: translateY(-10px);
+}
+
+/* Style untuk header kartu */
+.card-header {
+  display: flex;
+  flex-direction: column;  /* Menyusun bendera dan nama secara vertikal */
+  align-items: center;     /* Menjaga bendera dan nama di tengah */
+  justify-content: center; /* Menjaga bendera tetap di tengah vertikal */
+  margin-bottom: 15px;
+  height: 100%; /* Membuat header memenuhi ketinggian card */
+}
+
+/* Style untuk bendera negara */
+.country-flag img {
+  width: 40px;  /* Ukuran bendera */
+  height: 40px; /* Menjaga proporsi bendera */
+  border-radius: 50%; /* Membuat bendera berbentuk lingkaran */
+  margin-bottom: 10px; /* Memberikan jarak antara bendera dan nama */
+  object-fit: contain;  /* Menghindari bendera terdistorsi */
+}
+
+/* Style untuk nama negara */
+.card-content {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  
+}
 </style>
     
   </head>
@@ -1624,22 +1689,26 @@ class Document {
         countryCount[country] = (countryCount[country] || 0) + 1;
     }
 
-    let flagElement = '<div class="grid grid-cols-2 gap-4">';
+    // Tambahkan kelas CSS khusus untuk elemen grid
+    let flagElement = '<div class="flag-grid">';
     for (const flag of new Set(flagList)) {
         flagElement += `
-            <div class="text-center">
+            <div class="flag-item">
                 <a href="/sub?cc=${flag}${
                     proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-                }" class="py-1">
-                    <img width=32 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
+                }" class="country-flag">
+                    <img class="flag-icon" width=32 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
                 </a>
-                <p class="mt-2 font-medium">${flag} (${countryCount[flag]} IPs)</p>
+                <p class="flag-label">${flag} (${countryCount[flag]} IPs)</p>
             </div>`;
     }
+    
+   
     flagElement += '</div>';
 
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 }
+
 
 
   addPageButton(text, link, isDisabled) {
