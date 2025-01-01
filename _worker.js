@@ -1554,6 +1554,8 @@ let baseHTML = `
         .info-text {
           margin-top: 10px;
           color: white;
+          padding: 10px;
+          font-size: 25px;
           text-align: left;
         }
 </style>
@@ -1819,9 +1821,10 @@ for (const flag of new Set(flagList)) {
         <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
       </a>
       <p>${flag}</p>
+      
+      <i class='bx bxs-microchip'></i>
       <div class="info-text">
-      <i class='bx bxs-microchip'>TOTAL IP : </i>
-      ${countryCount[flag]} IP
+      TOTAL IP : ${countryCount[flag]} IP
       </div> 
     </div>`;
 }
