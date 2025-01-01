@@ -1479,7 +1479,7 @@ function fetchIPInfo() {
             return response.json();
         })
         .then(data => {
-            const ipInfo = IP: {data.ip} • Kota: {data.city} • Negara : {data.country} • Organisasi: {data.org};
+            const ipInfo = kontol;
             document.getElementById('ip-info').textContent = ipInfo;
         })
         .catch(error => {
@@ -1522,61 +1522,47 @@ class Document {
     });
   }
 
-buildProxyGroup() {
+  buildProxyGroup() {
     let proxyGroupElement = "";
     proxyGroupElement += `<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">`;
     for (let i = 0; i < this.proxies.length; i++) {
-        const proxyData = this.proxies[i];
+      const proxyData = this.proxies[i];
 
-        // Assign proxies
-        proxyGroupElement += `<div class="lozad scale-95 mb-2 bg-white dark:bg-neutral-800 transition-transform duration-200 rounded-lg p-4 w-60 border-2 border-neutral-800">`;
-        proxyGroupElement += `  <div id="countryFlag" class="absolute -translate-y-9 -translate-x-2 border-2 border-neutral-800 rounded-full overflow-hidden"><img width="32" src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" /></div>`;
-        proxyGroupElement += `  <div>`;
-        proxyGroupElement += `    <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}</div>`;
-        proxyGroupElement += `  </div>`;
-        proxyGroupElement += `  <div class="rounded py-1 px-2 bg-amber-400 dark:bg-neutral-800 dark:border-2 dark:border-amber-400">`;
-        proxyGroupElement += `    <h5 class="font-bold text-md text-neutral-900 dark:text-white mb-1 overflow-x-scroll scrollbar-hide text-nowrap">${proxyData.org}</h5>`;
-        proxyGroupElement += `    <div class="text-neutral-900 dark:text-white text-sm">`;
-        proxyGroupElement += `      <p>IP: ${proxyData.proxyIP}</p>`;
-        proxyGroupElement += `      <p>Port: ${proxyData.proxyPort}</p>`;
-        proxyGroupElement += `    </div>`;
-        proxyGroupElement += `  </div>`;
-        proxyGroupElement += `  <div class="flex flex-col gap-2 mt-3 text-sm">`;
-        for (let x = 0; x < proxyData.list.length; x++) {
-            const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
-            const proxy = proxyData.list[x];
+      // Assign proxies
+      proxyGroupElement += `<div class="lozad scale-95 mb-2 bg-white dark:bg-neutral-800 transition-transform duration-200 rounded-lg p-4 w-60 border-2 border-neutral-800">`;
+      proxyGroupElement += `  <div id="countryFlag" class="absolute -translate-y-9 -translate-x-2 border-2 border-neutral-800 rounded-full overflow-hidden"><img width="32" src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" /></div>`;
+      proxyGroupElement += `  <div>`;
+      proxyGroupElement += `    <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}</div>`;
+      proxyGroupElement += `  </div>`;
+      proxyGroupElement += `  <div class="rounded py-1 px-2 bg-amber-400 dark:bg-neutral-800 dark:border-2 dark:border-amber-400">`;
+      proxyGroupElement += `    <h5 class="font-bold text-md text-neutral-900 dark:text-white mb-1 overflow-x-scroll scrollbar-hide text-nowrap">${proxyData.org}</h5>`;
+      proxyGroupElement += `    <div class="text-neutral-900 dark:text-white text-sm">`;
+      proxyGroupElement += `      <p>IP: ${proxyData.proxyIP}</p>`;
+      proxyGroupElement += `      <p>Port: ${proxyData.proxyPort}</p>`;
+      proxyGroupElement += `    </div>`;
+      proxyGroupElement += `  </div>`;
+      proxyGroupElement += `  <div class="flex flex-col gap-2 mt-3 text-sm">`;
+      for (let x = 0; x < proxyData.list.length; x++) {
+        const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
+        const proxy = proxyData.list[x];
 
-            if (x % 2 == 0) {
-                proxyGroupElement += `<div class="flex gap-2 justify-around w-full">`;
-            }
-
-            proxyGroupElement += `<button class="bg-blue-500 dark:bg-neutral-800 dark:border-2 dark:border-blue-500 rounded p-1 w-full text-white" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>`;
-
-            if (x % 2 == 1) {
-                proxyGroupElement += `</div>`;
-            }
+        if (x % 2 == 0) {
+          proxyGroupElement += `<div class="flex gap-2 justify-around w-full">`;
         }
-        proxyGroupElement += `  </div>`;
-        proxyGroupElement += `</div>`;
+
+        proxyGroupElement += `<button class="bg-blue-500 dark:bg-neutral-800 dark:border-2 dark:border-blue-500 rounded p-1 w-full text-white" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>`;
+
+        if (x % 2 == 1) {
+          proxyGroupElement += `</div>`;
+        }
+      }
+      proxyGroupElement += `  </div>`;
+      proxyGroupElement += `</div>`;
     }
     proxyGroupElement += `</div>`;
 
-    // Masukkan elemen ke dalam iframe
-    const iframe = document.getElementById("proxy-group-frame");
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-    iframeDoc.open();
-    iframeDoc.write(`
-        <html>
-            <head>
-                <link rel="stylesheet" href="https://cdn.tailwindcss.com">
-            </head>
-            <body>${proxyGroupElement}</body>
-        </html>
-    `);
-    iframeDoc.close();
-}
-
-
+    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", `${proxyGroupElement}`);
+  }
 
   buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
