@@ -1821,9 +1821,8 @@ for (const flag of new Set(flagList)) {
         <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
       </a>
       <div class="info-text">
-      <i class="bx bx-globe>&nbsp COUNTRY : ${flag}</i>
-      <i class='bx bxs-microchip'>&nbsp
-      TOTAL IP : ${countryCount[flag]} IP
+      <i class="bx bx-globe> COUNTRY : ${flag}</i>
+      <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP
       </i>
       </div> 
     </div>`;
