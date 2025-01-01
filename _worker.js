@@ -15,8 +15,10 @@ let cachedProxyList = [];
 const APP_DOMAIN = `${serviceName}.${rootDomain}`;
 const PORTS = [443, 80];
 const PROTOCOLS = ["trojan", "vless", "ss"];
-const KV_PROXY_URL = "https://raw.githubusercontent.com/mazlanatampan/CF/refs/heads/main/kvProxyList.json";
-const PROXY_BANK_URL = "https://raw.githubusercontent.com/mazlanatampan/CF/refs/heads/main/proxyList.txt";
+const KV_PROXY_URL =
+  "https://raw.githubusercontent.com/mazlanatampan/CF/refs/heads/main/kvProxyList.json";
+const PROXY_BANK_URL =
+  "https://raw.githubusercontent.com/mazlanatampan/CF/refs/heads/main/proxyList.txt";
 const DNS_SERVER_ADDRESS = "1.1.1.1";
 const DNS_SERVER_PORT = 53;
 const PROXY_HEALTH_CHECK_API = "https://id1.foolvpn.me/api/v1/check";
@@ -44,7 +46,6 @@ async function getKVProxyList(kvProxyUrl = KV_PROXY_URL) {
     return {};
   }
 }
-
 
 /* MEMBACA LIST PROXY YANG ADA */
 async function getProxyList(proxyBankUrl = PROXY_BANK_URL) {
@@ -81,7 +82,6 @@ async function getProxyList(proxyBankUrl = PROXY_BANK_URL) {
 }
 
 /* END */
-
 
 /* REVERSE PROXY KE CF */
 async function reverseProxy(request, target, targetPath) {
@@ -121,9 +121,13 @@ function getAllConfig(request, hostName, proxyList, page = 0) {
 
     // Build HTML
     const document = new Document(request);
-    document.setTitle("Welcome to <span class='text-blue-500 font-semibold'>Nautica</span>");
+    document.setTitle(
+      "Welcome to <span class='text-blue-500 font-semibold'>Nautica</span>",
+    );
     document.addInfo(`Total: ${proxyList.length}`);
-    document.addInfo(`Page: ${page}/${Math.floor(proxyList.length / PROXY_PER_PAGE)}`);
+    document.addInfo(
+      `Page: ${page}/${Math.floor(proxyList.length / PROXY_PER_PAGE)}`,
+    );
 
     for (let i = startIndex; i < startIndex + PROXY_PER_PAGE; i++) {
       const proxy = proxyList[i];
@@ -147,7 +151,10 @@ function getAllConfig(request, hostName, proxyList, page = 0) {
 
           uri.protocol = protocol;
           uri.searchParams.set("security", port == 443 ? "tls" : "none");
-          uri.searchParams.set("sni", port == 80 && protocol == "vless" ? "" : hostName);
+          uri.searchParams.set(
+            "sni",
+            port == 80 && protocol == "vless" ? "" : hostName,
+          );
 
           // Build VPN URI
           proxies.push(uri.toString());
@@ -160,22 +167,27 @@ function getAllConfig(request, hostName, proxyList, page = 0) {
           country,
           org,
         },
-        proxies
+        proxies,
       );
     }
 
     // Build pagination
-    document.addPageButton("Prev", `/sub/${page > 0 ? page - 1 : 0}`, page > 0 ? false : true);
-    document.addPageButton("Next", `/sub/${page + 1}`, page < Math.floor(proxyList.length / 10) ? false : true);
+    document.addPageButton(
+      "Prev",
+      `/sub/${page > 0 ? page - 1 : 0}`,
+      page > 0 ? false : true,
+    );
+    document.addPageButton(
+      "Next",
+      `/sub/${page + 1}`,
+      page < Math.floor(proxyList.length / 10) ? false : true,
+    );
 
     return document.build();
   } catch (error) {
     return `An error occurred while generating the VLESS configurations. ${error}`;
   }
 }
-
-
-
 
 export default {
   async fetch(request, env, ctx) {
@@ -206,8 +218,12 @@ export default {
         const proxyMatch = url.pathname.match(/^\/(.+[:=-]\d+)$/);
 
         if (url.pathname.length == 3 || url.pathname.match(",")) {
-          const proxyKeys = url.pathname.replace("/", "").toUpperCase().split(",");
-          const proxyKey = proxyKeys[Math.floor(Math.random() * proxyKeys.length)];
+          const proxyKeys = url.pathname
+            .replace("/", "")
+            .toUpperCase()
+            .split(",");
+          const proxyKey =
+            proxyKeys[Math.floor(Math.random() * proxyKeys.length)];
           let kvProxy = await env.nautica.get("kvProxy");
           if (kvProxy) {
             kvProxy = JSON.parse(kvProxy);
@@ -218,7 +234,10 @@ export default {
             });
           }
 
-          const proxyIP = kvProxy[proxyKey][Math.floor(Math.random() * kvProxy[proxyKey].length)];
+          const proxyIP =
+            kvProxy[proxyKey][
+              Math.floor(Math.random() * kvProxy[proxyKey].length)
+            ];
 
           return await websocketHandler(request);
         } else if (proxyMatch) {
@@ -254,7 +273,8 @@ export default {
         const hostname = request.headers.get("Host");
 
         const countrySelect = url.searchParams.get("cc")?.split(",");
-        const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
+        const proxyBankUrl =
+          url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
         let proxyList = (await getProxyList(proxyBankUrl)).filter((proxy) => {
           if (countrySelect) {
             return countrySelect.includes(proxy.country);
@@ -321,16 +341,20 @@ export default {
         else if (apiPath.startsWith("/sub")) {
           const filterCC = url.searchParams.get("cc")?.split(",") || [];
           const filterPort = url.searchParams.get("port")?.split(",") || PORTS;
-          const filterVPN = url.searchParams.get("vpn")?.split(",") || PROTOCOLS;
+          const filterVPN =
+            url.searchParams.get("vpn")?.split(",") || PROTOCOLS;
           const filterLimit = parseInt(url.searchParams.get("limit")) || 10;
           const filterFormat = url.searchParams.get("format") || "raw";
           const fillerDomain = url.searchParams.get("domain") || APP_DOMAIN;
 
-          const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
+          const proxyBankUrl =
+            url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
           const proxyList = await getProxyList(proxyBankUrl)
             .then((proxies) => {
               if (filterCC.length) {
-                return proxies.filter((proxy) => filterCC.includes(proxy.country));
+                return proxies.filter((proxy) =>
+                  filterCC.includes(proxy.country),
+                );
               }
               return proxies;
             })
@@ -360,8 +384,14 @@ export default {
                 }
 
                 uri.searchParams.set("security", port == 443 ? "tls" : "none");
-                uri.searchParams.set("sni", port == 80 && protocol == "vless" ? "" : APP_DOMAIN);
-                uri.searchParams.set("path", `/${proxy.proxyIP}-${proxy.proxyPort}`);
+                uri.searchParams.set(
+                  "sni",
+                  port == 80 && protocol == "vless" ? "" : APP_DOMAIN,
+                );
+                uri.searchParams.set(
+                  "path",
+                  `/${proxy.proxyIP}-${proxy.proxyPort}`,
+                );
 
                 uri.hash = `${result.length + 1} ${getFlagEmoji(proxy.country)} ${proxy.org} WS ${
                   port == 443 ? "TLS" : "NTLS"
@@ -385,7 +415,9 @@ export default {
                 encodedResult.push(encodeURIComponent(proxy));
               }
 
-              const res = await fetch(`${CONVERTER_URL}?target=${filterFormat}&url=${encodedResult.join(",")}`);
+              const res = await fetch(
+                `${CONVERTER_URL}?target=${filterFormat}&url=${encodedResult.join(",")}`,
+              );
               if (res.status == 200) {
                 finalResult = await res.text();
               } else {
@@ -422,7 +454,7 @@ export default {
               headers: {
                 ...CORS_HEADER_OPTIONS,
               },
-            }
+            },
           );
         }
       }
@@ -441,7 +473,6 @@ export default {
   },
 };
 
-
 async function websocketHandler(request) {
   const webSocketPair = new WebSocketPair();
   const [client, webSocket] = Object.values(webSocketPair);
@@ -455,7 +486,11 @@ async function websocketHandler(request) {
   };
   const earlyDataHeader = request.headers.get("sec-websocket-protocol") || "";
 
-  const readableWebSocketStream = makeReadableWebSocketStream(webSocket, earlyDataHeader, log);
+  const readableWebSocketStream = makeReadableWebSocketStream(
+    webSocket,
+    earlyDataHeader,
+    log,
+  );
 
   let remoteSocketWrapper = {
     value: null,
@@ -467,7 +502,14 @@ async function websocketHandler(request) {
       new WritableStream({
         async write(chunk, controller) {
           if (isDNS) {
-            return handleUDPOutbound(DNS_SERVER_ADDRESS, DNS_SERVER_PORT, chunk, webSocket, null, log);
+            return handleUDPOutbound(
+              DNS_SERVER_ADDRESS,
+              DNS_SERVER_PORT,
+              chunk,
+              webSocket,
+              null,
+              log,
+            );
           }
           if (remoteSocketWrapper.value) {
             const writer = remoteSocketWrapper.value.writable.getWriter();
@@ -513,7 +555,7 @@ async function websocketHandler(request) {
               chunk,
               webSocket,
               protocolHeader.version,
-              log
+              log,
             );
           }
 
@@ -524,7 +566,7 @@ async function websocketHandler(request) {
             protocolHeader.rawClientData,
             webSocket,
             protocolHeader.version,
-            log
+            log,
           );
         },
         close() {
@@ -533,7 +575,7 @@ async function websocketHandler(request) {
         abort(reason) {
           log(`readableWebSocketStream is abort`, JSON.stringify(reason));
         },
-      })
+      }),
     )
     .catch((err) => {
       log("readableWebSocketStream pipeTo error", err);
@@ -549,8 +591,16 @@ async function protocolSniffer(buffer) {
   if (buffer.byteLength >= 62) {
     const trojanDelimiter = new Uint8Array(buffer.slice(56, 60));
     if (trojanDelimiter[0] === 0x0d && trojanDelimiter[1] === 0x0a) {
-      if (trojanDelimiter[2] === 0x01 || trojanDelimiter[2] === 0x03 || trojanDelimiter[2] === 0x7f) {
-        if (trojanDelimiter[3] === 0x01 || trojanDelimiter[3] === 0x03 || trojanDelimiter[3] === 0x04) {
+      if (
+        trojanDelimiter[2] === 0x01 ||
+        trojanDelimiter[2] === 0x03 ||
+        trojanDelimiter[2] === 0x7f
+      ) {
+        if (
+          trojanDelimiter[3] === 0x01 ||
+          trojanDelimiter[3] === 0x03 ||
+          trojanDelimiter[3] === 0x04
+        ) {
           return "Trojan";
         }
       }
@@ -559,7 +609,11 @@ async function protocolSniffer(buffer) {
 
   const vlessDelimiter = new Uint8Array(buffer.slice(1, 17));
   // Hanya mendukung UUID v4
-  if (arrayBufferToHex(vlessDelimiter).match(/^[0-9a-f]{8}[0-9a-f]{4}4[0-9a-f]{3}[89ab][0-9a-f]{3}[0-9a-f]{12}$/i)) {
+  if (
+    arrayBufferToHex(vlessDelimiter).match(
+      /^[0-9a-f]{8}[0-9a-f]{4}4[0-9a-f]{3}[89ab][0-9a-f]{3}[0-9a-f]{12}$/i,
+    )
+  ) {
     return "VLESS";
   }
 
@@ -573,7 +627,7 @@ async function handleTCPOutBound(
   rawClientData,
   webSocket,
   responseHeader,
-  log
+  log,
 ) {
   async function connectAndWrite(address, port) {
     const tcpSocket = connect({
@@ -592,7 +646,7 @@ async function handleTCPOutBound(
   async function retry() {
     const tcpSocket = await connectAndWrite(
       proxyIP.split(/[:=-]/)[0] || addressRemote,
-      proxyIP.split(/[:=-]/)[1] || portRemote
+      proxyIP.split(/[:=-]/)[1] || portRemote,
     );
     tcpSocket.closed
       .catch((error) => {
@@ -609,7 +663,14 @@ async function handleTCPOutBound(
   remoteSocketToWS(tcpSocket, webSocket, responseHeader, retry, log);
 }
 
-async function handleUDPOutbound(targetAddress, targetPort, udpChunk, webSocket, responseHeader, log) {
+async function handleUDPOutbound(
+  targetAddress,
+  targetPort,
+  udpChunk,
+  webSocket,
+  responseHeader,
+  log,
+) {
   try {
     let protocolHeader = responseHeader;
     const tcpSocket = connect({
@@ -628,7 +689,9 @@ async function handleUDPOutbound(targetAddress, targetPort, udpChunk, webSocket,
         async write(chunk) {
           if (webSocket.readyState === WS_READY_STATE_OPEN) {
             if (protocolHeader) {
-              webSocket.send(await new Blob([protocolHeader, chunk]).arrayBuffer());
+              webSocket.send(
+                await new Blob([protocolHeader, chunk]).arrayBuffer(),
+              );
               protocolHeader = null;
             } else {
               webSocket.send(chunk);
@@ -639,9 +702,11 @@ async function handleUDPOutbound(targetAddress, targetPort, udpChunk, webSocket,
           log(`UDP connection to ${targetAddress} closed`);
         },
         abort(reason) {
-          console.error(`UDP connection to ${targetPort} aborted due to ${reason}`);
+          console.error(
+            `UDP connection to ${targetPort} aborted due to ${reason}`,
+          );
         },
-      })
+      }),
     );
   } catch (e) {
     console.error(`Error while handling UDP outbound, error ${e.message}`);
@@ -707,16 +772,24 @@ function parseShadowsocksHeader(ssBuffer) {
   switch (addressType) {
     case 1:
       addressLength = 4;
-      addressValue = new Uint8Array(ssBuffer.slice(addressValueIndex, addressValueIndex + addressLength)).join(".");
+      addressValue = new Uint8Array(
+        ssBuffer.slice(addressValueIndex, addressValueIndex + addressLength),
+      ).join(".");
       break;
     case 3:
-      addressLength = new Uint8Array(ssBuffer.slice(addressValueIndex, addressValueIndex + 1))[0];
+      addressLength = new Uint8Array(
+        ssBuffer.slice(addressValueIndex, addressValueIndex + 1),
+      )[0];
       addressValueIndex += 1;
-      addressValue = new TextDecoder().decode(ssBuffer.slice(addressValueIndex, addressValueIndex + addressLength));
+      addressValue = new TextDecoder().decode(
+        ssBuffer.slice(addressValueIndex, addressValueIndex + addressLength),
+      );
       break;
     case 4:
       addressLength = 16;
-      const dataView = new DataView(ssBuffer.slice(addressValueIndex, addressValueIndex + addressLength));
+      const dataView = new DataView(
+        ssBuffer.slice(addressValueIndex, addressValueIndex + addressLength),
+      );
       const ipv6 = [];
       for (let i = 0; i < 8; i++) {
         ipv6.push(dataView.getUint16(i * 2).toString(16));
@@ -758,7 +831,9 @@ function parseVlessHeader(vlessBuffer) {
 
   const optLength = new Uint8Array(vlessBuffer.slice(17, 18))[0];
 
-  const cmd = new Uint8Array(vlessBuffer.slice(18 + optLength, 18 + optLength + 1))[0];
+  const cmd = new Uint8Array(
+    vlessBuffer.slice(18 + optLength, 18 + optLength + 1),
+  )[0];
   if (cmd === 1) {
   } else if (cmd === 2) {
     isUDP = true;
@@ -773,7 +848,9 @@ function parseVlessHeader(vlessBuffer) {
   const portRemote = new DataView(portBuffer).getUint16(0);
 
   let addressIndex = portIndex + 2;
-  const addressBuffer = new Uint8Array(vlessBuffer.slice(addressIndex, addressIndex + 1));
+  const addressBuffer = new Uint8Array(
+    vlessBuffer.slice(addressIndex, addressIndex + 1),
+  );
 
   const addressType = addressBuffer[0];
   let addressLength = 0;
@@ -782,16 +859,24 @@ function parseVlessHeader(vlessBuffer) {
   switch (addressType) {
     case 1: // For IPv4
       addressLength = 4;
-      addressValue = new Uint8Array(vlessBuffer.slice(addressValueIndex, addressValueIndex + addressLength)).join(".");
+      addressValue = new Uint8Array(
+        vlessBuffer.slice(addressValueIndex, addressValueIndex + addressLength),
+      ).join(".");
       break;
     case 2: // For Domain
-      addressLength = new Uint8Array(vlessBuffer.slice(addressValueIndex, addressValueIndex + 1))[0];
+      addressLength = new Uint8Array(
+        vlessBuffer.slice(addressValueIndex, addressValueIndex + 1),
+      )[0];
       addressValueIndex += 1;
-      addressValue = new TextDecoder().decode(vlessBuffer.slice(addressValueIndex, addressValueIndex + addressLength));
+      addressValue = new TextDecoder().decode(
+        vlessBuffer.slice(addressValueIndex, addressValueIndex + addressLength),
+      );
       break;
     case 3: // For IPv6
       addressLength = 16;
-      const dataView = new DataView(vlessBuffer.slice(addressValueIndex, addressValueIndex + addressLength));
+      const dataView = new DataView(
+        vlessBuffer.slice(addressValueIndex, addressValueIndex + addressLength),
+      );
       const ipv6 = [];
       for (let i = 0; i < 8; i++) {
         ipv6.push(dataView.getUint16(i * 2).toString(16));
@@ -848,20 +933,33 @@ function parseTrojanHeader(buffer) {
   switch (addressType) {
     case 1: // For IPv4
       addressLength = 4;
-      addressValue = new Uint8Array(socks5DataBuffer.slice(addressValueIndex, addressValueIndex + addressLength)).join(
-        "."
-      );
+      addressValue = new Uint8Array(
+        socks5DataBuffer.slice(
+          addressValueIndex,
+          addressValueIndex + addressLength,
+        ),
+      ).join(".");
       break;
     case 3: // For Domain
-      addressLength = new Uint8Array(socks5DataBuffer.slice(addressValueIndex, addressValueIndex + 1))[0];
+      addressLength = new Uint8Array(
+        socks5DataBuffer.slice(addressValueIndex, addressValueIndex + 1),
+      )[0];
       addressValueIndex += 1;
       addressValue = new TextDecoder().decode(
-        socks5DataBuffer.slice(addressValueIndex, addressValueIndex + addressLength)
+        socks5DataBuffer.slice(
+          addressValueIndex,
+          addressValueIndex + addressLength,
+        ),
       );
       break;
     case 4: // For IPv6
       addressLength = 16;
-      const dataView = new DataView(socks5DataBuffer.slice(addressValueIndex, addressValueIndex + addressLength));
+      const dataView = new DataView(
+        socks5DataBuffer.slice(
+          addressValueIndex,
+          addressValueIndex + addressLength,
+        ),
+      );
       const ipv6 = [];
       for (let i = 0; i < 8; i++) {
         ipv6.push(dataView.getUint16(i * 2).toString(16));
@@ -897,7 +995,13 @@ function parseTrojanHeader(buffer) {
   };
 }
 
-async function remoteSocketToWS(remoteSocket, webSocket, responseHeader, retry, log) {
+async function remoteSocketToWS(
+  remoteSocket,
+  webSocket,
+  responseHeader,
+  retry,
+  log,
+) {
   let header = responseHeader;
   let hasIncomingData = false;
   await remoteSocket.readable
@@ -917,12 +1021,14 @@ async function remoteSocketToWS(remoteSocket, webSocket, responseHeader, retry, 
           }
         },
         close() {
-          log(`remoteConnection!.readable is close with hasIncomingData is ${hasIncomingData}`);
+          log(
+            `remoteConnection!.readable is close with hasIncomingData is ${hasIncomingData}`,
+          );
         },
         abort(reason) {
           console.error(`remoteConnection!.readable abort`, reason);
         },
-      })
+      }),
     )
     .catch((error) => {
       console.error(`remoteSocketToWS has exception `, error.stack || error);
@@ -936,7 +1042,10 @@ async function remoteSocketToWS(remoteSocket, webSocket, responseHeader, retry, 
 
 function safeCloseWebSocket(socket) {
   try {
-    if (socket.readyState === WS_READY_STATE_OPEN || socket.readyState === WS_READY_STATE_CLOSING) {
+    if (
+      socket.readyState === WS_READY_STATE_OPEN ||
+      socket.readyState === WS_READY_STATE_CLOSING
+    ) {
       socket.close();
     }
   } catch (error) {
@@ -945,7 +1054,9 @@ function safeCloseWebSocket(socket) {
 }
 
 async function checkProxyHealth(proxyIP, proxyPort) {
-  const req = await fetch(`${PROXY_HEALTH_CHECK_API}?ip=${proxyIP}:${proxyPort}`);
+  const req = await fetch(
+    `${PROXY_HEALTH_CHECK_API}?ip=${proxyIP}:${proxyPort}`,
+  );
   return await req.json();
 }
 
@@ -965,7 +1076,9 @@ function base64ToArrayBuffer(base64Str) {
 }
 
 function arrayBufferToHex(buffer) {
-  return [...new Uint8Array(buffer)].map((x) => x.toString(16).padStart(2, "0")).join("");
+  return [...new Uint8Array(buffer)]
+    .map((x) => x.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 function shuffleArray(array) {
@@ -978,7 +1091,10 @@ function shuffleArray(array) {
     currentIndex--;
 
     // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
   }
 }
 
@@ -986,7 +1102,9 @@ async function generateHashFromText(text) {
   const msgUint8 = new TextEncoder().encode(text); // encode as (utf-8) Uint8Array
   const hashBuffer = await crypto.subtle.digest("MD5", msgUint8); // hash the message
   const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
-  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join(""); // convert bytes to hex string
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join(""); // convert bytes to hex string
 
   return hashHex;
 }
@@ -1026,7 +1144,9 @@ class CloudflareApi {
     if (res.status == 200) {
       const respJson = await res.json();
 
-      return respJson.result.filter((data) => data.service == serviceName).map((data) => data.hostname);
+      return respJson.result
+        .filter((data) => data.service == serviceName)
+        .map((data) => data.hostname);
     }
 
     return [];
@@ -1040,7 +1160,9 @@ class CloudflareApi {
     if (registeredDomains.includes(domain)) return 409;
 
     try {
-      const domainTest = await fetch(`https://${domain.replaceAll("." + APP_DOMAIN, "")}`);
+      const domainTest = await fetch(
+        `https://${domain.replaceAll("." + APP_DOMAIN, "")}`,
+      );
       if (domainTest.status == 530) return 530;
     } catch (e) {
       return 400;
@@ -1388,69 +1510,41 @@ let baseHTML = `
 }
 
 
-.container {
-  width: 100%; /* Full width */
-  max-width: 1200px; /* Max width for the container */
-  margin: 0 auto; /* Center the container */
-  padding: 5px;
-  box-sizing: border-box;
-}
+        .container {
+            background: rgba(255, 255, 255, 0.0); /* Transparansi container */
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
 
-.card-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Create two columns */
-  gap: 20px; /* Space between cards */
-  width: 100%;
-}
-/* Style untuk card */
-.card {
-  background: rgba(255, 255, 255, 0.6); /* Background putih transparan */
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  height: 200px;  /* Menyesuaikan tinggi card */
-  width: 150px;   /* Menyesuaikan lebar card */
-  transition: transform 0.3s ease;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column; /* Menyusun elemen secara vertikal */
-  align-items: center;    /* Bendera dan nama di tengah secara horizontal */
-  justify-content: center;/* Menyusun bendera dan nama di tengah secara vertikal */
-  padding: 20px;
-  margin-bottom: 20px;
-  text-align: center; /* Teks berada di tengah */
-  position: relative;  /* Agar bisa mengatur posisi elemen lainnya */
-}
+        #card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsif, minimal 150px */
+            gap: 20px; /* Jarak antar kartu */
+        }
 
-/* Efek hover untuk kartu */
-.card:hover {
-  transform: translateY(-10px);
-}
+        .card {
+            
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.2); 
+        }
 
-/* Style untuk header kartu */
-.card-header {
-  display: flex;
-  flex-direction: column;  /* Menyusun bendera dan nama secara vertikal */
-  align-items: center;     /* Menjaga bendera dan nama di tengah */
-  justify-content: center; /* Menjaga bendera tetap di tengah vertikal */
-  margin-bottom: 15px;
-  height: 100%; /* Membuat header memenuhi ketinggian card */
-}
-
-/* Style untuk bendera negara */
-.country-flag img {
-  width: 40px;  /* Ukuran bendera */
-  height: 40px; /* Menjaga proporsi bendera */
-  border-radius: 50%; /* Membuat bendera berbentuk lingkaran */
-  margin-bottom: 10px; /* Memberikan jarak antara bendera dan nama */
-  object-fit: contain;  /* Menghindari bendera terdistorsi */
-}
-
-/* Style untuk nama negara */
-.card-content {
-  font-size: 1rem;
-  margin-bottom: 10px;
-  
-}
+        .country-flag img {
+            width: 50px;
+            height: auto;
+        }
+        .info-text {
+          margin-top: 10px;
+          color: white;
+          text-align: left;
+        }
 </style>
     
   </head>
@@ -1547,12 +1641,13 @@ let baseHTML = `
             <div class="icon-name"> MAZLANA</div>
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
-         <div class="container">
-            <div class="card-container" id="card-container">
-                PLACEHOLDER_BENDERA_NEGARA
-            </div>
-      </div>
-      
+        
+        <div class="container">
+    <div id="card-container">
+    PLACEHOLDER_BENDERA_NEGARA
+    </div>
+</div>
+        
      
     </section>
 
@@ -1627,7 +1722,10 @@ class Document {
 
   addInfo(text) {
     text = `<span>${text}</span>`;
-    this.html = this.html.replaceAll("PLACEHOLDER_INFO", `${text}\nPLACEHOLDER_INFO`);
+    this.html = this.html.replaceAll(
+      "PLACEHOLDER_INFO",
+      `${text}\nPLACEHOLDER_INFO`,
+    );
   }
 
   registerProxies(data, proxies) {
@@ -1658,7 +1756,14 @@ class Document {
       proxyGroupElement += `  </div>`;
       proxyGroupElement += `  <div class="flex flex-col gap-2 mt-3 text-sm">`;
       for (let x = 0; x < proxyData.list.length; x++) {
-        const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
+        const indexName = [
+          "Trojan TLS",
+          "VLESS TLS",
+          "SS TLS",
+          "Trojan NTLS",
+          "VLESS NTLS",
+          "SS NTLS",
+        ];
         const proxy = proxyData.list[x];
 
         if (x % 2 == 0) {
@@ -1676,7 +1781,10 @@ class Document {
     }
     proxyGroupElement += `</div>`;
 
-    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", `${proxyGroupElement}`);
+    this.html = this.html.replaceAll(
+      "PLACEHOLDER_PROXY_GROUP",
+      `${proxyGroupElement}`,
+    );
   }
 
   buildCountryFlag() {
@@ -1686,57 +1794,56 @@ class Document {
 
     // Hitung jumlah IP per negara
     for (const proxy of cachedProxyList) {
-        const country = proxy.country;
-        flagList.push(country);
-        countryCount[country] = (countryCount[country] || 0) + 1;
+      const country = proxy.country;
+      flagList.push(country);
+      countryCount[country] = (countryCount[country] || 0) + 1;
     }
 
     // Tambahkan kelas CSS khusus untuk elemen grid
-    let flagElement = '<div class="card-header">';
+    let flagElement = '<div class="card-container">';
     for (const flag of new Set(flagList)) {
-        flagElement += `
-
-           
-                     
-                                            <img class="country-flag" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
-                            <img src="${flagUrl}" alt="${item.country} Flag" class="flag" />
-                        </div>
-                        <div class="card-content">
-                            <strong>kontol</strong>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="ip-port">
-                            <i class="fa-solid fa-globe ip-logo"> COUNTRY: kontol\n</i>
-                            <i class=" fas fa-network-wired ip-logo"> IP: ${countryCount[flag]}</i> 
-                            <i class="fas fa-solid fa-plug ip-logo"> PORT:  titid</i>
-                        </div>
-            
-            
+      flagElement += `
+      <a href="/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}" class="country-flag">
+      <img width=32 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
+      
+      
+      
             `;
     }
+
+    flagElement += "</div>";
+     
+    >${flag} (${countryCount[flag]} IPs)</p>
     
-   
-    flagElement += '</div>';
+    
+    
+    
+    /*  TAIIII */
+
+  
 
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
-}
-
-
+  }
 
   addPageButton(text, link, isDisabled) {
     const pageButton = `<li><button ${
       isDisabled ? "disabled" : ""
     } class="px-3 py-1 bg-amber-400 border-2 border-neutral-800 rounded" onclick=navigateTo('${link}')>${text}</button></li>`;
 
-    this.html = this.html.replaceAll("PLACEHOLDER_PAGE_BUTTON", `${pageButton}\nPLACEHOLDER_PAGE_BUTTON`);
+    this.html = this.html.replaceAll(
+      "PLACEHOLDER_PAGE_BUTTON",
+      `${pageButton}\nPLACEHOLDER_PAGE_BUTTON`,
+    );
   }
 
   build() {
     this.buildProxyGroup();
     this.buildCountryFlag();
 
-    this.html = this.html.replaceAll("PLACEHOLDER_API_READY", isApiReady ? "block" : "hidden");
+    this.html = this.html.replaceAll(
+      "PLACEHOLDER_API_READY",
+      isApiReady ? "block" : "hidden",
+    );
 
     return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
   }
