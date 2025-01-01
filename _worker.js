@@ -1555,7 +1555,7 @@ let baseHTML = `
           margin-top: 10px;
           color: white;
           padding: 10px;
-          font-size: 25px;
+          font-size: 15px;
           text-align: left;
         }
 </style>
@@ -1820,11 +1820,11 @@ for (const flag of new Set(flagList)) {
       <a href="/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}" class="country-flag">
         <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
       </a>
-      <p>${flag}</p>
-      
-      <i class='bx bxs-microchip'></i>
       <div class="info-text">
+      <i class="bx bx-globe>&nbsp COUNTRY : ${flag}</i>
+      <i class='bx bxs-microchip'>&nbsp
       TOTAL IP : ${countryCount[flag]} IP
+      </i>
       </div> 
     </div>`;
 }
