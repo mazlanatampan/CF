@@ -848,7 +848,7 @@ function parseTrojanHeader(buffer) {
 }
 
 async function remoteSocketToWS(remoteSocket, webSocket, responseHeader, retry, log) {
-  eader = responseHeader;
+  let header = responseHeader;
   let hasIncomingData = false;
   await remoteSocket.readable
     .pipeTo(
@@ -1021,470 +1021,471 @@ class CloudflareApi {
  */
 let baseHTML = `
 <!DOCTYPE html>
-<html lang="en" id="html" class="scroll-auto scrollbar-hide dark">
+<!-- Website - www.codingnepalweb.com -->
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
+    <title>Responsive Sidebar Menu HTML CSS | CodingNepal</title>
+  
+    <!-- Boxicons CDN Link -->
+    <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Proxy List</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      /* For Webkit-based browsers (Chrome, Safari and Opera) */
-      .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-      }
+    /* Google Font Link */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 78px;
+  background: #11101d;
+  padding: 6px 14px;
+  z-index: 99;
+  transition: all 0.5s ease;
+}
+.sidebar.open {
+  width: 250px;
+}
+.sidebar .logo-details {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.sidebar .logo-details .icon {
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+.sidebar .logo-details .logo_name {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+.sidebar.open .logo-details .icon,
+.sidebar.open .logo-details .logo_name {
+  opacity: 1;
+}
+.sidebar .logo-details #btn {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  font-size: 22px;
+  transition: all 0.4s ease;
+  font-size: 23px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+.sidebar.open .logo-details #btn {
+  text-align: right;
+}
+.sidebar i {
+  color: #fff;
+  height: 60px;
+  min-width: 50px;
+  font-size: 28px;
+  text-align: center;
+  line-height: 60px;
+}
+.sidebar .nav-list {
+  margin-top: 20px;
+  height: 100%;
+}
+.sidebar li {
+  position: relative;
+  margin: 8px 0;
+  list-style: none;
+}
+.sidebar li .tooltip {
+  position: absolute;
+  top: -20px;
+  left: calc(100% + 15px);
+  z-index: 3;
+  background: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 400;
+  opacity: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: 0s;
+}
+.sidebar li:hover .tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  transition: all 0.4s ease;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.sidebar.open li .tooltip {
+  display: none;
+}
+.sidebar input {
+  font-size: 15px;
+  color: #fff;
+  font-weight: 400;
+  outline: none;
+  height: 50px;
+  width: 100%;
+  width: 50px;
+  border: none;
+  border-radius: 12px;
+  transition: all 0.5s ease;
+  background: #1d1b31;
+}
+.sidebar.open input {
+  padding: 0 20px 0 50px;
+  width: 100%;
+}
+.sidebar .bx-search {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  font-size: 22px;
+  background: #1d1b31;
+  color: #fff;
+}
+.sidebar.open .bx-search:hover {
+  background: #1d1b31;
+  color: #fff;
+}
+.sidebar .bx-search:hover {
+  background: #fff;
+  color: #11101d;
+}
+.sidebar li a {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  border-radius: 12px;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  background: #11101d;
+}
+.sidebar li a:hover {
+  background: #fff;
+}
+.sidebar li a .links_name {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.4s;
+}
+.sidebar.open li a .links_name {
+  opacity: 1;
+  pointer-events: auto;
+}
+.sidebar li a:hover .links_name,
+.sidebar li a:hover i {
+  transition: all 0.5s ease;
+  color: #11101d;
+}
+.sidebar li i {
+  height: 50px;
+  line-height: 50px;
+  font-size: 18px;
+  border-radius: 12px;
+}
+.sidebar li.profile {
+  position: fixed;
+  height: 60px;
+  width: 78px;
+  left: 0;
+  bottom: -8px;
+  padding: 10px 14px;
+  background: #1d1b31;
+  transition: all 0.5s ease;
+  overflow: hidden;
+}
+.sidebar.open li.profile {
+  width: 250px;
+}
+.sidebar li .profile-details {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.sidebar li img {
+  height: 45px;
+  width: 45px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 10px;
+}
+.sidebar li.profile .name,
+.sidebar li.profile .job {
+  font-size: 15px;
+  font-weight: 400;
+  color: #fff;
+  white-space: nowrap;
+}
+.sidebar li.profile .job {
+  font-size: 12px;
+}
+.sidebar .profile #log_out {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background: #1d1b31;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  border-radius: 0px;
+  transition: all 0.5s ease;
+}
+.sidebar.open .profile #log_out {
+  width: 50px;
+  background: none;
+}
+.home-section {
+  position: relative;
+  background: #e4e9f7;
+  min-height: 100vh;
+  top: 0;
+  left: 78px;
+  width: calc(100% - 78px);
+  transition: all 0.5s ease;
+  z-index: 2;
+}
 
-      /* For IE, Edge and Firefox */
-      .scrollbar-hide {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
-      }
-    </style>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'selector',
-      }
-    </script>
+.iframe {
+  width: 100%; /* Mengatur lebar iframe agar sesuai dengan lebar kontainer */
+  height: calc(
+    100vh
+  ); /* Mengatur tinggi iframe, sesuaikan dengan tinggi header jika ada */
+  border: none; /* Menghilangkan border default */
+}
+
+.sidebar.open ~ .home-section {
+  left: 250px;
+  width: calc(100% - 250px);
+}
+.home-section .text {
+  display: inline-block;
+  color: #11101d;
+  font-size: 25px;
+  font-weight: 500;
+  margin: 18px;
+}
+@media (max-width: 420px) {
+  .sidebar li .tooltip {
+    display: none;
+  }
+}
+
+.header-atas {
+
+  background-color: #11101d; /* Latar belakang gelap */
+  height: 100px;
+  overflow: hidden; /* Menghindari overflow */
+  position: relative;
+}
+
+
+.header-atas .icon {
+  color: white;
+  height: 60px;
+  width: 100%;
+  display: flex;
+  justify-content: center; /* Menempatkan elemen secara horizontal di tengah */
+  align-items: center; /* Menempatkan elemen secara vertikal di tengah */
+  font-size: 4rem;
+}
+
+.icon-name {
+  color: white;
+  height: 60px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.marquee {
+  position: absolute;
+  font-size: 5px;
+  color: white;
+  bottom: 5px;
+  padding: 0px;
+  animation: marquee 20s linear infinite; /* Animasi teks berjalan */
+  white-space: nowrap; /* Mencegah teks membungkus */
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+</style>
+    
   </head>
-  <body style="background-image: url('https://github.com/mazlanatampan/managercf/blob/main/background.jpg'); background-position: center center; background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
-  <!-- Konten lainnya -->
-</body>
-
-    <!-- Notification -->
-    <div
-      id="notification-badge"
-      class="fixed z-50 opacity-0 transition-opacity ease-in-out duration-300 mt-9 mr-6 right-0 p-3 max-w-sm bg-white rounded-xl border border-2 border-neutral-800 flex items-center gap-x-4"
-    >
-      <div class="shrink-0">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#171717" class="size-6">
-          <path
-            d="M5.85 3.5a.75.75 0 0 0-1.117-1 9.719 9.719 0 0 0-2.348 4.876.75.75 0 0 0 1.479.248A8.219 8.219 0 0 1 5.85 3.5ZM19.267 2.5a.75.75 0 1 0-1.118 1 8.22 8.22 0 0 1 1.987 4.124.75.75 0 0 0 1.48-.248A9.72 9.72 0 0 0 19.266 2.5Z"
-          />
-          <path
-            fill-rule="evenodd"
-            d="M12 2.25A6.75 6.75 0 0 0 5.25 9v.75a8.217 8.217 0 0 1-2.119 5.52.75.75 0 0 0 .298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 1 0 7.48 0 24.583 24.583 0 0 0 4.83-1.244.75.75 0 0 0 .298-1.205 8.217 8.217 0 0 1-2.118-5.52V9A6.75 6.75 0 0 0 12 2.25ZM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 0 0 4.496 0l.002.1a2.25 2.25 0 1 1-4.5 0Z"
-            clip-rule="evenodd"
-          />
-        </svg>
+  <body>
+    <div class="sidebar">
+      <div class="logo-details">
+        <i class="bx bxl-c-plus-plus icon"></i>
+        <div class="logo_name">CodingLab</div>
+        <i class="bx bx-menu" id="btn"></i>
       </div>
-      <div>
-        <div class="text-md font-bold text-blue-500">Berhasil!</div>
-        <p class="text-sm text-neutral-800">Akun berhasil disalin</p>
-      </div>
-    </div>
-    <!-- Select Country -->
-    <div>
-      <div
-        class="h-full fixed top-0 w-14 bg-white dark:bg-neutral-800 border-r-2 border-neutral-800 dark:border-white z-20 overflow-y-scroll scrollbar-hide"
-      >
-        <div class="text-2xl flex flex-col items-center h-full gap-2">
-          PLACEHOLDER_BENDERA_NEGARA
-        </div>
-      </div>
-    </div>
-    <!-- Main -->
-    <div id="container-header">
-      <div id="container-info" class="bg-amber-400 border-2 border-neutral-800 text-right px-5">
-        <div class="flex justify-end gap-3 text-sm">
-          <p id="container-info-ip">IP: 127.0.0.1</p>
-          <p id="container-info-country">Country: Indonesia</p>
-          <p id="container-info-isp">ISP: Localhost</p>
-        </div>
-      </div>
-    </div>
-    <div class="container">
-      <div
-        id="container-title"
-        class="sticky bg-white dark:bg-neutral-800 border-b-2 border-neutral-800 dark:border-white z-10 py-6 w-screen"
-      >
-        <h1 class="text-xl text-center text-neutral-800 dark:text-white">
-          PLACEHOLDER_JUDUL
-        </h1>
-      </div>
-      <div class="flex gap-6 pt-10 w-screen justify-center">
-        PLACEHOLDER_PROXY_GROUP
-      </div>
-
-      <!-- Pagination -->
-      <nav id="container-pagination" class="w-screen mt-8 sticky bottom-0 right-0 left-0 transition -translate-y-6 z-20">
-        <ul class="flex justify-center space-x-4">
-          PLACEHOLDER_PAGE_BUTTON
-        </ul>
-      </nav>
-    </div>
-
-    <div id="container-window" class="hidden">
-      <!-- Windows -->
-      <!-- Informations -->
-      <div class="fixed z-20 top-0 w-full h-full bg-white dark:bg-neutral-800">
-        <p id="container-window-info" class="text-center w-full h-full top-1/4 absolute dark:text-white"></p>
-      </div>
-      <!-- Output Format -->
-      <div id="output-window" class="fixed z-20 top-0 right-0 w-full h-full flex justify-center items-center hidden">
-        <div class="w-[75%] h-[30%] flex flex-col gap-1 p-1 text-center rounded-md">
-          <div class="basis-1/6 w-full h-full rounded-md">
-            <div class="flex w-full h-full gap-1 justify-between">
-              <button
-                onclick="copyToClipboardAsTarget('clash')"
-                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
-              >
-                Clash
-              </button>
-              <button
-                onclick="copyToClipboardAsTarget('sfa')"
-                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
-              >
-                SFA
-              </button>
-              <button
-                onclick="copyToClipboardAsTarget('bfr')"
-                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
-              >
-                BFR
-              </button>
+      <ul class="nav-list">
+        <li>
+          <i class="bx bx-search"></i>
+          <input type="text" placeholder="Search..." />
+          <span class="tooltip">Search</span>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bx bx-grid-alt"></i>
+            <span class="links_name">Dashboard</span>
+          </a>
+          <span class="tooltip">Dashboard</span>
+        </li>
+        <li>
+    <a href="#" onclick="loadIframe('manager/')"> <!-- Memanggil fungsi loadIframe -->
+        <i class="bx bx-user"></i>
+        <span class="links_name">User  </span>
+    </a>
+    <span class="tooltip">User  </span>
+</li>
+        <li>
+          <a href="#">
+            <i class="bx bx-chat"></i>
+            <span class="links_name">Messages</span>
+          </a>
+          <span class="tooltip">Messages</span>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bx bx-pie-chart-alt-2"></i>
+            <span class="links_name">Analytics</span>
+          </a>
+          <span class="tooltip">Analytics</span>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bx bx-folder"></i>
+            <span class="links_name">File Manager</span>
+          </a>
+          <span class="tooltip">Files</span>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bx bx-cart-alt"></i>
+            <span class="links_name">Order</span>
+          </a>
+          <span class="tooltip">Order</span>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bx bx-heart"></i>
+            <span class="links_name">Saved</span>
+          </a>
+          <span class="tooltip">Saved</span>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bx bx-cog"></i>
+            <span class="links_name">Setting</span>
+          </a>
+          <span class="tooltip">Setting</span>
+        </li>
+        <li class="profile">
+          <div class="profile-details">
+            <img src="profile.jpg" alt="profileImg" />
+            <div class="name_job">
+              <div class="name">Prem Shahi</div>
+              <div class="job">Web designer</div>
             </div>
           </div>
-          <div class="basis-1/6 w-full h-full rounded-md">
-            <div class="flex w-full h-full gap-1 justify-between">
-              <button
-                onclick="copyToClipboardAsTarget('v2ray')"
-                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
-              >
-                V2Ray/Xray
-              </button>
-              <button
-                onclick="copyToClipboardAsRaw()"
-                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
-              >
-                Raw
-              </button>
-            </div>
-          </div>
-          <div class="basis-1/6 w-full h-full rounded-md">
-            <div class="flex w-full h-full gap-1 justify-center">
-              <button
-                onclick="toggleOutputWindow()"
-                class="basis-1/2 border-2 border-indigo-400 hover:bg-indigo-400 dark:text-white p-2 rounded-full flex justify-center items-center"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Wildcards -->
-      <div id="wildcards-window" class="fixed hidden z-20 top-0 right-0 w-full h-full flex justify-center items-center">
-        <div class="w-[75%] h-[30%] flex flex-col gap-1 p-1 text-center rounded-md">
-          <div class="basis-1/6 w-full h-full rounded-md">
-            <div class="flex w-full h-full gap-1 justify-between">
-              <input
-                id="new-domain-input"
-                type="text"
-                placeholder="Input wildcard"
-                class="basis-11/12 w-full h-full px-6 rounded-md focus:outline-0"
-              />
-              <button
-                onclick="registerDomain()"
-                class="p-2 rounded-full bg-amber-400 flex justify-center items-center"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                  <path
-                    fill-rule="evenodd"
-                    d="M16.72 7.72a.75.75 0 0 1 1.06 0l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 1 1-1.06-1.06l2.47-2.47H3a.75.75 0 0 1 0-1.5h16.19l-2.47-2.47a.75.75 0 0 1 0-1.06Z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-          <div class="basis-5/6 w-full h-full rounded-md">
-            <div
-              id="container-domains"
-              class="w-full h-full rounded-md flex flex-col gap-1 overflow-scroll scrollbar-hide"
-            ></div>
-          </div>
-        </div>
-      </div>
+          <i class="bx bx-log-out" id="log_out"></i>
+        </li>
+      </ul>
     </div>
 
-    <footer>
-      <div class="fixed bottom-3 right-3 flex flex-col gap-1 z-50">
-        <a href="${DONATE_LINK}" target="_blank">
-          <button class="bg-green-500 rounded-full border-2 border-neutral-800 p-1 block">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-              <path
-                d="M10.464 8.746c.227-.18.497-.311.786-.394v2.795a2.252 2.252 0 0 1-.786-.393c-.394-.313-.546-.681-.546-1.004 0-.323.152-.691.546-1.004ZM12.75 15.662v-2.824c.347.085.664.228.921.421.427.32.579.686.579.991 0 .305-.152.671-.579.991a2.534 2.534 0 0 1-.921.42Z"
-              />
-              <path
-                fill-rule="evenodd"
-                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v.816a3.836 3.836 0 0 0-1.72.756c-.712.566-1.112 1.35-1.112 2.178 0 .829.4 1.612 1.113 2.178.502.4 1.102.647 1.719.756v2.978a2.536 2.536 0 0 1-.921-.421l-.879-.66a.75.75 0 0 0-.9 1.2l.879.66c.533.4 1.169.645 1.821.75V18a.75.75 0 0 0 1.5 0v-.81a4.124 4.124 0 0 0 1.821-.749c.745-.559 1.179-1.344 1.179-2.191 0-.847-.434-1.632-1.179-2.191a4.122 4.122 0 0 0-1.821-.75V8.354c.29.082.559.213.786.393l.415.33a.75.75 0 0 0 .933-1.175l-.415-.33a3.836 3.836 0 0 0-1.719-.755V6Z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </button>
-        </a>
-        <button onclick="toggleWildcardsWindow()" class="bg-indigo-400 rounded-full border-2 border-neutral-800 p-1 PLACEHOLDER_API_READY">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="size-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25"
-            />
-          </svg>
-        </button>
-        <button onclick="toggleDarkMode()" class="bg-amber-400 rounded-full border-2 border-neutral-800 p-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="size-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-            ></path>
-          </svg>
-        </button>
-      </div>
-    </footer>
+   
+    <section class="home-section">
+        <div class="header-atas">
+          <div class="icon">
+          <i class='bx bxl-slack'></i>
+          </div>
+            <div class="icon-name"> MAZLANA</div>
+            <div class="marquee" id="ip-info">Loading IP...</div>
+        </div>
+        <iframe id="content-frame" src="" style="width: 100%; height: calc(100vh - 60px); border: none;"></iframe>
+    </section>
 
     <script>
-      // Shared
-      const rootDomain = "${serviceName}.${rootDomain}";
-      const notification = document.getElementById("notification-badge");
-      const windowContainer = document.getElementById("container-window");
-      const windowInfoContainer = document.getElementById("container-window-info");
-      const converterUrl =
-        "https://script.google.com/macros/s/AKfycbwwVeHNUlnP92syOP82p1dOk_-xwBgRIxkTjLhxxZ5UXicrGOEVNc5JaSOu0Bgsx_gG/exec";
+    let sidebar = document.querySelector(".sidebar");
+let closeBtn = document.querySelector("#btn");
+let searchBtn = document.querySelector(".bx-search");
 
+closeBtn.addEventListener("click", ()=>{
+  sidebar.classList.toggle("open");
+  menuBtnChange();//calling the function(optional)
+});
 
-      // Switches
-      let isDomainListFetched = false;
+searchBtn.addEventListener("click", ()=>{ // Sidebar open when you click on the search iocn
+  sidebar.classList.toggle("open");
+  menuBtnChange(); //calling the function(optional)
+});
 
-      // Local variable
-      let rawConfig = "";
+// following are the code to change sidebar button(optional)
+function menuBtnChange() {
+ if(sidebar.classList.contains("open")){
+   closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");//replacing the iocns class
+ }else {
+   closeBtn.classList.replace("bx-menu-alt-right","bx-menu");//replacing the iocns class
+ }
+}
 
-      function getDomainList() {
-        if (isDomainListFetched) return;
-        isDomainListFetched = true;
+function loadIframe(page) {
+    document.getElementById('content-frame').src = page;
+}
 
-        windowInfoContainer.innerText = "Fetching data...";
-
-        const url = "https://" + rootDomain + "/api/v1/domains/get";
-        const res = fetch(url).then(async (res) => {
-          const domainListContainer = document.getElementById("container-domains");
-          domainListContainer.innerHTML = "";
-
-          if (res.status == 200) {
-            windowInfoContainer.innerText = "Done!";
-            const respJson = await res.json();
-            for (const domain of respJson) {
-              const domainElement = document.createElement("p");
-              domainElement.classList.add("w-full", "bg-amber-400", "rounded-md");
-              domainElement.innerText = domain;
-              domainListContainer.appendChild(domainElement);
+function fetchIPInfo() {
+    fetch('https://ipapi.co/json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-          } else {
-            windowInfoContainer.innerText = "Failed!";
-          }
+            return response.json();
+        })
+        .then(data => {
+            const ipInfo = 'IP: ${data.ip} • Kota: ${data.city} • Negara : ${data.country} • Organisasi: ${data.org}';
+            document.getElementById('ip-info').textContent = ipInfo;
+        })
+        .catch(error => {
+            console.error('Error fetching IP information:', error);
+            document.getElementById('ip-info').textContent = ipInfo;
         });
-      }
+}
 
-      function registerDomain() {
-        const domainInputElement = document.getElementById("new-domain-input");
-        const rawDomain = domainInputElement.value.toLowerCase();
-        const domain = domainInputElement.value + "." + rootDomain;
-
-        if (!rawDomain.match(/\\w+\\.\\w+$/) || rawDomain.endsWith(rootDomain)) {
-          windowInfoContainer.innerText = "Invalid URL!";
-          return;
-        }
-
-        windowInfoContainer.innerText = "Pushing request...";
-
-        const url = "https://" + rootDomain + "/api/v1/domains/put?domain=" + domain;
-        const res = fetch(url).then((res) => {
-          if (res.status == 200) {
-            windowInfoContainer.innerText = "Done!";
-            domainInputElement.value = "";
-            isDomainListFetched = false;
-            getDomainList();
-          } else {
-            if (res.status == 409) {
-              windowInfoContainer.innerText = "Domain exists!";
-            } else {
-              windowInfoContainer.innerText = "Error " + res.status;
-            }
-          }
-        });
-      }
-
-      function copyToClipboard(text) {
-        toggleOutputWindow();
-        rawConfig = text;
-      }
-
-      function copyToClipboardAsRaw() {
-        navigator.clipboard.writeText(rawConfig);
-
-        notification.classList.remove("opacity-0");
-        setTimeout(() => {
-          notification.classList.add("opacity-0");
-        }, 2000);
-      }
-
-      async function copyToClipboardAsTarget(target) {
-        windowInfoContainer.innerText = "Generating config...";
-        const url = converterUrl + "?target=" + target + "&url=" + encodeURIComponent(rawConfig);;
-        const res = await fetch(url, {
-          redirect: "follow",
-        });
-
-        if (res.status == 200) {
-          windowInfoContainer.innerText = "Done!";
-          navigator.clipboard.writeText(await res.text());
-
-          notification.classList.remove("opacity-0");
-          setTimeout(() => {
-            notification.classList.add("opacity-0");
-          }, 2000);
-        } else {
-          windowInfoContainer.innerText = "Error " + res.statusText;
-        }
-      }
-
-      function navigateTo(link) {
-        window.location.href = link + window.location.search;
-      }
-
-      function toggleOutputWindow() {
-        windowInfoContainer.innerText = "Select output:";
-        toggleWindow();
-        const rootElement = document.getElementById("output-window");
-        if (rootElement.classList.contains("hidden")) {
-          rootElement.classList.remove("hidden");
-        } else {
-          rootElement.classList.add("hidden");
-        }
-      }
-
-      function toggleWildcardsWindow() {
-        windowInfoContainer.innerText = "Domain list";
-        toggleWindow();
-        getDomainList();
-        const rootElement = document.getElementById("wildcards-window");
-        if (rootElement.classList.contains("hidden")) {
-          rootElement.classList.remove("hidden");
-        } else {
-          rootElement.classList.add("hidden");
-        }
-      }
-
-      function toggleWindow() {
-        if (windowContainer.classList.contains("hidden")) {
-          windowContainer.classList.remove("hidden");
-        } else {
-          windowContainer.classList.add("hidden");
-        }
-      }
-
-      function toggleDarkMode() {
-        const rootElement = document.getElementById("html");
-        if (rootElement.classList.contains("dark")) {
-          rootElement.classList.remove("dark");
-        } else {
-          rootElement.classList.add("dark");
-        }
-      }
-
-      function checkProxy() {
-        for (let i = 0; ; i++) {
-          const pingElement = document.getElementById("ping-"+i);
-          if (pingElement == undefined) return;
-
-          const target = pingElement.textContent.split(" ").filter((ipPort) => ipPort.match(":"))[0];
-          if (target) {
-            pingElement.textContent = "Checking...";
-          } else {
-            continue;
-          }
-
-          let isActive = false;
-          new Promise(async (resolve) => {
-            const res = await fetch("https://${serviceName}.${rootDomain}/check?target=" + target)
-              .then(async (res) => {
-                if (isActive) return;
-                if (res.status == 200) {
-                  pingElement.classList.remove("dark:text-white");
-                  const jsonResp = await res.json();
-                  if (jsonResp.proxyip === true) {
-                    isActive = true;
-                    pingElement.textContent = "Active " + jsonResp.delay + " ms";
-                    pingElement.classList.add("text-green-600");
-                  } else {
-                    pingElement.textContent = "Inactive";
-                    pingElement.classList.add("text-red-600");
-                  }
-                } else {
-                  pingElement.textContent = "Check Failed!";
-                }
-              })
-              .finally(() => {
-                resolve(0);
-              });
-          });
-        }
-      }
-
-      function checkGeoip() {
-        const containerIP = document.getElementById("container-info-ip");
-        const containerCountry = document.getElementById("container-info-country");
-        const containerISP = document.getElementById("container-info-isp");
-        const res = fetch("https://" + rootDomain + "/api/v1/myip").then(async (res) => {
-          if (res.status == 200) {
-            const respJson = await res.json();
-            containerIP.innerText = "IP: " + respJson.ip;
-            containerCountry.innerText = "Country: " + respJson.country;
-            containerISP.innerText = "ISP: " + respJson.asOrganization;
-          }
-        });
-      }
-
-      window.onload = () => {
-        checkGeoip();
-        checkProxy();
-
-        const observer = lozad(".lozad", {
-          load: function (el) {
-            el.classList.remove("scale-95");
-          },
-        });
-        observer.observe();
-      };
-
-      window.onscroll = () => {
-        const paginationContainer = document.getElementById("container-pagination");
-
-        if (window.innerHeight + Math.round(window.scrollY) >= document.body.offsetHeight) {
-          paginationContainer.classList.remove("-translate-y-6");
-        } else {
-          paginationContainer.classList.add("-translate-y-6");
-        }
-      };
+// Call the fetchIPInfo function to load IP information on page load
+fetchIPInfo();
     </script>
-    </body>
-
+    
+</body>
 </html>
+
 `;
 
 class Document {
