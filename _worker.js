@@ -1816,7 +1816,6 @@ class Document {
     let flagElement = '<div class="card-container">';
 for (const flag of new Set(flagList)) {
   flagElement += `
-    <div class="card">
           <a href="/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}" class="card"/>
       <a href="/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}" class="country-flag">
         <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
@@ -1826,7 +1825,9 @@ for (const flag of new Set(flagList)) {
       <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP
       </i>
       </div> 
-    </div>`;
+      </a>
+    </div>
+    `;
 }
 flagElement += '</div>';
 
