@@ -1813,7 +1813,7 @@ class Document {
 
     flagElement += "</div>";
      
-    >${flag} (${countryCount[flag]} IPs)</p>
+    /*>${flag} (${countryCount[flag]} IPs)</p>*/
     
     
     
