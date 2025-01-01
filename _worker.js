@@ -1212,9 +1212,6 @@ let baseHTML = `
   font-family: "Poppins", sans-serif;
 }
 html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
     overflow-y: auto;
 }
 
@@ -1436,7 +1433,7 @@ html, body {
 }
 
 .home-section {
-  display:flex;
+  display:relative;
   background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
   background-position: center center;
   background-repeat: no-repeat;
