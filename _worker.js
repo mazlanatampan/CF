@@ -1211,9 +1211,6 @@ let baseHTML = `
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
-html, body {
-    overflow-y: auto;
-}
 
 .sidebar {
   position: fixed;
