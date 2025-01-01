@@ -1211,16 +1211,13 @@ let baseHTML = `
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
-.body {
-  position: relative;
-  background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
+html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
+    overflow-y: auto;
 }
+
 .sidebar {
   position: fixed;
   left: 0;
@@ -1439,20 +1436,18 @@ let baseHTML = `
 }
 
 .home-section {
-  position: relative;
+  display:flex;
   background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
-  background-attachment: fixed;
-            
-       
+  background-attachment: fixed;       
   min-height: 100vh;
-  top: 0;
   left: 78px;
   width: calc(100% - 78px);
   transition: all 0.5s ease;
   z-index: 2;
+  overflow-y: auto;
 }
 
 
