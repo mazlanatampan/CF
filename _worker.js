@@ -1435,7 +1435,7 @@ let baseHTML = `
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
-  min-height: 100vh;
+  height: 100%;
   top: 0;
   left: 78px;
   width: calc(100% - 78px);
