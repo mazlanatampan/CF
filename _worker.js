@@ -80,7 +80,7 @@ async function getProxyList(proxyBankUrl = PROXY_BANK_URL) {
   return cachedProxyList;
 }
 
-/* END *//
+/* END */
 
 
 /* REVERSE PROXY KE CF */
