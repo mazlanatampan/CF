@@ -1803,9 +1803,11 @@ class Document {
     let flagElement = '<div class="card-container">';
     for (const flag of new Set(flagList)) {
       flagElement += `
+      <div class="card"
       <a href="/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}" class="country-flag">
       <img width=32 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
-      
+      </a>
+      <div class="info-text"> ${flag}</div>
       
       
             `;
@@ -1813,7 +1815,7 @@ class Document {
 
     flagElement += "</div>";
      
-    /*>${flag} (${countryCount[flag]} IPs)</p>*/
+    /*${flag} (${countryCount[flag]} IPs)</p>*/
     
     
     
