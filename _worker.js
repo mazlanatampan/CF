@@ -1211,7 +1211,13 @@ let baseHTML = `
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
-body {
+.body {
+  position: relative;
+  background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
     margin: 0;
     padding: 0;
 }
