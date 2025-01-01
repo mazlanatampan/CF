@@ -1430,7 +1430,7 @@ let baseHTML = `
 }
 
 .home-section {
-  display:relative;
+  position:relative;
   background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
   background-position: center center;
   background-repeat: no-repeat;
@@ -1441,7 +1441,7 @@ let baseHTML = `
   width: calc(100% - 78px);
   transition: all 0.5s ease;
   z-index: 2;
- 
+  overflow-y: auto;
 }
 
 
