@@ -1427,26 +1427,21 @@ let baseHTML = `
   width: 50px;
   background: none;
 }
+
 .home-section {
- 
+  position: relative;
   background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
-  margin: 0;
-  height: 100vh;
-  
-  position: relative;
   min-height: 100vh;
   top: 0;
+  left: 78px;
+  width: calc(100% - 78px);
   transition: all 0.5s ease;
   z-index: 2;
-  flex-wrap: wrap;
-  padding: 10px;
-  overflow: hidden; /* To prevent cards from exceeding the section */
-  overflow-y: auto;
-  overflow-x: auto ;
 }
+
 
 .iframe {
   width: 100%; /* Mengatur lebar iframe agar sesuai dengan lebar kontainer */
