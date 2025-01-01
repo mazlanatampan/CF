@@ -1547,8 +1547,10 @@ let baseHTML = `
             <div class="icon-name"> MAZLANA</div>
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
-        <div class="flex gap-6 pt-10 w-screen justify-center">
-        PLACEHOLDER_BENDERA_NEGARA
+         <div class="container">
+            <div class="card-container" id="card-container">
+                PLACEHOLDER_BENDERA_NEGARA
+            </div>
       </div>
       
      
@@ -1690,16 +1692,16 @@ class Document {
     }
 
     // Tambahkan kelas CSS khusus untuk elemen grid
-    let flagElement = '<div class="flag-grid">';
+    let flagElement = '<div class="card-header">';
     for (const flag of new Set(flagList)) {
         flagElement += `
-            <div class="flag-item">
+           
                 <a href="/sub?cc=${flag}${
                     proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
                 }" class="country-flag">
                     <img class="flag-icon" width=32 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
                 </a>
-                <p class="flag-label">${flag} (${countryCount[flag]} IPs)</p>
+                <p class="card-content">${flag} (${countryCount[flag]} IPs)</p>
             </div>`;
     }
     
