@@ -1695,14 +1695,25 @@ class Document {
     let flagElement = '<div class="card-header">';
     for (const flag of new Set(flagList)) {
         flagElement += `
+
            
-                <a href="/sub?cc=${flag}${
-                    proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-                }" class="country-flag">
-                    <img class="flag-icon" width=32 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
-                </a>
-                <p class="card-content">${flag} (${countryCount[flag]} IPs)</p>
-            </div>`;
+                     
+                                            <img class="country-flag" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
+                            <img src="${flagUrl}" alt="${item.country} Flag" class="flag" />
+                        </div>
+                        <div class="card-content">
+                            <strong>kontol</strong>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="ip-port">
+                            <i class="fa-solid fa-globe ip-logo"> COUNTRY: kontol\n</i>
+                            <i class=" fas fa-network-wired ip-logo"> IP: ${countryCount[flag]}</i> 
+                            <i class="fas fa-solid fa-plug ip-logo"> PORT:  titid</i>
+                        </div>
+            
+            
+            `;
     }
     
    
