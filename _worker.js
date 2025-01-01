@@ -1470,7 +1470,7 @@ function fetchIPInfo() {
             return response.json();
         })
         .then(data => {
-            const ipInfo = 'IP: ${data.ip} • Kota: ${data.city} • Negara : ${data.country} • Organisasi: ${data.org}';
+            const ipInfo = 'IP: data.ip • Kota: data.city • Negara : data.country • Organisasi: data.org';
             document.getElementById('ip-info').textContent = ipInfo;
         })
         .catch(error => {
