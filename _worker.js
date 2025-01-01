@@ -1434,6 +1434,7 @@ let baseHTML = `
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
+  background-attachment: fixed;
   min-height: 100vh;
   top: 0;
   left: 78px;
