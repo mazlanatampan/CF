@@ -1471,6 +1471,8 @@ let baseHTML = `
       </ul>
     </div>
 
+  
+   
    
     <section class="home-section">
         <div class="header-atas">
@@ -1481,8 +1483,10 @@ let baseHTML = `
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
         <div class="flex gap-6 pt-10 w-screen justify-center">
-        PLACEHOLDER_PROXY_GROUP
+        PLACEHOLDER_BENDERA_NEGARA
       </div>
+      
+     
     </section>
 
 
@@ -1615,12 +1619,19 @@ class Document {
       flagList.push(proxy.country);
     }
 
-    let flagElement = "";
-    for (const flag of new Set(flagList)) {
-      flagElement += `<a href="/sub?cc=${flag}${
-        proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-      }" class="py-1" ><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
-    }
+    let flagElement = '<div class="grid-container">';
+for (const flag of new Set(flagList)) {
+  flagElement += `
+    <a href="/sub?cc=${flag}${
+      proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
+    }" class="py-1">
+      <img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" />
+    </a>`;
+}
+flagElement += '</div>';
+
+this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
+
 
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
   }
