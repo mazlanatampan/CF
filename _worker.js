@@ -1800,20 +1800,20 @@ class Document {
     }
 
     // Tambahkan kelas CSS khusus untuk elemen grid
-    let flagElement = '';
-    for (const flag of new Set(flagList)) {
-      flagElement += `
-      <div class="card"
+    let flagElement = '<div class="card-container">';
+for (const flag of new Set(flagList)) {
+  flagElement += `
+    <div class="card">
       <a href="/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}" class="country-flag">
-      <img width=32 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
+        <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
       </a>
-      <div class="info-text"> ${flag}</div>
-      
-      
-            `;
-    }
+      <p>${flag}</p>
+    </div>`;
+}
+flagElement += '</div>';
 
-   
+this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
+
      
     /*${flag} (${countryCount[flag]} IPs)</p>*/
     
