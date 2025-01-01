@@ -1211,6 +1211,10 @@ let baseHTML = `
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
+body {
+    margin: 0;
+    padding: 0;
+}
 .sidebar {
   position: fixed;
   left: 0;
@@ -1435,7 +1439,9 @@ let baseHTML = `
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
-  height: 100%;
+            
+       
+  min-height: 100vh;
   top: 0;
   left: 78px;
   width: calc(100% - 78px);
@@ -1528,7 +1534,7 @@ let baseHTML = `
 
         #card-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsif, minimal 150px */
+            grid-template-columns: repeat(auto-fit, minmax(150px, 2fr)); /* Responsif, minimal 150px */
             gap: 20px; /* Jarak antar kartu */
         }
 
