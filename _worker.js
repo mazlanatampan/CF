@@ -1800,7 +1800,7 @@ class Document {
     }
 
     // Tambahkan kelas CSS khusus untuk elemen grid
-    let flagElement = '<div class="card-container">';
+    let flagElement = '';
     for (const flag of new Set(flagList)) {
       flagElement += `
       <div class="card"
@@ -1813,7 +1813,7 @@ class Document {
             `;
     }
 
-    flagElement += "</div>";
+   
      
     /*${flag} (${countryCount[flag]} IPs)</p>*/
     
