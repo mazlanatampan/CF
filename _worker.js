@@ -1369,7 +1369,7 @@ let baseHTML = `
           <span class="tooltip">Dashboard</span>
         </li>
         <li>
-    <a href="#" onclick="loadIframe('buildProxyGroup()')"> <!-- Memanggil fungsi loadIframe -->
+    <a href="#" onclick="loadIframe('/tes.js')"> <!-- Memanggil fungsi loadIframe -->
         <i class="bx bx-user"></i>
         <span class="links_name">User  </span>
     </a>
