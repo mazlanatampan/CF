@@ -1435,7 +1435,7 @@ let baseHTML = `
   background-size: cover;
   margin: 0;
   height: 100vh;
-  display: flex;
+  
   position: relative;
   min-height: 100vh;
   top: 0;
