@@ -1819,6 +1819,10 @@ for (const flag of new Set(flagList)) {
         <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
       </a>
       <p>${flag}</p>
+      <div class="info-text">
+      <i class='bx bxs-microchip'>TOTAL IP : </i>
+      ${countryCount[flag]} IP
+      </div> 
     </div>`;
 }
 flagElement += '</div>';
@@ -1826,7 +1830,7 @@ flagElement += '</div>';
 this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 
      
-    /*${flag} (${countryCount[flag]} IPs)</p>*/
+    /*${flag} ( IPs)</p>*/
     
     
     
