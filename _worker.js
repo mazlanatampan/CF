@@ -1480,7 +1480,9 @@ let baseHTML = `
             <div class="icon-name"> MAZLANA</div>
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
-        <iframe id="content-frame" src="" style="width: 100%; height: calc(100vh - 60px); border: none;"></iframe>
+        <div class="flex gap-6 pt-10 w-screen justify-center">
+        PLACEHOLDER_PROXY_GROUP
+      </div>
     </section>
 
 
