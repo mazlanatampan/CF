@@ -183,7 +183,20 @@ export default {
       const url = new URL(request.url);
       const upgradeHeader = request.headers.get("Upgrade");
 
+      // Konfigurasi CORS header
+      const CORS_HEADER_OPTIONS = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      };
+
       // Gateway check
+      let isApiReady = false;
+      const apiKey = env.API_KEY;
+      const apiEmail = env.API_EMAIL;
+      const accountID = env.ACCOUNT_ID;
+      const zoneID = env.ZONE_ID;
+
       if (apiKey && apiEmail && accountID && zoneID) {
         isApiReady = true;
       }
@@ -193,7 +206,6 @@ export default {
         const proxyMatch = url.pathname.match(/^\/(.+[:=-]\d+)$/);
 
         if (url.pathname.length == 3 || url.pathname.match(",")) {
-          // Contoh: /ID, /SG, dll
           const proxyKeys = url.pathname.replace("/", "").toUpperCase().split(",");
           const proxyKey = proxyKeys[Math.floor(Math.random() * proxyKeys.length)];
           let kvProxy = await env.nautica.get("kvProxy");
@@ -206,29 +218,47 @@ export default {
             });
           }
 
-          proxyIP = kvProxy[proxyKey][Math.floor(Math.random() * kvProxy[proxyKey].length)];
+          const proxyIP = kvProxy[proxyKey][Math.floor(Math.random() * kvProxy[proxyKey].length)];
 
           return await websocketHandler(request);
         } else if (proxyMatch) {
-          proxyIP = proxyMatch[1];
+          const proxyIP = proxyMatch[1];
           return await websocketHandler(request);
         }
       }
 
+      // Handle /tes.js endpoint
+      if (url.pathname === "/tes.js") {
+        const scriptContent = await env.SCRIPT_STORAGE.get("tes.js");
+        if (scriptContent) {
+          return new Response(scriptContent, {
+            headers: {
+              "Content-Type": "application/javascript",
+              ...CORS_HEADER_OPTIONS,
+            },
+          });
+        } else {
+          return new Response("tes.js not found", {
+            status: 404,
+            headers: {
+              ...CORS_HEADER_OPTIONS,
+            },
+          });
+        }
+      }
+
+      // Handle /sub endpoint
       if (url.pathname.startsWith("/sub")) {
         const page = url.pathname.match(/^\/sub\/(\d+)$/);
         const pageIndex = parseInt(page ? page[1] : "0");
         const hostname = request.headers.get("Host");
 
-        // Queries
         const countrySelect = url.searchParams.get("cc")?.split(",");
         const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
         let proxyList = (await getProxyList(proxyBankUrl)).filter((proxy) => {
-          // Filter proxies by Country
           if (countrySelect) {
             return countrySelect.includes(proxy.country);
           }
-
           return true;
         });
 
@@ -237,7 +267,10 @@ export default {
           status: 200,
           headers: { "Content-Type": "text/html;charset=utf-8" },
         });
-      } else if (url.pathname.startsWith("/check")) {
+      }
+
+      // Handle /check endpoint
+      else if (url.pathname.startsWith("/check")) {
         const target = url.searchParams.get("target").split(":");
         const result = await checkProxyHealth(target[0], target[1] || "443");
 
@@ -248,7 +281,10 @@ export default {
             "Content-Type": "application/json",
           },
         });
-      } else if (url.pathname.startsWith("/api/v1")) {
+      }
+
+      // Handle /api/v1 endpoint
+      else if (url.pathname.startsWith("/api/v1")) {
         const apiPath = url.pathname.replace("/api/v1", "");
 
         if (apiPath.startsWith("/domains")) {
@@ -279,7 +315,10 @@ export default {
               },
             });
           }
-        } else if (apiPath.startsWith("/sub")) {
+        }
+
+        // Handle /sub endpoint in /api/v1
+        else if (apiPath.startsWith("/sub")) {
           const filterCC = url.searchParams.get("cc")?.split(",") || [];
           const filterPort = url.searchParams.get("port")?.split(",") || PORTS;
           const filterVPN = url.searchParams.get("vpn")?.split(",") || PROTOCOLS;
@@ -290,14 +329,12 @@ export default {
           const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
           const proxyList = await getProxyList(proxyBankUrl)
             .then((proxies) => {
-              // Filter CC
               if (filterCC.length) {
                 return proxies.filter((proxy) => filterCC.includes(proxy.country));
               }
               return proxies;
             })
             .then((proxies) => {
-              // shuffle result
               shuffleArray(proxies);
               return proxies;
             });
@@ -348,7 +385,6 @@ export default {
                 encodedResult.push(encodeURIComponent(proxy));
               }
 
-              // finalResult = `${CONVERTER_URL}?target=${filterFormat}&url=${encodedResult.join(",")}`;
               const res = await fetch(`${CONVERTER_URL}?target=${filterFormat}&url=${encodedResult.join(",")}`);
               if (res.status == 200) {
                 finalResult = await res.text();
@@ -369,7 +405,10 @@ export default {
               ...CORS_HEADER_OPTIONS,
             },
           });
-        } else if (apiPath.startsWith("/myip")) {
+        }
+
+        // Handle /myip endpoint
+        else if (apiPath.startsWith("/myip")) {
           return new Response(
             JSON.stringify({
               ip:
@@ -388,6 +427,7 @@ export default {
         }
       }
 
+      // Default reverse proxy
       const targetReverseProxy = env.REVERSE_PROXY_TARGET || "example.com";
       return await reverseProxy(request, targetReverseProxy);
     } catch (err) {
@@ -400,6 +440,7 @@ export default {
     }
   },
 };
+
 
 async function websocketHandler(request) {
   const webSocketPair = new WebSocketPair();
@@ -1441,6 +1482,7 @@ let baseHTML = `
         </div>
         <iframe id="content-frame" src="" style="width: 100%; height: calc(100vh - 60px); border: none;"></iframe>
     </section>
+
 
     <script>
     let sidebar = document.querySelector(".sidebar");
