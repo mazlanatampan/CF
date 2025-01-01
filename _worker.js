@@ -1441,7 +1441,7 @@ let baseHTML = `
   width: calc(100% - 78px);
   transition: all 0.5s ease;
   z-index: 2;
-  overflow-y: hidden;
+ 
 }
 
 
@@ -1525,6 +1525,7 @@ let baseHTML = `
             width: 90%;
             max-width: 800px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
         }
 
         #card-container {
