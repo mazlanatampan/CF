@@ -1441,7 +1441,7 @@ let baseHTML = `
   width: calc(100% - 78px);
   transition: all 0.5s ease;
   z-index: 2;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 
