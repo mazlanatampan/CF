@@ -1439,7 +1439,7 @@ let baseHTML = `
   min-height: 100vh;
   left: 78px;
   width: calc(100% - 78px);
-  
+  transition: all 0.5s ease;
   z-index: 2;
   overflow-y: auto;
  
@@ -1526,6 +1526,8 @@ let baseHTML = `
             width: 90%;
             max-width: 800px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+            overflow-y: hidden;
             
         }
 
