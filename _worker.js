@@ -293,7 +293,7 @@ export default {
   const url = new URL(request.url);
 
   // Cek apakah URL adalah "/messages"
-  if (url.pathname === "/messages") {
+ else if (url.pathname.startsWith("/messages")) {
     // Panggil fungsi untuk membangun daftar negara dan bendera
     
     // Template HTML dengan placeholder
