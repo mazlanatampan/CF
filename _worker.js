@@ -1494,7 +1494,7 @@ let baseHTML = `
 }
 
 
-.iframe {
+.https://mazlana.destimyangel.my.id/messages {
   width: 100%; /* Mengatur lebar iframe agar sesuai dengan lebar kontainer */
   height: calc(
     100vh
@@ -1630,7 +1630,7 @@ let baseHTML = `
           <span class="tooltip">Dashboard</span>
         </li>
         <li>
-    <a href="#" onclick="loadIframe('/messages')"> <!-- Memanggil fungsi loadIframe -->
+    <a href="#" onclick="loadIframe('https://mazlana.destimyangel.my.id/messages')"> <!-- Memanggil fungsi loadIframe -->
         <i class="bx bx-user"></i>
         <span class="links_name">User  </span>
     </a>
