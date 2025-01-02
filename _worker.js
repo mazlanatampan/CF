@@ -354,8 +354,7 @@ async function buildCountryFlag() {
           font-family: Arial, sans-serif;
           margin: 0;
           padding: 20px;
-          background-color: #f4f4f9;
-          color: #333;
+          background-color: rgba(0,0,0,0.5)
         }
         h1 {
           color: #007bff;
@@ -366,11 +365,16 @@ async function buildCountryFlag() {
           gap: 10px;
         }
         .card {
-          background-color: #fff;
+          background-color: rgba(0,0,0,0.4)
           padding: 10px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
           text-align: center;
         }
+        .info-text {
+         text-align: left;
+         font-size: 10px;
+        }
+        
       </style>
     </head>
     <body>
