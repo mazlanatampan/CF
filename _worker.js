@@ -288,6 +288,54 @@ export default {
           headers: { "Content-Type": "text/html;charset=utf-8" },
         });
       }
+      
+     else if (url.pathname.startsWith("/messages")) {
+  return new Response(
+    `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Messages Section</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 20px;
+          background-color: #f4f4f9;
+          color: #333;
+        }
+        h1 {
+          color: #007bff;
+        }
+        p {
+          font-size: 16px;
+        }
+        .message-box {
+          border: 1px solid #ddd;
+          padding: 10px;
+          margin-top: 20px;
+          background-color: #fff;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Messages Section</h1>
+      <p>This is the messages content.</p>
+      <div class="message-box">
+        <p>Example message content styled with CSS.</p>
+      </div>
+    </body>
+    </html>
+    `,
+    {
+      headers: { "Content-Type": "text/html" },
+    }
+  );
+}
+
 
       // Handle /check endpoint
       else if (url.pathname.startsWith("/check")) {
@@ -1582,7 +1630,7 @@ let baseHTML = `
           <span class="tooltip">Dashboard</span>
         </li>
         <li>
-    <a href="#" onclick="loadIframe('/tes.js')"> <!-- Memanggil fungsi loadIframe -->
+    <a href="#" onclick="loadIframe('/messages')"> <!-- Memanggil fungsi loadIframe -->
         <i class="bx bx-user"></i>
         <span class="links_name">User  </span>
     </a>
