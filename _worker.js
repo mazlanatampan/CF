@@ -1812,7 +1812,7 @@ window.onload = function() {
         window.location.hash = path;
 
         // Ubah konten sesuai dengan path
-        if (path === '/messagesr') {
+        if (path === '/messages') {
             loadUserMessage();
     }
 
@@ -1826,7 +1826,7 @@ window.onload = function() {
     
     // Fungsi untuk menangani perubahan URL secara manual (memuat konten berdasarkan hash)
     function handleURLChange() {
-        const path = window.location.hash || '/subr'; // Default ke /user jika tidak ada hash
+        const path = window.location.hash || '/sub'; // Default ke /user jika tidak ada hash
         if (path === '#/messages') {
             loadUserMessage();
     }
