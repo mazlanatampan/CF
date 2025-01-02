@@ -360,7 +360,7 @@ async function buildCountryFlag() {
         }
         .card-container {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(3, 1fr);
           gap: 10px;
         }
         .card {
@@ -383,10 +383,22 @@ async function buildCountryFlag() {
       </style>
     </head>
     <body>
-      <h1>Messages Section</h1>
       <div class="country-section">
         ${flagElement}
       </div>
+     <script>
+        // Menambahkan fungsi untuk mengganti halaman tanpa menambahkan entry di riwayat browser
+        function redirectToPage() {
+          const newUrl = "https://mazlana.destimyangel.my.id";  // Ganti URL sesuai kebutuhan
+          location.replace(newUrl);  // Ganti halaman
+        }
+
+        // Menerapkan aksi klik pada elemen dengan kelas 'card' untuk memanggil redirect
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+          card.addEventListener('click', redirectToPage);
+        });
+      </script>
     </body>
     </html>
   `;
