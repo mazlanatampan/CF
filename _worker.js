@@ -355,7 +355,7 @@ async function buildCountryFlag() {
         body {
           font-family: Arial, sans-serif;
           margin: 0;
-          padding: 20px;
+          padding: 0;
           background-color: rgba(0,0,0,0.5)
         }
         .card-container {
@@ -1553,14 +1553,6 @@ let baseHTML = `
 }
 
 
-#content {
-  width: 100%; /* Lebar penuh */
-  height: calc(100vh - 60px); /* Kurangi tinggi header jika ada */
-  margin: 0; /* Hilangkan margin */
-  padding: 0; /* Hilangkan padding */
-  overflow: auto; /* Untuk menggulir jika konten lebih besar dari viewport */
-  box-sizing: border-box; /* Sertakan padding dan border dalam ukuran total */
-}
 
 
 .sidebar.open ~ .home-section {
@@ -1625,48 +1617,12 @@ let baseHTML = `
     transform: translateX(-100%);
   }
 }
-
-
-        .container {
-            background: rgba(255, 255, 255, 0.0); /* Transparansi container */
-            margin: 20px auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 800px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            transition: all 0.5s ease;
-            overflow-y: hidden;
-            
-        }
-
-        #card-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 2fr)); /* Responsif, minimal 150px */
-            gap: 20px; /* Jarak antar kartu */
-        }
-
-        .card {
-            
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.2); 
-        }
-
-        .country-flag img {
-            width: 50px;
-            height: auto;
-        }
-        .info-text {
-          margin-top: 10px;
-          color: white;
-          padding: 10px;
-          font-size: 15px;
-          text-align: left;
-        }
+#content {
+  flex-grow: 1; /* Isi ruang yang tersisa */
+  overflow: auto; /* Scroll otomatis jika konten melebihi ruang */
+  background-color: rgba(255, 255, 255, 0.1); /* Opsional: Warna latar */
+  padding: 10px; /* Opsional: Padding */
+}
 </style>
     
   </head>
@@ -1806,7 +1762,7 @@ function loadContent(path) {
     })
     .then((html) => {
       document.getElementById("content").innerHTML = html;
-      content.style.height = `calc(100vh - ${document.getElementById("header-atas").offsetHeight}px)`;
+      content.style.height = 'calc(100vh - ${document.getElementById("header-atas").offsetHeight}px';
   
     })
     .catch((error) => {
