@@ -1494,7 +1494,7 @@ let baseHTML = `
 }
 
 
-.https://mazlana.destimyangel.my.id/messages {
+.iframe {
   width: 100%; /* Mengatur lebar iframe agar sesuai dengan lebar kontainer */
   height: calc(
     100vh
@@ -1630,7 +1630,7 @@ let baseHTML = `
           <span class="tooltip">Dashboard</span>
         </li>
         <li>
-    <a href="#" onclick="loadIframe('https://mazlana.destimyangel.my.id/messages')"> <!-- Memanggil fungsi loadIframe -->
+    <a href="#" onclick="loadIframe('/messages')"> <!-- Memanggil fungsi loadIframe -->
         <i class="bx bx-user"></i>
         <span class="links_name">User  </span>
     </a>
@@ -1702,12 +1702,8 @@ let baseHTML = `
             <div class="icon-name"> MAZLANA</div>
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
+                <iframe id="content-frame" src="" style="width: 100%; height: calc(100vh - 60px); border: none;"></iframe>
         
-        <div class="container">
-    <div id="card-container">
-    PLACEHOLDER_BENDERA_NEGARA
-    </div>
-</div>
         
      
     </section>
