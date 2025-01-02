@@ -289,14 +289,7 @@ export default {
         });
       }
       
-     async function handleRequest(request) {
-  const url = new URL(request.url);
-
-  // Cek apakah URL adalah "/messages"
- else if (url.pathname.startsWith("/messages")) {
-    // Panggil fungsi untuk membangun daftar negara dan bendera
-    
-    // Template HTML dengan placeholder
+     else if (url.pathname.startsWith("/messages")) {
     let htmlTemplate = `
     <!DOCTYPE html>
     <html lang="en">
@@ -354,12 +347,12 @@ export default {
     `;
 
     // Ganti placeholder dengan flagElement yang sudah dibangun
-    
+   // htmlTemplate = htmlTemplate.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 
     return new Response(htmlTemplate, {
       headers: { "Content-Type": "text/html" },
     });
-  }
+}
 
 
       // Handle /check endpoint
@@ -1903,14 +1896,7 @@ htmlTemplate = htmlTemplate.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement
      
     /*${flag} ( IPs)</p>*/
     
-    
-    
-    
-    /*  TAIIII */
-
   
-
-    this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
   }
 
   addPageButton(text, link, isDisabled) {
