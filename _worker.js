@@ -1861,7 +1861,7 @@ class Document {
       "PLACEHOLDER_PROXY_GROUP",
       `${proxyGroupElement}`,
     );
-  }
+  };
 
 function  buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
