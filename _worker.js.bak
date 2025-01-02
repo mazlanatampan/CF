@@ -1743,7 +1743,65 @@ let baseHTML = `
             <div class="icon-name"> MAZLANA</div>
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
-       PLACEHOLDER_PROXY_GROUP
+           <div id="container-window" class="hidden">
+      <!-- Windows -->
+      <!-- Informations -->
+      <div class="fixed z-20 top-0 w-full h-full bg-white dark:bg-neutral-800">
+        <p id="container-window-info" class="text-center w-full h-full top-1/4 absolute dark:text-white"></p>
+      </div>
+      <!-- Output Format -->
+      <div id="output-window" class="fixed z-20 top-0 right-0 w-full h-full flex justify-center items-center hidden">
+        <div class="w-[75%] h-[30%] flex flex-col gap-1 p-1 text-center rounded-md">
+          <div class="basis-1/6 w-full h-full rounded-md">
+            <div class="flex w-full h-full gap-1 justify-between">
+              <button
+                onclick="copyToClipboardAsTarget('clash')"
+                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
+              >
+                Clash
+              </button>
+              <button
+                onclick="copyToClipboardAsTarget('sfa')"
+                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
+              >
+                SFA
+              </button>
+              <button
+                onclick="copyToClipboardAsTarget('bfr')"
+                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
+              >
+                BFR
+              </button>
+            </div>
+          </div>
+          <div class="basis-1/6 w-full h-full rounded-md">
+            <div class="flex w-full h-full gap-1 justify-between">
+              <button
+                onclick="copyToClipboardAsTarget('v2ray')"
+                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
+              >
+                V2Ray/Xray
+              </button>
+              <button
+                onclick="copyToClipboardAsRaw()"
+                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
+              >
+                Raw
+              </button>
+            </div>
+          </div>
+          <div class="basis-1/6 w-full h-full rounded-md">
+            <div class="flex w-full h-full gap-1 justify-center">
+              <button
+                onclick="toggleOutputWindow()"
+                class="basis-1/2 border-2 border-indigo-400 hover:bg-indigo-400 dark:text-white p-2 rounded-full flex justify-center items-center"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
 
@@ -1812,6 +1870,19 @@ function fetchIPInfo() {
 
 // Call the fetchIPInfo function to load IP information on page load
 fetchIPInfo();
+
+const rootDomain = "${serviceName}.${rootDomain}";
+const windowContainer = document.getElementById("container-window");
+const windowInfoContainer = document.getElementById("container-window-info");
+const converterUrl = "https://script.google.com/macros/s/AKfycbwwVeHNUlnP92syOP82p1dOk_-xwBgRIxkTjLhxxZ5UXicrGOEVNc5JaSOu0Bgsx_gG/exec";
+
+
+
+
+
+
+
+
     </script>
     
 </body>

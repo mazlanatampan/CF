@@ -1870,6 +1870,51 @@ function fetchIPInfo() {
 
 // Call the fetchIPInfo function to load IP information on page load
 fetchIPInfo();
+
+const rootDomain = "${serviceName}.${rootDomain}";
+const windowContainer = document.getElementById("container-window");
+const windowInfoContainer = document.getElementById("container-window-info");
+const converterUrl = "https://script.google.com/macros/s/AKfycbwwVeHNUlnP92syOP82p1dOk_-xwBgRIxkTjLhxxZ5UXicrGOEVNc5JaSOu0Bgsx_gG/exec";
+
+ function copyToClipboard(text) {
+        toggleOutputWindow();
+        rawConfig = text;
+      }
+
+      function copyToClipboardAsRaw() {
+        navigator.clipboard.writeText(rawConfig);
+
+        notification.classList.remove("opacity-0");
+        setTimeout(() => {
+          notification.classList.add("opacity-0");
+        }, 2000);
+      }
+
+      async function copyToClipboardAsTarget(target) {
+        windowInfoContainer.innerText = "Generating config...";
+        const url = converterUrl + "?target=" + target + "&url=" + encodeURIComponent(rawConfig);;
+        const res = await fetch(url, {
+          redirect: "follow",
+        });
+
+        if (res.status == 200) {
+          windowInfoContainer.innerText = "Done!";
+          navigator.clipboard.writeText(await res.text());
+
+          notification.classList.remove("opacity-0");
+          setTimeout(() => {
+            notification.classList.add("opacity-0");
+          }, 2000);
+        } else {
+          windowInfoContainer.innerText = "Error " + res.statusText;
+        }
+      }
+
+
+
+
+
+
     </script>
     
 </body>
