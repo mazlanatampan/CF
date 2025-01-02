@@ -290,6 +290,7 @@ export default {
       }
       
      else if (url.pathname.startsWith("/messages")) {
+     const flagElement = buildCountryFlag();
     let htmlTemplate = `
     <!DOCTYPE html>
     <html lang="en">
