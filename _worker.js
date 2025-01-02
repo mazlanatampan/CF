@@ -86,7 +86,7 @@ async function getProxyList(proxyBankUrl = PROXY_BANK_URL) {
 
 
 async function buildCountryFlag() {
-  const cachedProxyList = await getProxyList();  
+  const cachedProxyList = await getProxyList(`${PROXY_BANK_URL}`);  
   const flagList = [];
   const countryCount = {};
 
