@@ -289,9 +289,15 @@ export default {
         });
       }
       
-     else if (url.pathname.startsWith("/messages")) {
-  return new Response(
-    `
+     async function handleRequest(request) {
+  const url = new URL(request.url);
+
+  // Cek apakah URL adalah "/messages"
+  if (url.pathname === "/messages") {
+    // Panggil fungsi untuk membangun daftar negara dan bendera
+    
+    // Template HTML dengan placeholder
+    let htmlTemplate = `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -319,6 +325,17 @@ export default {
           background-color: #fff;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+        .card-container {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 10px;
+        }
+        .card {
+          background-color: #fff;
+          padding: 10px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          text-align: center;
+        }
       </style>
     </head>
     <body>
@@ -327,14 +344,22 @@ export default {
       <div class="message-box">
         <p>Example message content styled with CSS.</p>
       </div>
+
+      <div class="country-section">
+        <!-- PLACEHOLDER_BENDERA_NEGARA will be replaced by the country flags -->
+        PLACEHOLDER_BENDERA_NEGARA
+      </div>
     </body>
     </html>
-    `,
-    {
+    `;
+
+    // Ganti placeholder dengan flagElement yang sudah dibangun
+    
+
+    return new Response(htmlTemplate, {
       headers: { "Content-Type": "text/html" },
-    }
-  );
-}
+    });
+  }
 
 
       // Handle /check endpoint
@@ -1874,7 +1899,7 @@ for (const flag of new Set(flagList)) {
 flagElement += '</div>';
 
 this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
-
+htmlTemplate = htmlTemplate.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
      
     /*${flag} ( IPs)</p>*/
     
