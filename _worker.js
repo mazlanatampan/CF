@@ -406,14 +406,13 @@ async function buildProxyCards() {
 }
 
 
-
 else if (url.pathname.startsWith("/user")) {
   const page = url.pathname.match(/^\/user\/(\d+)$/);
   const pageIndex = parseInt(page ? page[1] : "0");
 
   // Dapatkan daftar proxy dan pastikan ada pagination
   const cachedProxyList = await getProxyList();  
-  const proxiesPerPage = 10;  // Menampilkan 10 proxy per halaman
+  const proxiesPerPage = 5;  // Mengurangi jumlah proxy per halaman untuk mengurangi lag
   const totalPages = Math.ceil(cachedProxyList.length / proxiesPerPage);
   const startIndex = proxiesPerPage * pageIndex;
   const paginatedProxies = cachedProxyList.slice(startIndex, startIndex + proxiesPerPage);
@@ -467,6 +466,10 @@ else if (url.pathname.startsWith("/user")) {
           color: white;
           border-radius: 4px;
         }
+        .pagination a.disabled {
+          background-color: #ccc;
+          pointer-events: none;
+        }
       </style>
     </head>
     <body>
@@ -474,8 +477,8 @@ else if (url.pathname.startsWith("/user")) {
         ${proxyCards}
       </div>
       <div class="pagination">
-        ${pageIndex > 0 ? `<a href="/user/${pageIndex - 1}">Prev</a>` : ''}
-        ${pageIndex < totalPages - 1 ? `<a href="/user/${pageIndex + 1}">Next</a>` : ''}
+        ${pageIndex > 0 ? `<a href="/user/${pageIndex - 1}">Prev</a>` : '<a class="disabled">Prev</a>'}
+        ${pageIndex < totalPages - 1 ? `<a href="/user/${pageIndex + 1}">Next</a>` : '<a class="disabled">Next</a>'}
       </div>
     </body>
     </html>
@@ -485,6 +488,7 @@ else if (url.pathname.startsWith("/user")) {
     headers: { "Content-Type": "text/html" },
   });
 }
+
 
 
       // Handle /check endpoint

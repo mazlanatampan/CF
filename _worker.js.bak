@@ -1760,7 +1760,7 @@ let baseHTML = `
     <span class="tooltip">User  </span>
 </li>
         <li>
-          <a href="#">
+          <a href="#" onclick="loadContent('/user')">
             <i class="bx bx-chat"></i>
             <span class="links_name">Messages</span>
           </a>
