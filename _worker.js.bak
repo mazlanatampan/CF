@@ -280,7 +280,7 @@ async function buildCountryFlag() {
   let flagElement = '<div class="card-container">';
   for (const flag of new Set(flagList)) {
     flagElement += `
-      <div class="card" id="card-${flag}" onclick="toggleProxyList('${flag}')">
+      <div class="card" id="card-${flag}" onclick="loadProxyList('${flag}')">
         <a href="javascript:void(0);" class="country-flag">
           <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
         </a>
@@ -297,43 +297,82 @@ async function buildCountryFlag() {
   return flagElement;
 }
 
-
-function toggleProxyList(country) {
-  // Ambil elemen daftar proxy untuk negara tertentu
-  const proxyListElement = document.getElementById(`proxy-list-${country}`);
-  
-  // Jika elemen sudah ada, tampilkan atau sembunyikan
-  if (proxyListElement.style.display === "none") {
-    proxyListElement.style.display = "block";
-    buildProxyList(country);  // Bangun daftar proxy jika pertama kali ditampilkan
-  } else {
-    proxyListElement.style.display = "none";
-  }
-}
-
 async function buildProxyList(country) {
+  // Ambil daftar proxy yang sesuai dengan negara yang dipilih
   const cachedProxyList = await getProxyList();
   
   // Filter proxy berdasarkan negara
   const filteredProxies = cachedProxyList.filter(proxy => proxy.country.toLowerCase() === country.toLowerCase());
 
-  // Bangun elemen HTML untuk daftar proxy
-  let proxyListHTML = '<div class="proxy-container">';
+  if (filteredProxies.length === 0) {
+    console.log(`No proxies found for ${country}`);
+  }
+
+  // Bangun konten HTML untuk daftar proxy
+  let proxyListHTML = `
+    <html>
+      <head>
+        <style>
+          .proxy-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+          }
+          .proxy-card {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          }
+          .proxy-card p {
+            margin: 5px 0;
+          }
+        </style>
+      </head>
+      <body>
+        <h2>Proxy List for ${country}</h2>
+        <div class="proxy-container">
+  `;
+
   filteredProxies.forEach(proxy => {
     proxyListHTML += `
       <div class="proxy-card">
-        <p>IP: ${proxy.proxyIP}</p>
-        <p>Port: ${proxy.proxyPort}</p>
-        <p>Organization: ${proxy.org}</p>
-        <p>Country: ${proxy.country}</p>
+        <p><strong>IP:</strong> ${proxy.proxyIP}</p>
+        <p><strong>Port:</strong> ${proxy.proxyPort}</p>
+        <p><strong>Organization:</strong> ${proxy.org}</p>
+        <p><strong>Country:</strong> ${proxy.country}</p>
       </div>`;
   });
-  proxyListHTML += '</div>';
 
-  // Masukkan daftar proxy ke dalam elemen
-  const proxyListElement = document.getElementById(`proxy-list-${country}`);
-  proxyListElement.innerHTML = proxyListHTML;
+  proxyListHTML += '</div></body></html>';
+
+  return proxyListHTML;
 }
+
+function loadProxyList(country) {
+  // Ambil elemen div negara
+  const countryDiv = document.getElementById(`card-${country}`);
+  
+  // Sembunyikan kartu negara
+  countryDiv.style.display = 'none';
+  
+  // Menambahkan iframe dengan daftar proxy
+  const iframeElement = document.createElement('iframe');
+  iframeElement.srcdoc = buildProxyList(country);  // Menyisipkan HTML daftar proxy ke dalam iframe
+  iframeElement.style.width = '100%';
+  iframeElement.style.height = '500px';  // Sesuaikan ukuran iframe jika diperlukan
+  
+  // Menampilkan iframe di div
+  const proxyListDiv = document.getElementById(`proxy-list-${country}`);
+  proxyListDiv.appendChild(iframeElement);
+  proxyListDiv.style.display = 'block';
+}
+
+else if (url.pathname.startsWith("/messages")) {
+
+
 
 
 
@@ -392,71 +431,63 @@ async function buildProxyCards() {
         });
       }
       
-  else if (url.pathname.startsWith("/messages")) {
   const flagElement = await buildCountryFlag();
-const htmlTemplate = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-    }
-    .card-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      padding: 20px;
-    }
-    .card {
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-    }
-    .info-text {
-      margin-top: 10px;
-      color: #333;
-      font-size: 12px;
-      text-align: left;
-    }
-    .proxy-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 15px;
-      padding: 20px;
-    }
-    .proxy-card {
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-    .proxy-card p {
-      margin: 5px 0;
-    }
-  </style>
-</head>
-<body>
-  <h1>Available Proxy Countries</h1>
-  <div class="country-section">
-    ${await buildCountryFlag()}
-  </div>
-</body>
-</html>
-`;
+  const htmlTemplate = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: #f4f4f4;
+        }
+        .card-container {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 15px;
+          padding: 20px;
+        }
+        .card {
+          background-color: #fff;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 10px;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          cursor: pointer;
+        }
+        .info-text {
+          margin-top: 10px;
+          color: #333;
+          font-size: 12px;
+          text-align: left;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Available Proxy Countries</h1>
+      <div class="country-section">
+        ${flagElement}
+      </div>
+      <script>
+        ${loadProxyList.toString()}
+        ${buildProxyList.toString()}
+      </script>
+    </body>
+    </html>
+  `;
 
-return new Response(htmlTemplate, {
-  headers: { "Content-Type": "text/html" },
-});
+  return new Response(htmlTemplate, {
+    headers: { "Content-Type": "text/html" },
+  });
+}
+
+
+
 
 
 

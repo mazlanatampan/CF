@@ -280,7 +280,7 @@ async function buildCountryFlag() {
   let flagElement = '<div class="card-container">';
   for (const flag of new Set(flagList)) {
     flagElement += `
-      <div class="card" id="card-${flag}" onclick="toggleProxyList('${flag}')">
+      <div class="card" id="card-${flag}" onclick="loadProxyList('${flag}')">
         <a href="javascript:void(0);" class="country-flag">
           <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
         </a>
@@ -308,40 +308,69 @@ async function buildProxyList(country) {
     console.log(`No proxies found for ${country}`);
   }
 
-  // Bangun elemen HTML untuk daftar proxy
-  let proxyListHTML = '<div class="proxy-container">';
+  // Bangun konten HTML untuk daftar proxy
+  let proxyListHTML = `
+    <html>
+      <head>
+        <style>
+          .proxy-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+          }
+          .proxy-card {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          }
+          .proxy-card p {
+            margin: 5px 0;
+          }
+        </style>
+      </head>
+      <body>
+        <h2>Proxy List for ${country}</h2>
+        <div class="proxy-container">
+  `;
+
   filteredProxies.forEach(proxy => {
     proxyListHTML += `
       <div class="proxy-card">
-        <p>IP: ${proxy.proxyIP}</p>
-        <p>Port: ${proxy.proxyPort}</p>
-        <p>Organization: ${proxy.org}</p>
-        <p>Country: ${proxy.country}</p>
+        <p><strong>IP:</strong> ${proxy.proxyIP}</p>
+        <p><strong>Port:</strong> ${proxy.proxyPort}</p>
+        <p><strong>Organization:</strong> ${proxy.org}</p>
+        <p><strong>Country:</strong> ${proxy.country}</p>
       </div>`;
   });
-  proxyListHTML += '</div>';
 
-  // Masukkan daftar proxy ke dalam elemen
-  const proxyListElement = document.getElementById(`proxy-list-${country}`);
-  if (proxyListElement) {
-    proxyListElement.innerHTML = proxyListHTML;
-  } else {
-    console.error(`Proxy list element not found for country: ${country}`);
-  }
+  proxyListHTML += '</div></body></html>';
+
+  return proxyListHTML;
 }
 
-function toggleProxyList(country) {
-  // Ambil elemen daftar proxy untuk negara tertentu
-  const proxyListElement = document.getElementById(`proxy-list-${country}`);
+function loadProxyList(country) {
+  // Ambil elemen div negara
+  const countryDiv = document.getElementById(`card-${country}`);
   
-  // Jika elemen sudah ada, tampilkan atau sembunyikan
-  if (proxyListElement.style.display === "none") {
-    proxyListElement.style.display = "block";
-    buildProxyList(country);  // Bangun daftar proxy jika pertama kali ditampilkan
-  } else {
-    proxyListElement.style.display = "none";
-  }
+  // Sembunyikan kartu negara
+  countryDiv.style.display = 'none';
+  
+  // Menambahkan iframe dengan daftar proxy
+  const iframeElement = document.createElement('iframe');
+  iframeElement.srcdoc = buildProxyList(country);  // Menyisipkan HTML daftar proxy ke dalam iframe
+  iframeElement.style.width = '100%';
+  iframeElement.style.height = '500px';  // Sesuaikan ukuran iframe jika diperlukan
+  
+  // Menampilkan iframe di div
+  const proxyListDiv = document.getElementById(`proxy-list-${country}`);
+  proxyListDiv.appendChild(iframeElement);
+  proxyListDiv.style.display = 'block';
 }
+
+
 
 
 
@@ -411,7 +440,6 @@ else if (url.pathname.startsWith("/messages")) {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- Boxicons CDN Link -->
       <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
       <style>
         body {
@@ -440,22 +468,6 @@ else if (url.pathname.startsWith("/messages")) {
           font-size: 12px;
           text-align: left;
         }
-        .proxy-container {
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          gap: 15px;
-          padding: 20px;
-        }
-        .proxy-card {
-          background-color: #fff;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          padding: 10px;
-          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .proxy-card p {
-          margin: 5px 0;
-        }
       </style>
     </head>
     <body>
@@ -464,7 +476,7 @@ else if (url.pathname.startsWith("/messages")) {
         ${flagElement}
       </div>
       <script>
-        ${toggleProxyList.toString()}
+        ${loadProxyList.toString()}
         ${buildProxyList.toString()}
       </script>
     </body>
