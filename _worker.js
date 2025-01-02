@@ -349,12 +349,11 @@ async function buildCountryFlag() {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Messages Section</title>
-       <!-- Boxicons CDN Link -->
-       <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
-       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-    /* Google Font Link */
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+          <!-- Boxicons CDN Link -->
+    <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
+
+   
+      <style>
         body {
           font-family: Arial, sans-serif;
           margin: 0;
