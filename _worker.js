@@ -48,13 +48,10 @@ async function getKVProxyList(kvProxyUrl = KV_PROXY_URL) {
 }
 
 /* MEMBACA LIST PROXY YANG ADA */
-async function getProxyList(proxyBankUrl = PROXY_BANK_URL) {
-  if (!proxyBankUrl) {
-    throw new Error("No Proxy Bank URL Provided!");
-  }
+async function getProxyList() {
 
   try {
-    const proxyBank = await fetch(proxyBankUrl);
+    const proxyBank = await fetch(PROXY_BANK_URL);
     if (proxyBank.status === 200) {
       const text = await proxyBank.text();
 
