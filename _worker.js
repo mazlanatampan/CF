@@ -246,25 +246,7 @@ export default {
         }
       }
 
-      // Handle /tes.js endpoint
-      if (url.pathname === "/tes.js") {
-        const scriptContent = await env.SCRIPT_STORAGE.get("tes.js");
-        if (scriptContent) {
-          return new Response(scriptContent, {
-            headers: {
-              "Content-Type": "application/javascript",
-              ...CORS_HEADER_OPTIONS,
-            },
-          });
-        } else {
-          return new Response("tes.js not found", {
-            status: 404,
-            headers: {
-              ...CORS_HEADER_OPTIONS,
-            },
-          });
-        }
-      }
+
 
       // Handle /sub endpoint
       if (url.pathname.startsWith("/sub")) {
@@ -1863,7 +1845,7 @@ class Document {
     );
   }
 
-  buildCountryFlag() {
+function  buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
     const flagList = [];
     const countryCount = {};
@@ -1892,9 +1874,7 @@ for (const flag of new Set(flagList)) {
 }
 flagElement += '</div>';
 
-this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
-htmlTemplate = htmlTemplate.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
-     
+return flagElement     
     /*${flag} ( IPs)</p>*/
     
   
