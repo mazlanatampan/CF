@@ -48,15 +48,25 @@ async function getKVProxyList(kvProxyUrl = KV_PROXY_URL) {
 }
 
 /* MEMBACA LIST PROXY YANG ADA */
-async function getProxyList() {
+async function getProxyList(proxyBankUrl = PROXY_BANK_URL) {
+  /**
+   * Format:
+   *
+   * <IP>,<Port>,<Country ID>,<ORG>
+   * Contoh:
+   * 1.1.1.1,443,SG,Cloudflare Inc.
+   */
+  if (!proxyBankUrl) {
+    throw new Error("No Proxy Bank URL Provided!");
+  }
 
-  try {
-    const proxyBank = await fetch(PROXY_BANK_URL);
-    if (proxyBank.status === 200) {
-      const text = await proxyBank.text();
+  const proxyBank = await fetch(proxyBankUrl);
+  if (proxyBank.status == 200) {
+    const text = (await proxyBank.text()) || "";
 
-      const proxyString = text.split("\n").filter(Boolean);
-      const cachedProxyList = proxyString.map((entry) => {
+    const proxyString = text.split("\n").filter(Boolean);
+    cachedProxyList = proxyString
+      .map((entry) => {
         const [proxyIP, proxyPort, country, org] = entry.split(",");
         return {
           proxyIP: proxyIP || "Unknown",
@@ -64,53 +74,11 @@ async function getProxyList() {
           country: country || "Unknown",
           org: org || "Unknown Org",
         };
-      });
-
-      return cachedProxyList;
-    } else {
-      throw new Error(`Failed to fetch Proxy Bank. Status: ${proxyBank.status}`);
-    }
-  } catch (error) {
-    console.error("Error fetching proxy list:", error.message);
-    return [];
-  }
-}
-
-
-
-
-
-
-async function buildCountryFlag() {
-  const cachedProxyList = await getProxyList()
-  const flagList = [];
-  const countryCount = {};
-
-  // Hitung jumlah IP per negara
-  for (const proxy of cachedProxyList) {
-    const country = proxy.country;
-    flagList.push(country);
-    countryCount[country] = (countryCount[country] || 0) + 1;
+      })
+      .filter(Boolean);
   }
 
-  // Bangun elemen HTML
-  let flagElement = '<div class="card-container">';
-  for (const flag of new Set(flagList)) {
-    flagElement += `
-      <div class="card" onclick="window.location.href='/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}'">
-        <a href="/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}" class="country-flag">
-          <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
-        </a>
-        <div class="info-text">
-          <i class="bx bx-globe"> COUNTRY : ${flag}</i>
-          <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP
-          </i>
-        </div> 
-      </div>`;
-  }
-  flagElement += '</div>';
-  
-  return flagElement;
+  return cachedProxyList;
 }
 
 /* END */
@@ -312,7 +280,37 @@ export default {
       
 
 
+async function buildCountryFlag() {
+  const cachedProxyList = await getProxyList();  
+  const flagList = [];
+  const countryCount = {};
 
+  // Hitung jumlah IP per negara
+  for (const proxy of cachedProxyList) {
+    const country = proxy.country;
+    flagList.push(country);
+    countryCount[country] = (countryCount[country] || 0) + 1;
+  }
+
+  // Bangun elemen HTML
+  let flagElement = '<div class="card-container">';
+  for (const flag of new Set(flagList)) {
+    flagElement += `
+      <div class="card" onclick="window.location.href='/sub?cc=${flag}${PROXY_BANK_URP ? "&proxy-list=" + PROXY_BANK_URL : ""}'">
+        <a href="/sub?cc=${flag}${PROXY_BANK_URL ? "&proxy-list=" + PROXY_BANK_URL : ""}" class="country-flag">
+          <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
+        </a>
+        <div class="info-text">
+          <i class="bx bx-globe"> COUNTRY : ${flag}</i>
+          <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP
+          </i>
+        </div> 
+      </div>`;
+  }
+  flagElement += '</div>';
+  
+  return flagElement;
+}
 
 // Contoh penggunaan (di dalam handler)
 
