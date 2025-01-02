@@ -192,6 +192,10 @@ function getAllConfig(request, hostName, proxyList, page = 0) {
 
 
 
+
+
+
+
 /* TEST FUNCTION*/
 
 
@@ -256,27 +260,7 @@ export default {
       }
 
       // Handle /tes.js endpoint
-      if (url.pathname === "/tes.js") {
-        const scriptContent = await env.SCRIPT_STORAGE.get("tes.js");
-        if (scriptContent) {
-          return new Response(scriptContent, {
-            headers: {
-              "Content-Type": "application/javascript",
-              ...CORS_HEADER_OPTIONS,
-            },
-          });
-        } else {
-          return new Response("tes.js not found", {
-            status: 404,
-            headers: {
-              ...CORS_HEADER_OPTIONS,
-            },
-          });
-        }
-      }
-      
-      
-      
+     
       
 
 
@@ -310,6 +294,34 @@ async function buildCountryFlag() {
   flagElement += '</div>';
   
   return flagElement;
+}
+
+
+async function buildProxyCards() {
+  const cachedProxyList = await getProxyList();  // Mendapatkan daftar proxy
+  const proxyCards = [];
+
+  // Bangun elemen HTML untuk setiap proxy
+  for (const proxy of cachedProxyList) {
+    const { proxyIP, proxyPort, country, org } = proxy;
+
+    proxyCards.push(`
+      <div class="card" onclick="window.location.href='/sub?cc=${country}${PROXY_BANK_URL ? "&proxy-list=" + PROXY_BANK_URL : ""}'">
+        <a href="/sub?cc=${country}${PROXY_BANK_URL ? "&proxy-list=" + PROXY_BANK_URL : ""}" class="country-flag" target="_blank">
+          <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" alt="${country} Flag"/>
+        </a>
+        <div class="info-text">
+          <i class="bx bx-globe"> COUNTRY: ${country}</i><br>
+          <i class="bx bxs-microchip"> IP: ${proxyIP}</i><br>
+          <i class="bx bxs-server"> PORT: ${proxyPort}</i><br>
+          <i class="bx bxs-building-house"> ORG: ${org}</i>
+        </div>
+      </div>
+    `);
+  }
+
+  // Gabungkan semua kartu dan kembalikan sebagai HTML
+  return `<div class="card-container">${proxyCards.join('')}</div>`;
 }
 
 // Contoh penggunaan (di dalam handler)
@@ -383,6 +395,87 @@ async function buildCountryFlag() {
     <body>
       <div class="country-section">
         ${flagElement}
+      </div>
+    </body>
+    </html>
+  `;
+
+  return new Response(htmlTemplate, {
+    headers: { "Content-Type": "text/html" },
+  });
+}
+
+
+
+else if (url.pathname.startsWith("/user")) {
+  const page = url.pathname.match(/^\/user\/(\d+)$/);
+  const pageIndex = parseInt(page ? page[1] : "0");
+
+  // Dapatkan daftar proxy dan pastikan ada pagination
+  const cachedProxyList = await getProxyList();  
+  const proxiesPerPage = 10;  // Menampilkan 10 proxy per halaman
+  const totalPages = Math.ceil(cachedProxyList.length / proxiesPerPage);
+  const startIndex = proxiesPerPage * pageIndex;
+  const paginatedProxies = cachedProxyList.slice(startIndex, startIndex + proxiesPerPage);
+
+  const proxyCards = await buildProxyCards(paginatedProxies);  // Bangun kartu proxy untuk halaman yang diminta
+
+  // Bangun HTML dengan pagination
+  const htmlTemplate = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!-- Boxicons CDN Link -->
+      <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: rgba(0,0,0,0.5);
+        }
+        .card-container {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 10px;
+        }
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .info-text {
+          margin-top: 10px;
+          color: white;
+          font-size: 8px;
+          text-align: left;
+        }
+        .pagination {
+          text-align: center;
+          margin-top: 20px;
+        }
+        .pagination a {
+          margin: 0 5px;
+          text-decoration: none;
+          padding: 5px 10px;
+          background-color: #007BFF;
+          color: white;
+          border-radius: 4px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="country-section">
+        ${proxyCards}
+      </div>
+      <div class="pagination">
+        ${pageIndex > 0 ? `<a href="/user/${pageIndex - 1}">Prev</a>` : ''}
+        ${pageIndex < totalPages - 1 ? `<a href="/user/${pageIndex + 1}">Next</a>` : ''}
       </div>
     </body>
     </html>
@@ -1667,7 +1760,7 @@ let baseHTML = `
     <span class="tooltip">User  </span>
 </li>
         <li>
-          <a href="#">
+          <a href="#" onclick="loadContent('/user')">
             <i class="bx bx-chat"></i>
             <span class="links_name">Messages</span>
           </a>
@@ -1733,7 +1826,6 @@ let baseHTML = `
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
         <div id="content" ></div>     
-        PLACEHOLDER_PROXY_GROUP
     </section>
 
     <section class="anjay-section">
@@ -1744,65 +1836,7 @@ let baseHTML = `
             <div class="icon-name"> MAZLANA</div>
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
-           <div id="container-window" class="hidden">
-      <!-- Windows -->
-      <!-- Informations -->
-      <div class="fixed z-20 top-0 w-full h-full bg-white dark:bg-neutral-800">
-        <p id="container-window-info" class="text-center w-full h-full top-1/4 absolute dark:text-white"></p>
-      </div>
-      <!-- Output Format -->
-      <div id="output-window" class="fixed z-20 top-0 right-0 w-full h-full flex justify-center items-center hidden">
-        <div class="w-[75%] h-[30%] flex flex-col gap-1 p-1 text-center rounded-md">
-          <div class="basis-1/6 w-full h-full rounded-md">
-            <div class="flex w-full h-full gap-1 justify-between">
-              <button
-                onclick="copyToClipboardAsTarget('clash')"
-                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
-              >
-                Clash
-              </button>
-              <button
-                onclick="copyToClipboardAsTarget('sfa')"
-                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
-              >
-                SFA
-              </button>
-              <button
-                onclick="copyToClipboardAsTarget('bfr')"
-                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
-              >
-                BFR
-              </button>
-            </div>
-          </div>
-          <div class="basis-1/6 w-full h-full rounded-md">
-            <div class="flex w-full h-full gap-1 justify-between">
-              <button
-                onclick="copyToClipboardAsTarget('v2ray')"
-                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
-              >
-                V2Ray/Xray
-              </button>
-              <button
-                onclick="copyToClipboardAsRaw()"
-                class="basis-1/2 p-2 rounded-full bg-amber-400 flex justify-center items-center"
-              >
-                Raw
-              </button>
-            </div>
-          </div>
-          <div class="basis-1/6 w-full h-full rounded-md">
-            <div class="flex w-full h-full gap-1 justify-center">
-              <button
-                onclick="toggleOutputWindow()"
-                class="basis-1/2 border-2 border-indigo-400 hover:bg-indigo-400 dark:text-white p-2 rounded-full flex justify-center items-center"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+       PLACEHOLDER_PROXY_GROUP
     </section>
 
 
@@ -1871,51 +1905,6 @@ function fetchIPInfo() {
 
 // Call the fetchIPInfo function to load IP information on page load
 fetchIPInfo();
-
-const rootDomain = "${serviceName}.${rootDomain}";
-const windowContainer = document.getElementById("container-window");
-const windowInfoContainer = document.getElementById("container-window-info");
-const converterUrl = "https://script.google.com/macros/s/AKfycbwwVeHNUlnP92syOP82p1dOk_-xwBgRIxkTjLhxxZ5UXicrGOEVNc5JaSOu0Bgsx_gG/exec";
-
- function copyToClipboard(text) {
-        toggleOutputWindow();
-        rawConfig = text;
-      }
-
-      function copyToClipboardAsRaw() {
-        navigator.clipboard.writeText(rawConfig);
-
-        notification.classList.remove("opacity-0");
-        setTimeout(() => {
-          notification.classList.add("opacity-0");
-        }, 2000);
-      }
-
-      async function copyToClipboardAsTarget(target) {
-        windowInfoContainer.innerText = "Generating config...";
-        const url = converterUrl + "?target=" + target + "&url=" + encodeURIComponent(rawConfig);;
-        const res = await fetch(url, {
-          redirect: "follow",
-        });
-
-        if (res.status == 200) {
-          windowInfoContainer.innerText = "Done!";
-          navigator.clipboard.writeText(await res.text());
-
-          notification.classList.remove("opacity-0");
-          setTimeout(() => {
-            notification.classList.add("opacity-0");
-          }, 2000);
-        } else {
-          windowInfoContainer.innerText = "Error " + res.statusText;
-        }
-      }
-
-
-
-
-
-
     </script>
     
 </body>
