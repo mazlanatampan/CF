@@ -348,7 +348,7 @@ export default {
     `;
 
     // Ganti placeholder dengan flagElement yang sudah dibangun
-   // htmlTemplate = htmlTemplate.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
+   htmlTemplate = htmlTemplate.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 
     return new Response(htmlTemplate, {
       headers: { "Content-Type": "text/html" },
