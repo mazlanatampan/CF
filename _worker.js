@@ -1554,12 +1554,14 @@ let baseHTML = `
 
 
 #content {
-  width: 100%; /* Mengatur lebar iframe agar sesuai dengan lebar kontainer */
-  height: calc(
-    100vh
-  ); /* Mengatur tinggi iframe, sesuaikan dengan tinggi header jika ada */
-  border: none; /* Menghilangkan border default */
+  width: 100%; /* Lebar penuh */
+  height: calc(100vh - 60px); /* Kurangi tinggi header jika ada */
+  margin: 0; /* Hilangkan margin */
+  padding: 0; /* Hilangkan padding */
+  overflow: auto; /* Untuk menggulir jika konten lebih besar dari viewport */
+  box-sizing: border-box; /* Sertakan padding dan border dalam ukuran total */
 }
+
 
 .sidebar.open ~ .home-section {
   left: 250px;
