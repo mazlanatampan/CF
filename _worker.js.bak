@@ -280,21 +280,56 @@ async function buildCountryFlag() {
   let flagElement = '<div class="card-container">';
   for (const flag of new Set(flagList)) {
     flagElement += `
-      <div class="card" onclick="window.location.href='/user/${flag}'">
-        <a href="/user/${flag}" class="country-flag" target="_blank">
+      <div class="card" id="card-${flag}" onclick="toggleProxyList('${flag}')">
+        <a href="javascript:void(0);" class="country-flag">
           <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
         </a>
         <div class="info-text">
           <i class="bx bx-globe"> COUNTRY : ${flag}</i>
           <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP</i>
         </div> 
-      </div>`;
+      </div>
+      <div id="proxy-list-${flag}" class="proxy-list" style="display: none;"></div>
+    `;
   }
   flagElement += '</div>';
-  
+
   return flagElement;
 }
 
+
+async function buildCountryFlag() {
+  const cachedProxyList = await getProxyList();  
+  const flagList = [];
+  const countryCount = {};
+
+  // Hitung jumlah IP per negara
+  for (const proxy of cachedProxyList) {
+    const country = proxy.country;
+    flagList.push(country);
+    countryCount[country] = (countryCount[country] || 0) + 1;
+  }
+
+  // Bangun elemen HTML untuk kartu negara
+  let flagElement = '<div class="card-container">';
+  for (const flag of new Set(flagList)) {
+    flagElement += `
+      <div class="card" id="card-${flag}" onclick="toggleProxyList('${flag}')">
+        <a href="javascript:void(0);" class="country-flag">
+          <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
+        </a>
+        <div class="info-text">
+          <i class="bx bx-globe"> COUNTRY : ${flag}</i>
+          <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP</i>
+        </div> 
+      </div>
+      <div id="proxy-list-${flag}" class="proxy-list" style="display: none;"></div>
+    `;
+  }
+  flagElement += '</div>';
+
+  return flagElement;
+}
 
 
 async function buildProxyCards() {
@@ -354,56 +389,70 @@ async function buildProxyCards() {
       
   else if (url.pathname.startsWith("/messages")) {
   const flagElement = await buildCountryFlag();
-  const htmlTemplate = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- Boxicons CDN Link -->
-    <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <style>
-        body {
-          font-family: Arial, sans-serif;
-          margin: 0;
-          padding: 0;
-          background-color: rgba(0,0,0,0.5)
-        }
-        .card-container {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 10px;
-        }
-        .card {
-            
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .info-text {
-          margin-top: 10px;
-          color: white;
-          font-size: 8px;
-          text-align: left;
-        }
-        
-      </style>
-    </head>
-    <body>
-      <div class="country-section">
-        ${flagElement}
-      </div>
-    </body>
-    </html>
-  `;
+const htmlTemplate = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      padding: 20px;
+    }
+    .card {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+    }
+    .info-text {
+      margin-top: 10px;
+      color: #333;
+      font-size: 12px;
+      text-align: left;
+    }
+    .proxy-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 15px;
+      padding: 20px;
+    }
+    .proxy-card {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .proxy-card p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Available Proxy Countries</h1>
+  <div class="country-section">
+    ${await buildCountryFlag()}
+  </div>
+</body>
+</html>
+`;
 
-  return new Response(htmlTemplate, {
-    headers: { "Content-Type": "text/html" },
-  });
-}
+return new Response(htmlTemplate, {
+  headers: { "Content-Type": "text/html" },
+});
+
 
 
 else if (url.pathname.startsWith("/user/")) {
