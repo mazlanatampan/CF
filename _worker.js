@@ -297,24 +297,16 @@ async function buildCountryFlag() {
   return flagElement;
 }
 
-function toggleProxyList(country) {
-  // Ambil elemen daftar proxy untuk negara tertentu
-  const proxyListElement = document.getElementById(`proxy-list-${country}`);
-  
-  // Jika elemen sudah ada, tampilkan atau sembunyikan
-  if (proxyListElement.style.display === "none") {
-    proxyListElement.style.display = "block";
-    buildProxyList(country);  // Bangun daftar proxy jika pertama kali ditampilkan
-  } else {
-    proxyListElement.style.display = "none";
-  }
-}
-
 async function buildProxyList(country) {
+  // Ambil daftar proxy yang sesuai dengan negara yang dipilih
   const cachedProxyList = await getProxyList();
   
   // Filter proxy berdasarkan negara
   const filteredProxies = cachedProxyList.filter(proxy => proxy.country.toLowerCase() === country.toLowerCase());
+
+  if (filteredProxies.length === 0) {
+    console.log(`No proxies found for ${country}`);
+  }
 
   // Bangun elemen HTML untuk daftar proxy
   let proxyListHTML = '<div class="proxy-container">';
@@ -331,7 +323,24 @@ async function buildProxyList(country) {
 
   // Masukkan daftar proxy ke dalam elemen
   const proxyListElement = document.getElementById(`proxy-list-${country}`);
-  proxyListElement.innerHTML = proxyListHTML;
+  if (proxyListElement) {
+    proxyListElement.innerHTML = proxyListHTML;
+  } else {
+    console.error(`Proxy list element not found for country: ${country}`);
+  }
+}
+
+function toggleProxyList(country) {
+  // Ambil elemen daftar proxy untuk negara tertentu
+  const proxyListElement = document.getElementById(`proxy-list-${country}`);
+  
+  // Jika elemen sudah ada, tampilkan atau sembunyikan
+  if (proxyListElement.style.display === "none") {
+    proxyListElement.style.display = "block";
+    buildProxyList(country);  // Bangun daftar proxy jika pertama kali ditampilkan
+  } else {
+    proxyListElement.style.display = "none";
+  }
 }
 
 
@@ -367,19 +376,6 @@ async function buildProxyCards() {
 }
 
 // Contoh penggunaan (di dalam handler)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
       
@@ -482,6 +478,72 @@ else if (url.pathname.startsWith("/messages")) {
 
 
 
+else if (url.pathname.startsWith("/user/")) {
+  const country = url.pathname.split('/')[2]; // Mendapatkan nama negara dari URL (/user/{country})
+  const proxyList = await getProxyList();  // Mendapatkan daftar proxy dari server
+
+  // Filter proxy berdasarkan negara yang dipilih
+  const filteredProxyList = proxyList.filter(proxy => proxy.country.toLowerCase() === country.toLowerCase());
+
+  // Bangun elemen HTML untuk menampilkan daftar proxy
+  let proxyElement = '<div class="proxy-container">';
+  filteredProxyList.forEach(proxy => {
+    proxyElement += `
+      <div class="proxy-card">
+        <p>IP: ${proxy.proxyIP}</p>
+        <p>Port: ${proxy.proxyPort}</p>
+        <p>Organization: ${proxy.org}</p>
+        <p>Country: ${proxy.country}</p>
+      </div>`;
+  });
+  proxyElement += '</div>';
+
+  // HTML Template untuk Halaman Negara
+  const htmlTemplate = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: #f4f4f4;
+        }
+        .proxy-container {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 15px;
+          padding: 20px;
+        }
+        .proxy-card {
+          background-color: #fff;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 10px;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .proxy-card p {
+          margin: 5px 0;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="back-button">
+        <a href="/">Back to Country List</a>
+      </div>
+      <h1>Proxy List for ${country}</h1>
+      ${proxyElement}
+    </body>
+    </html>
+  `;
+
+  return new Response(htmlTemplate, {
+    headers: { "Content-Type": "text/html" },
+  });
+}
 
 
 
