@@ -1550,6 +1550,21 @@ let baseHTML = `
  
 }
 
+.anjay-section {
+  position:relative;
+  background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;       
+  min-height: 100vh;
+  left: 78px;
+  width: calc(100% - 78px);
+  transition: all 0.5s ease;
+  z-index: 2;
+  overflow-y: auto;
+ 
+}
 
 
 
@@ -1728,7 +1743,7 @@ let baseHTML = `
             <div class="icon-name"> MAZLANA</div>
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
-        <div id="content" ></div>     
+       PLACEHOLDER_PROXY_GROUP
     </section>
 
 
