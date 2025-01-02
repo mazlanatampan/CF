@@ -351,29 +351,48 @@ async function buildCountryFlag() {
       <title>Messages Section</title>
           <!-- Boxicons CDN Link -->
     <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
-
-   
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
       <style>
-        body {
-          font-family: Arial, sans-serif;
-          margin: 0;
-          padding: 20px;
-          background-color: rgba(0,0,0,0.5)
+          .container {
+            background: rgba(255, 255, 255, 0.0); /* Transparansi container */
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+            overflow-y: hidden;
+            
         }
-        .card-container {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 10px;
+
+        #card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 2fr)); /* Responsif, minimal 150px */
+            gap: 20px; /* Jarak antar kartu */
         }
+
         .card {
-          background-color: rgba(0,0,0,0.8)
-          padding: 10px;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          text-align: center;
+            
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.2); 
+        }
+
+        .country-flag img {
+            width: 50px;
+            height: auto;
         }
         .info-text {
-         text-align: left;
-         font-size: 10px;
+          margin-top: 10px;
+          color: white;
+          padding: 10px;
+          font-size: 15px;
+          text-align: left;
         }
         
       </style>
@@ -386,8 +405,6 @@ async function buildCountryFlag() {
     </body>
     </html>
   `;
-
-
 
   return new Response(htmlTemplate, {
     headers: { "Content-Type": "text/html" },
