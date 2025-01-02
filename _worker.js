@@ -195,41 +195,6 @@ function getAllConfig(request, hostName, proxyList, page = 0) {
 /* TEST FUNCTION*/
 
 
-function  buildCountryFlag() {
-    const proxyBankUrl = this.url.searchParams.get("proxy-list");
-    const flagList = [];
-    const countryCount = {};
-
-    // Hitung jumlah IP per negara
-    for (const proxy of cachedProxyList) {
-      const country = proxy.country;
-      flagList.push(country);
-      countryCount[country] = (countryCount[country] || 0) + 1;
-    }
-
-    // Tambahkan kelas CSS khusus untuk elemen grid
-    let flagElement = '<div class="card-container">';
-   for (const flag of new Set(flagList)) {
-  flagElement += `
-    <div class="card" onclick="window.location.href='/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}'">
-      <a href="/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}" class="country-flag">
-        <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
-      </a>
-      <div class="info-text">
-      <i class="bx bx-globe"> COUNTRY : ${flag}</i>
-      <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP
-      </i>
-      </div> 
-    </div>`;
-}
-flagElement += '</div>';
-return flagElement;
-
-  }
-
-
-
-
 
 
 
@@ -309,6 +274,66 @@ export default {
           });
         }
       }
+      
+      
+      
+      
+async function fetchProxyList(url) {
+  const response = await fetch(url);
+  const text = await response.text();
+  
+  // Parse data menjadi array
+  const proxies = text
+    .trim()
+    .split("\n")
+    .map(line => {
+      const [ip, port, country, provider] = line.split(",");
+      return { ip, port, country, provider };
+    });
+  
+  return proxies;
+}
+
+async function buildCountryFlag() {
+  const proxyBankUrl = "https://raw.githubusercontent.com/mazlanatampan/CF/refs/heads/main/proxyList.txt";
+  
+  // Fetch data dari URL
+  const cachedProxyList = await fetchProxyList(proxyBankUrl);
+  
+  const flagList = [];
+  const countryCount = {};
+
+  // Hitung jumlah IP per negara
+  for (const proxy of cachedProxyList) {
+    const country = proxy.country;
+    flagList.push(country);
+    countryCount[country] = (countryCount[country] || 0) + 1;
+  }
+
+  // Bangun elemen HTML
+  let flagElement = '<div class="card-container">';
+  for (const flag of new Set(flagList)) {
+    flagElement += `
+      <div class="card" onclick="window.location.href='/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}'">
+        <a href="/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}" class="country-flag">
+          <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
+        </a>
+        <div class="info-text">
+          <i class="bx bx-globe"> COUNTRY : ${flag}</i>
+          <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP
+          </i>
+        </div> 
+      </div>`;
+  }
+  flagElement += '</div>';
+  
+  return flagElement;
+}
+
+// Contoh penggunaan (di dalam handler)
+
+
+      
 
       // Handle /sub endpoint
       if (url.pathname.startsWith("/sub")) {
@@ -333,9 +358,9 @@ export default {
         });
       }
       
-     else if (url.pathname.startsWith("/messages")) {
-     let flagElement= buildCountryFlag();
-    let htmlTemplate = `
+  else if (url.pathname.startsWith("/messages")) {
+  const flagElement = await buildCountryFlag();
+  const htmlTemplate = `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -353,16 +378,6 @@ export default {
         h1 {
           color: #007bff;
         }
-        p {
-          font-size: 16px;
-        }
-        .message-box {
-          border: 1px solid #ddd;
-          padding: 10px;
-          margin-top: 20px;
-          background-color: #fff;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
         .card-container {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
@@ -378,25 +393,16 @@ export default {
     </head>
     <body>
       <h1>Messages Section</h1>
-      <p>This is the messages content.</p>
-      <div class="message-box">
-        <p>Example message content styled with CSS.</p>
-      </div>
-
       <div class="country-section">
-        <!-- PLACEHOLDER_BENDERA_NEGARA will be replaced by the country flags -->
-        PLACEHOLDER_BENDERA_NEGARA
+        ${flagElement}
       </div>
     </body>
     </html>
-    `;
+  `;
 
-    // Ganti placeholder dengan flagElement yang sudah dibangun
-    htmlTemplate = htmlTemplate.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
-
-    return new Response(htmlTemplate, {
-      headers: { "Content-Type": "text/html" },
-    });
+  return new Response(htmlTemplate, {
+    headers: { "Content-Type": "text/html" },
+  });
 }
 
 
