@@ -246,7 +246,25 @@ export default {
         }
       }
 
-
+      // Handle /tes.js endpoint
+      if (url.pathname === "/tes.js") {
+        const scriptContent = await env.SCRIPT_STORAGE.get("tes.js");
+        if (scriptContent) {
+          return new Response(scriptContent, {
+            headers: {
+              "Content-Type": "application/javascript",
+              ...CORS_HEADER_OPTIONS,
+            },
+          });
+        } else {
+          return new Response("tes.js not found", {
+            status: 404,
+            headers: {
+              ...CORS_HEADER_OPTIONS,
+            },
+          });
+        }
+      }
 
       // Handle /sub endpoint
       if (url.pathname.startsWith("/sub")) {
@@ -272,7 +290,7 @@ export default {
       }
       
      else if (url.pathname.startsWith("/messages")) {
-     const flagElement = buildCountryFlag();
+     let flagElement= buildCountryFlag();
     let htmlTemplate = `
     <!DOCTYPE html>
     <html lang="en">
@@ -330,49 +348,12 @@ export default {
     `;
 
     // Ganti placeholder dengan flagElement yang sudah dibangun
-   htmlTemplate = htmlTemplate.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
+    htmlTemplate = htmlTemplate.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 
     return new Response(htmlTemplate, {
       headers: { "Content-Type": "text/html" },
     });
 }
-
-
-
-function  buildCountryFlag() {
-    const proxyBankUrl = this.url.searchParams.get("proxy-list");
-    const flagList = [];
-    const countryCount = {};
-
-    // Hitung jumlah IP per negara
-    for (const proxy of cachedProxyList) {
-      const country = proxy.country;
-      flagList.push(country);
-      countryCount[country] = (countryCount[country] || 0) + 1;
-    }
-
-    // Tambahkan kelas CSS khusus untuk elemen grid
-    let flagElement = '<div class="card-container">';
-for (const flag of new Set(flagList)) {
-  flagElement += `
-    <div class="card" onclick="window.location.href='/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}'">
-      <a href="/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}" class="country-flag">
-        <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
-      </a>
-      <div class="info-text">
-      <i class="bx bx-globe"> COUNTRY : ${flag}</i>
-      <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP
-      </i>
-      </div> 
-    </div>`;
-}
-flagElement += '</div>';
-
-return flagElement     
-    /*${flag} ( IPs)</p>*/
-    
-  
-  }
 
 
       // Handle /check endpoint
@@ -1882,6 +1863,37 @@ class Document {
     );
   }
 
+function  buildCountryFlag() {
+    const proxyBankUrl = this.url.searchParams.get("proxy-list");
+    const flagList = [];
+    const countryCount = {};
+
+    // Hitung jumlah IP per negara
+    for (const proxy of cachedProxyList) {
+      const country = proxy.country;
+      flagList.push(country);
+      countryCount[country] = (countryCount[country] || 0) + 1;
+    }
+
+    // Tambahkan kelas CSS khusus untuk elemen grid
+    let flagElement = '<div class="card-container">';
+   for (const flag of new Set(flagList)) {
+  flagElement += `
+    <div class="card" onclick="window.location.href='/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}'">
+      <a href="/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}" class="country-flag">
+        <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
+      </a>
+      <div class="info-text">
+      <i class="bx bx-globe"> COUNTRY : ${flag}</i>
+      <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP
+      </i>
+      </div> 
+    </div>`;
+}
+flagElement += '</div>';
+return flagElement;
+
+  }
 
   addPageButton(text, link, isDisabled) {
     const pageButton = `<li><button ${
