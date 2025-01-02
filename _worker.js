@@ -386,19 +386,6 @@ async function buildCountryFlag() {
       <div class="country-section">
         ${flagElement}
       </div>
-     <script>
-        // Menambahkan fungsi untuk mengganti halaman tanpa menambahkan entry di riwayat browser
-        function redirectToPage() {
-          const newUrl = "https://mazlana.destimyangel.my.id";  // Ganti URL sesuai kebutuhan
-          location.replace(newUrl);  // Ganti halaman
-        }
-
-        // Menerapkan aksi klik pada elemen dengan kelas 'card' untuk memanggil redirect
-        const cards = document.querySelectorAll('.card');
-        cards.forEach(card => {
-          card.addEventListener('click', redirectToPage);
-        });
-      </script>
     </body>
     </html>
   `;
