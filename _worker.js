@@ -1733,6 +1733,7 @@ let baseHTML = `
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
         <div id="content" ></div>     
+        PLACEHOLDER_PROXY_GROUP
     </section>
 
     <section class="anjay-section">
