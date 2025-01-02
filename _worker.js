@@ -364,16 +364,19 @@ async function buildCountryFlag() {
           gap: 10px;
         }
         .card {
-          background-color: rgba(0,0,0,0.4)
-          padding: 10px;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          text-align: center;
+            
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.2); 
         }
         .info-text {
           margin-top: 10px;
           color: white;
           padding: 10px;
-          font-size: 15px;
+          font-size: 8px;
           text-align: left;
         }
         
