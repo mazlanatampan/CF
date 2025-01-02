@@ -296,7 +296,7 @@ async function buildCountryFlag() {
   let flagElement = '<div class="card-container">';
   for (const flag of new Set(flagList)) {
     flagElement += `
-      <div class="card" onclick="window.location.href='/sub?cc=${flag}${PROXY_BANK_URP ? "&proxy-list=" + PROXY_BANK_URL : ""}'">
+      <div class="card" onclick="window.location.href='/sub?cc=${flag}${PROXY_BANK_URL ? "&proxy-list=" + PROXY_BANK_URL : ""}'">
         <a href="/sub?cc=${flag}${PROXY_BANK_URL ? "&proxy-list=" + PROXY_BANK_URL : ""}" class="country-flag">
           <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
         </a>
