@@ -1552,21 +1552,14 @@ let baseHTML = `
  
 }
 
-#content-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100vh; /* Full height viewport */
-  width: 100%;
-  overflow: auto; /* Handle overflowing content */
-}
 
 #content {
-  flex: 1; /* Take up all remaining space */
-  padding: 20px;
-  background-color: #f9f9f9; /* Example background */
-  box-sizing: border-box;
+  width: 100%; /* Mengatur lebar iframe agar sesuai dengan lebar kontainer */
+  height: calc(
+    100vh
+  ); /* Mengatur tinggi iframe, sesuaikan dengan tinggi header jika ada */
+  border: none; /* Menghilangkan border default */
 }
-
 
 .sidebar.open ~ .home-section {
   left: 250px;
