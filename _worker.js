@@ -1553,13 +1553,11 @@ let baseHTML = `
 }
 
 
-.home-section .content {
-  width: 100%; /* Lebar penuh */
-  height: calc(100vh - 60px); /* Kurangi tinggi header jika ada */
-  margin: 0; /* Hilangkan margin */
-  padding: 0; /* Hilangkan padding */
-  overflow: auto; /* Untuk menggulir jika konten lebih besar dari viewport */
-  box-sizing: border-box; /* Sertakan padding dan border dalam ukuran total */
+#content {
+  flex-grow: 1; /* Membuat elemen ini mengisi ruang yang tersisa */
+  overflow: auto; /* Menambahkan scroll jika konten melebihi ruang */
+  background-color: rgba(255, 255, 255, 0.1); /* Opsional: Warna latar */
+  padding: 20px; /* Opsional: Padding untuk konten */
 }
 
 
