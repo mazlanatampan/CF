@@ -1553,7 +1553,7 @@ let baseHTML = `
 }
 
 
-#content {
+.home-section .content {
   width: 100%; /* Lebar penuh */
   height: calc(100vh - 60px); /* Kurangi tinggi header jika ada */
   margin: 0; /* Hilangkan margin */
