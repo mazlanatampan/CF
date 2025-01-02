@@ -194,6 +194,7 @@ function getAllConfig(request, hostName, proxyList, page = 0) {
 
 /* TEST FUNCTION*/
 
+
 function  buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
     const flagList = [];
@@ -224,7 +225,7 @@ function  buildCountryFlag() {
 flagElement += '</div>';
 return flagElement;
 
-  };
+  }
 
 
 
