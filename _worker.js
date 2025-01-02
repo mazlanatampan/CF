@@ -375,7 +375,6 @@ async function buildCountryFlag() {
         .info-text {
           margin-top: 10px;
           color: white;
-          padding: 10px;
           font-size: 8px;
           text-align: left;
         }
