@@ -1553,7 +1553,7 @@ let baseHTML = `
 }
 
 
-.iframe {
+.content {
   width: 100%; /* Mengatur lebar iframe agar sesuai dengan lebar kontainer */
   height: calc(
     100vh
@@ -1761,7 +1761,7 @@ let baseHTML = `
             <div class="icon-name"> MAZLANA</div>
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
-    <div id="content"></div>
+        <div id="content"></div>
             
         
         
