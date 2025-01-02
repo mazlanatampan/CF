@@ -1762,7 +1762,7 @@ function loadContent(path) {
     })
     .then((html) => {
       document.getElementById("content").innerHTML = html;
-      content.style.height = 'calc(100vh - ${document.getElementById("header-atas").offsetHeight}px';
+      
   
     })
     .catch((error) => {
