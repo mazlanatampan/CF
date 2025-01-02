@@ -296,6 +296,7 @@ async function buildCountryFlag() {
 }
 
 
+
 async function buildProxyCards() {
   const cachedProxyList = await getProxyList();  // Mendapatkan daftar proxy
   const proxyCards = [];
@@ -472,11 +473,6 @@ else if (url.pathname.startsWith("/user/")) {
   });
 }
 
-
-  return new Response(htmlTemplate, {
-    headers: { "Content-Type": "text/html" },
-  });
-}
 
 
 
