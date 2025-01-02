@@ -305,7 +305,7 @@ async function buildProxyList(country) {
   const filteredProxies = cachedProxyList.filter(proxy => proxy.country.toLowerCase() === country.toLowerCase());
 
   if (filteredProxies.length === 0) {
-    console.log(`No proxies found for ${country}`);
+    return `<h2>No proxies found for ${country}</h2>`;
   }
 
   // Bangun konten HTML untuk daftar proxy
@@ -351,6 +351,7 @@ async function buildProxyList(country) {
   return proxyListHTML;
 }
 
+
 function loadProxyList(country) {
   // Ambil elemen div negara
   const countryDiv = document.getElementById(`card-${country}`);
@@ -360,15 +361,22 @@ function loadProxyList(country) {
   
   // Menambahkan iframe dengan daftar proxy
   const iframeElement = document.createElement('iframe');
-  iframeElement.srcdoc = buildProxyList(country);  // Menyisipkan HTML daftar proxy ke dalam iframe
   iframeElement.style.width = '100%';
   iframeElement.style.height = '500px';  // Sesuaikan ukuran iframe jika diperlukan
-  
-  // Menampilkan iframe di div
-  const proxyListDiv = document.getElementById(`proxy-list-${country}`);
-  proxyListDiv.appendChild(iframeElement);
-  proxyListDiv.style.display = 'block';
+  iframeElement.style.border = 'none'; // Menghapus border
+
+  // Memanggil fungsi untuk mendapatkan HTML daftar proxy untuk negara tertentu
+  buildProxyList(country).then(proxyListHTML => {
+    iframeElement.srcdoc = proxyListHTML;  // Menyisipkan HTML daftar proxy ke dalam iframe
+    // Menampilkan iframe di div
+    const proxyListDiv = document.getElementById(`proxy-list-${country}`);
+    proxyListDiv.appendChild(iframeElement);
+    proxyListDiv.style.display = 'block';
+  }).catch(error => {
+    console.error('Error loading proxy list:', error);
+  });
 }
+
 
 
 

@@ -370,7 +370,8 @@ function loadProxyList(country) {
   proxyListDiv.style.display = 'block';
 }
 
-else if (url.pathname.startsWith("/messages")) {
+
+
 
 
 
@@ -431,6 +432,7 @@ async function buildProxyCards() {
         });
       }
       
+else if (url.pathname.startsWith("/messages")) {
   const flagElement = await buildCountryFlag();
   const htmlTemplate = `
     <!DOCTYPE html>
@@ -485,9 +487,6 @@ async function buildProxyCards() {
     headers: { "Content-Type": "text/html" },
   });
 }
-
-
-
 
 
 
