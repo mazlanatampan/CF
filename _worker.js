@@ -280,7 +280,7 @@ export default {
       
 
 
-async function buildCountryFlag() {
+async function buildCountryFlag(PROXY_BANK_URL) {
   const cachedProxyList = await getProxyList();  
   const flagList = [];
   const countryCount = {};
@@ -296,14 +296,13 @@ async function buildCountryFlag() {
   let flagElement = '<div class="card-container">';
   for (const flag of new Set(flagList)) {
     flagElement += `
-      <div class="card" onclick="window.location.href='/sub?cc=${flag}${PROXY_BANK_URL ? "&proxy-list=" + PROXY_BANK_URL : ""}'">
-        <a href="/sub?cc=${flag}${PROXY_BANK_URL ? "&proxy-list=" + PROXY_BANK_URL : ""}" class="country-flag">
+      <div class="card">
+        <a href="/sub?cc=${flag}${PROXY_BANK_URL ? "&proxy-list=" + PROXY_BANK_URL : ""}" class="country-flag" target="_blank">
           <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
         </a>
         <div class="info-text">
           <i class="bx bx-globe"> COUNTRY : ${flag}</i>
-          <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP
-          </i>
+          <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP</i>
         </div> 
       </div>`;
   }
@@ -311,6 +310,7 @@ async function buildCountryFlag() {
   
   return flagElement;
 }
+
 
 // Contoh penggunaan (di dalam handler)
 
@@ -370,7 +370,7 @@ async function buildCountryFlag() {
         #card-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 2fr)); /* Responsif, minimal 150px */
-            gap: 20px; /* Jarak antar kartu */
+            gap: 10px; /* Jarak antar kartu */
         }
 
         .card {
