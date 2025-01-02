@@ -1689,7 +1689,7 @@ let baseHTML = `
           <span class="tooltip">Dashboard</span>
         </li>
         <li>
-    <a href="#" id="user-link"> <!-- Memanggil fungsi loadIframe -->
+<a href="#" onclick="loadContent('/messages')">
         <i class="bx bx-user"></i>
         <span class="links_name">User  </span>
     </a>
@@ -1761,7 +1761,7 @@ let baseHTML = `
             <div class="icon-name"> MAZLANA</div>
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
-<div id="content-container" style="width: 100%; height: calc(100vh - 60px); overflow-y: auto;">
+    <div id="content"></div>
             
         
         
@@ -1793,50 +1793,22 @@ function menuBtnChange() {
  }
 }
 
-window.onload = function() {
-    // Ambil elemen div untuk konten utama
-    const contentContainer = document.getElementById('content-container');
 
-    // Ambil elemen sidebar
-    const userMessageLink = document.getElementById('user-link');
-   
-
-    // Event listener untuk setiap item di sidebar
-    userMessageLink.addEventListener('click', () => {
-        changeContent('/messages);
+function loadContent(path) {
+  fetch(path)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.text();
+    })
+    .then((html) => {
+      document.getElementById("content").innerHTML = html;
+    })
+    .catch((error) => {
+      console.error("Error fetching content:", error);
     });
-
-    // Fungsi untuk mengubah konten berdasarkan path
-    function changeContent(path) {
-        // Perbarui URL dengan hash (tanpa memuat ulang halaman)
-        window.location.hash = path;
-
-        // Ubah konten sesuai dengan path
-        if (path === '/messages') {
-            loadUserMessage();
-    }
-
-    // Fungsi untuk memuat konten User Message
-    function loadUserMessage() {
-        contentContainer.innerHTML =
-            <h2>User Messages</h2>
-           <p>This is where user messages will be displayed.</p>
-        
-    }
-    
-    // Fungsi untuk menangani perubahan URL secara manual (memuat konten berdasarkan hash)
-    function handleURLChange() {
-        const path = window.location.hash || '/sub'; // Default ke /user jika tidak ada hash
-        if (path === '#/messages') {
-            loadUserMessage();
-    }
-
-    // Memanggil handleURLChange ketika halaman dimuat untuk pertama kali
-    handleURLChange();
-
-    // Memanggil handleURLChange saat URL hash berubah
-    window.addEventListener('hashchange', handleURLChange);
-};
+}
 
 
 
