@@ -49,24 +49,17 @@ async function getKVProxyList(kvProxyUrl = KV_PROXY_URL) {
 
 /* MEMBACA LIST PROXY YANG ADA */
 async function getProxyList(proxyBankUrl = PROXY_BANK_URL) {
-  /**
-   * Format:
-   *
-   * <IP>,<Port>,<Country ID>,<ORG>
-   * Contoh:
-   * 1.1.1.1,443,SG,Cloudflare Inc.
-   */
   if (!proxyBankUrl) {
     throw new Error("No Proxy Bank URL Provided!");
   }
 
-  const proxyBank = await fetch(proxyBankUrl);
-  if (proxyBank.status == 200) {
-    const text = (await proxyBank.text()) || "";
+  try {
+    const proxyBank = await fetch(proxyBankUrl);
+    if (proxyBank.status === 200) {
+      const text = await proxyBank.text();
 
-    const proxyString = text.split("\n").filter(Boolean);
-    cachedProxyList = proxyString
-      .map((entry) => {
+      const proxyString = text.split("\n").filter(Boolean);
+      const cachedProxyList = proxyString.map((entry) => {
         const [proxyIP, proxyPort, country, org] = entry.split(",");
         return {
           proxyIP: proxyIP || "Unknown",
@@ -74,19 +67,25 @@ async function getProxyList(proxyBankUrl = PROXY_BANK_URL) {
           country: country || "Unknown",
           org: org || "Unknown Org",
         };
-      })
-      .filter(Boolean);
-  }
+      });
 
-  return cachedProxyList;
+      return cachedProxyList;
+    } else {
+      throw new Error(`Failed to fetch Proxy Bank. Status: ${proxyBank.status}`);
+    }
+  } catch (error) {
+    console.error("Error fetching proxy list:", error.message);
+    return [];
+  }
 }
 
 
 
 
 
+
 async function buildCountryFlag() {
-  const cachedProxyList = await getProxyList(`${PROXY_BANK_URL}`);  
+  const cachedProxyList = await getProxyList()
   const flagList = [];
   const countryCount = {};
 
