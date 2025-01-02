@@ -297,7 +297,6 @@ async function buildCountryFlag() {
   return flagElement;
 }
 
-
 function toggleProxyList(country) {
   // Ambil elemen daftar proxy untuk negara tertentu
   const proxyListElement = document.getElementById(`proxy-list-${country}`);
@@ -337,6 +336,9 @@ async function buildProxyList(country) {
 
 
 
+
+
+
 async function buildProxyCards() {
   const cachedProxyList = await getProxyList();  // Mendapatkan daftar proxy
   const proxyCards = [];
@@ -367,6 +369,19 @@ async function buildProxyCards() {
 // Contoh penggunaan (di dalam handler)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
       
 
       // Handle /sub endpoint
@@ -392,107 +407,42 @@ async function buildProxyCards() {
         });
       }
       
-  else if (url.pathname.startsWith("/messages")) {
+else if (url.pathname.startsWith("/messages")) {
   const flagElement = await buildCountryFlag();
-const htmlTemplate = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-    }
-    .card-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      padding: 20px;
-    }
-    .card {
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-    }
-    .info-text {
-      margin-top: 10px;
-      color: #333;
-      font-size: 12px;
-      text-align: left;
-    }
-    .proxy-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 15px;
-      padding: 20px;
-    }
-    .proxy-card {
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-    .proxy-card p {
-      margin: 5px 0;
-    }
-  </style>
-</head>
-<body>
-  <h1>Available Proxy Countries</h1>
-  <div class="country-section">
-    ${await buildCountryFlag()}
-  </div>
-</body>
-</html>
-`;
-
-return new Response(htmlTemplate, {
-  headers: { "Content-Type": "text/html" },
-});
-
-
-
-else if (url.pathname.startsWith("/user/")) {
-  const country = url.pathname.split('/')[2]; // Mendapatkan nama negara dari URL (/user/{country})
-  const proxyList = await getProxyList();  // Mendapatkan daftar proxy dari server
-
-  // Filter proxy berdasarkan negara yang dipilih
-  const filteredProxyList = proxyList.filter(proxy => proxy.country.toLowerCase() === country.toLowerCase());
-
-  // Bangun elemen HTML untuk menampilkan daftar proxy
-  let proxyElement = '<div class="proxy-container">';
-  filteredProxyList.forEach(proxy => {
-    proxyElement += `
-      <div class="proxy-card">
-        <p>IP: ${proxy.proxyIP}</p>
-        <p>Port: ${proxy.proxyPort}</p>
-        <p>Organization: ${proxy.org}</p>
-        <p>Country: ${proxy.country}</p>
-      </div>`;
-  });
-  proxyElement += '</div>';
-
-  // HTML Template untuk Halaman Negara
   const htmlTemplate = `
     <!DOCTYPE html>
     <html lang="en">
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!-- Boxicons CDN Link -->
+      <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
       <style>
         body {
           font-family: Arial, sans-serif;
           margin: 0;
           padding: 0;
           background-color: #f4f4f4;
+        }
+        .card-container {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 15px;
+          padding: 20px;
+        }
+        .card {
+          background-color: #fff;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 10px;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          cursor: pointer;
+        }
+        .info-text {
+          margin-top: 10px;
+          color: #333;
+          font-size: 12px;
+          text-align: left;
         }
         .proxy-container {
           display: grid;
@@ -513,11 +463,14 @@ else if (url.pathname.startsWith("/user/")) {
       </style>
     </head>
     <body>
-      <div class="back-button">
-        <a href="/">Back to Country List</a>
+      <h1>Available Proxy Countries</h1>
+      <div class="country-section">
+        ${flagElement}
       </div>
-      <h1>Proxy List for ${country}</h1>
-      ${proxyElement}
+      <script>
+        ${toggleProxyList.toString()}
+        ${buildProxyList.toString()}
+      </script>
     </body>
     </html>
   `;
@@ -526,6 +479,9 @@ else if (url.pathname.startsWith("/user/")) {
     headers: { "Content-Type": "text/html" },
   });
 }
+
+
+
 
 
 

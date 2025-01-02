@@ -298,38 +298,43 @@ async function buildCountryFlag() {
 }
 
 
-async function buildCountryFlag() {
-  const cachedProxyList = await getProxyList();  
-  const flagList = [];
-  const countryCount = {};
-
-  // Hitung jumlah IP per negara
-  for (const proxy of cachedProxyList) {
-    const country = proxy.country;
-    flagList.push(country);
-    countryCount[country] = (countryCount[country] || 0) + 1;
+function toggleProxyList(country) {
+  // Ambil elemen daftar proxy untuk negara tertentu
+  const proxyListElement = document.getElementById(`proxy-list-${country}`);
+  
+  // Jika elemen sudah ada, tampilkan atau sembunyikan
+  if (proxyListElement.style.display === "none") {
+    proxyListElement.style.display = "block";
+    buildProxyList(country);  // Bangun daftar proxy jika pertama kali ditampilkan
+  } else {
+    proxyListElement.style.display = "none";
   }
-
-  // Bangun elemen HTML untuk kartu negara
-  let flagElement = '<div class="card-container">';
-  for (const flag of new Set(flagList)) {
-    flagElement += `
-      <div class="card" id="card-${flag}" onclick="toggleProxyList('${flag}')">
-        <a href="javascript:void(0);" class="country-flag">
-          <img width="32" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag} Flag"/>
-        </a>
-        <div class="info-text">
-          <i class="bx bx-globe"> COUNTRY : ${flag}</i>
-          <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP</i>
-        </div> 
-      </div>
-      <div id="proxy-list-${flag}" class="proxy-list" style="display: none;"></div>
-    `;
-  }
-  flagElement += '</div>';
-
-  return flagElement;
 }
+
+async function buildProxyList(country) {
+  const cachedProxyList = await getProxyList();
+  
+  // Filter proxy berdasarkan negara
+  const filteredProxies = cachedProxyList.filter(proxy => proxy.country.toLowerCase() === country.toLowerCase());
+
+  // Bangun elemen HTML untuk daftar proxy
+  let proxyListHTML = '<div class="proxy-container">';
+  filteredProxies.forEach(proxy => {
+    proxyListHTML += `
+      <div class="proxy-card">
+        <p>IP: ${proxy.proxyIP}</p>
+        <p>Port: ${proxy.proxyPort}</p>
+        <p>Organization: ${proxy.org}</p>
+        <p>Country: ${proxy.country}</p>
+      </div>`;
+  });
+  proxyListHTML += '</div>';
+
+  // Masukkan daftar proxy ke dalam elemen
+  const proxyListElement = document.getElementById(`proxy-list-${country}`);
+  proxyListElement.innerHTML = proxyListHTML;
+}
+
 
 
 async function buildProxyCards() {
