@@ -370,7 +370,6 @@ async function buildCountryFlag() {
             padding: 10px;
             text-align: center;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.2); 
         }
         .info-text {
           margin-top: 10px;
@@ -1551,6 +1550,21 @@ let baseHTML = `
  
 }
 
+.anjay-section {
+  position:relative;
+  background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;       
+  min-height: 100vh;
+  left: 78px;
+  width: calc(100% - 78px);
+  transition: all 0.5s ease;
+  z-index: 2;
+  overflow-y: auto;
+ 
+}
 
 
 
@@ -1718,11 +1732,18 @@ let baseHTML = `
             <div class="icon-name"> MAZLANA</div>
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
-        <div id="content" ></div>
-            
-        
-        
-     
+        <div id="content" ></div>     
+    </section>
+
+    <section class="anjay-section">
+        <div class="header-atas">
+          <div class="icon">
+          <i class='bx bxl-slack'></i>
+          </div>
+            <div class="icon-name"> MAZLANA</div>
+            <div class="marquee" id="ip-info">Loading IP...</div>
+        </div>
+       PLACEHOLDER_PROXY_GROUP
     </section>
 
 
