@@ -370,9 +370,11 @@ async function buildCountryFlag() {
           text-align: center;
         }
         .info-text {
-         text-align: left;
-         font-size: 10px;
-         font-color: white;
+          margin-top: 10px;
+          color: white;
+          padding: 10px;
+          font-size: 15px;
+          text-align: left;
         }
         
       </style>
