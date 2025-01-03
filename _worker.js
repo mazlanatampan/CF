@@ -2092,8 +2092,6 @@ buildProxyGroup() {
                 <i class="bx bx-globe"> IP: ${proxyData.proxyIP}:${proxyData.proxyPort}</i>
                 <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
             </div>
-                <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}</div>`;
-                
             <div class="proxy-details">
                 <h5 class="font-bold text-md text-neutral-900 dark:text-white mb-1">${proxyData.org}</h5>
                 <div class="text-sm text-neutral-900 dark:text-white">
