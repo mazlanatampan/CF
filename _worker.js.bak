@@ -1029,6 +1029,7 @@ let baseHTML = `
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Proxy List</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <style>
       /* For Webkit-based browsers (Chrome, Safari and Opera) */
       .scrollbar-hide::-webkit-scrollbar {
@@ -1040,7 +1041,7 @@ let baseHTML = `
           -ms-overflow-style: none;  /* IE and Edge */
           scrollbar-width: none;  /* Firefox */
       }
-    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+    
     <style>
     /* Google Font Import - Poppins */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -1351,6 +1352,39 @@ body.dark .switch::before{
 body.dark .home .text{
     color: var(--text-color);
 }
+
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Menyesuaikan kolom secara otomatis */
+    gap: 15px; /* Jarak antar card */
+    padding: 20px;
+}
+
+.card {
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+    width: 50px;
+}
+
+.country-name {
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+.ip-count {
+    margin: 0;
+    font-size: 12px;
+    color: #555;
+}
+
+
 
 </style>
 

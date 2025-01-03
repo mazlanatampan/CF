@@ -1353,6 +1353,39 @@ body.dark .home .text{
     color: var(--text-color);
 }
 
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Menyesuaikan kolom secara otomatis */
+    gap: 15px; /* Jarak antar card */
+    padding: 20px;
+}
+
+.card {
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+    width: 50px;
+}
+
+.country-name {
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+.ip-count {
+    margin: 0;
+    font-size: 12px;
+    color: #555;
+}
+
+
+
 </style>
 
 
@@ -1990,7 +2023,7 @@ class Document {
     let flagElement = "";
     for (const [country, count] of Object.entries(countryIpCount)) {
         flagElement += `
-        <div class="card" style="display: inline-block; margin: 10px; text-align: center; width: 100px; border: 1px solid #ccc; border-radius: 5px; padding: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+        <div class="card">
             <a href="/sub?cc=${country}${
                 proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
             }" class="py-1">
@@ -2000,13 +2033,14 @@ class Document {
                     alt="Flag of ${country}" 
                 />
             </a>
-            <p style="margin: 5px 0; font-weight: bold;">${country}</p>
-            <p style="margin: 0; font-size: 12px; color: #555;">${count} IP</p>
+            <p class="country-name">${country}</p>
+            <p class="ip-count">${count} IP</p>
         </div>`;
     }
 
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 }
+
 
 
 
