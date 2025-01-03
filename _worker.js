@@ -1933,7 +1933,7 @@ function scrollToProxySection(country) {
 
           let isActive = false;
           new Promise(async (resolve) => {
-            const res = await fetch('${PROXY_HEALTH_CHECK_API}?ip=${target}');
+            const res = await fetch('${PROXY_HEALTH_CHECK_API}?ip=target');
               .then(async (res) => {
                 if (isActive) return;
                 if (res.status == 200) {
