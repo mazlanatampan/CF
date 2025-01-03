@@ -1052,7 +1052,7 @@ let baseHTML = `
     font-family: 'Poppins', sans-serif;
 }
 
-:root{
+:root {
     /* ===== Colors ===== */
     --body-color: #E4E9F7;
     --sidebar-color: #FFF;
@@ -1068,25 +1068,29 @@ let baseHTML = `
     --tran-05: all 0.3s ease;
 }
 
-body{
+body {
     min-height: 100vh;
-    background-color: var(--body-color);
     transition: var(--tran-05);
+    background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
 }
 
-::selection{
-    background-color: var(--primary-color);
+}
+
+::selection {
     color: #fff;
 }
 
-body.dark{
-    --body-color: #18191a;
+body.dark {
     --sidebar-color: #242526;
     --primary-color: #3a3b3c;
     --primary-color-light: #3a3b3c;
     --toggle-color: #fff;
     --text-color: #ccc;
 }
+
 
 /* ===== Sidebar ===== */
  .sidebar{

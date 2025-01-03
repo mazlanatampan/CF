@@ -1071,31 +1071,19 @@ let baseHTML = `
 body {
     min-height: 100vh;
     transition: var(--tran-05);
-}
-
-body.light {
     background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
     background-attachment: fixed;
     background-size: cover;
     background-position: center;
-    background-color: var(--body-color);
 }
 
-body.dark {
-    background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/dark-background.jpg'); /* Gambar latar belakang untuk mode gelap */
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: center;
-    background-color: var(--body-color);
 }
 
 ::selection {
-    background-color: var(--primary-color);
-    color: #fff;
+   
 }
 
 body.dark {
-    --body-color: #18191a;
     --sidebar-color: #242526;
     --primary-color: #3a3b3c;
     --primary-color-light: #3a3b3c;
