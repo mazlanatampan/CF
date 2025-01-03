@@ -1341,6 +1341,7 @@ let baseHTML = `
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsif */
     gap: 20px; /* Jarak antar card */
     padding: 20px;
+    overflow-y: auto;
 }
 
 .card {
