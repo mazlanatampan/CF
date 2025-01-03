@@ -1933,7 +1933,7 @@ function scrollToProxySection(country) {
 
           let isActive = false;
           new Promise(async (resolve) => {
-            const res = await fetch("https://${serviceName}.${rootDomain}/check?target=" + target)
+            const res = await fetch('${PROXY_HEALTH_CHECK_API}?ip=${target}');
               .then(async (res) => {
                 if (isActive) return;
                 if (res.status == 200) {
@@ -2088,7 +2088,7 @@ buildProxyGroup() {
                 <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
             </div>
             <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}
-            checkProxy(${proxyData.proxyIP}:${proxyData.proxyPort});
+            checkProxy('${proxyData.proxyIP}:${proxyData.proxyPort}');
             </div>
             
                 </div>

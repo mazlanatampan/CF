@@ -2088,7 +2088,7 @@ buildProxyGroup() {
                 <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
             </div>
             <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}
-            checkProxy(${proxyData.proxyIP}:${proxyData.proxyPort})
+            checkProxy(${proxyData.proxyIP}:${proxyData.proxyPort});
             </div>
             
                 </div>
