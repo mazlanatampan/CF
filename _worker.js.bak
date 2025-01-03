@@ -1364,6 +1364,7 @@ let baseHTML = `
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* Responsif */
     gap: 20px; /* Jarak antar card */
+    top: 60px;
     padding: 20px;
     overflow-y: auto;
   width: 100%; /* Gunakan lebar penuh, bukan 100vh */
