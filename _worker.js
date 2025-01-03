@@ -1069,8 +1069,10 @@ let baseHTML = `
 }
 
 body{
-    min-height: 100vh;
-    background-color: var(--body-color);
+    background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
     transition: var(--tran-05);
 }
 
@@ -1356,21 +1358,26 @@ body.dark .home .text{
 
 .card-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Menyesuaikan kolom secara otomatis */
+    grid-template-columns: repeat(3, 1fr); /* 3 kolom yang sama besar */
     gap: 15px; /* Jarak antar card */
     padding: 20px;
 }
 
 .card {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Memastikan elemen di dalam card berada di tengah secara horizontal */
+    justify-content: center; /* Memastikan elemen di dalam card berada di tengah secara vertikal */
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 150px; /* Sesuaikan tinggi card */
 }
 
 .card img {
-    width: 50px;
+    width: 50px; /* Ukuran gambar */
+    margin-bottom: 10px; /* Jarak antara gambar dan teks */
 }
 
 .country-name {
@@ -1383,6 +1390,8 @@ body.dark .home .text{
     font-size: 12px;
     color: #555;
 }
+
+
 
 
 
