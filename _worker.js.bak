@@ -1366,7 +1366,7 @@ let baseHTML = `
     padding: 20px;
     overflow-y: auto;
     width: 100%; /* Gunakan lebar penuh */
-    margin-top: 60px; /* Kurangi bagian atas sebesar 60px */
+    margin-top: 68px; /* Kurangi bagian atas sebesar 60px */
 }
 
 .card {
