@@ -1941,7 +1941,7 @@ class Document {
         <div class="card">
             <a href="/sub?cc=${country}${
                 proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-            }>
+            }">
                 <img 
                     width=50 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
@@ -1953,7 +1953,7 @@ class Document {
           <i class='bx bxs-microchip'> TOTAL IP : ${count} IP</i>
         </div>`;
     }
-        let flagElement = '</div>';
+        flagElement = '</div>';
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 }
 
