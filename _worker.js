@@ -1359,14 +1359,14 @@ let baseHTML = `
 }
 
     
-..card-container {
+.card-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Responsif */
     gap: 20px; /* Jarak antar card */
     padding: 20px;
     overflow-y: auto;
     width: 100%; /* Gunakan lebar penuh */
-    margin-top: -60px; /* Kurangi bagian atas sebesar 60px */
+    margin-top: 60px; /* Kurangi bagian atas sebesar 60px */
 }
 
 .card {
