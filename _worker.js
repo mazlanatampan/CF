@@ -1288,20 +1288,12 @@ let baseHTML = `
 
 
 .header-atas {
+
   background-color: #11101d; /* Latar belakang gelap */
   height: 100px;
-  width: 100%; /* Pastikan header mengambil seluruh lebar layar */
-  position: fixed; /* Membuat header tetap di posisi atas */
-  top: 0; /* Posisi di bagian atas */
-  left: 0;
-  z-index: 10; /* Pastikan berada di atas elemen lain */
-  display: flex;
-  justify-content: center; /* Menempatkan elemen secara horizontal di tengah */
-  align-items: center; /* Menempatkan elemen secara vertikal di tengah */
   overflow: hidden; /* Menghindari overflow */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan jika diperlukan */
+  position: fixed;
 }
-
 
 
 .header-atas .icon {
@@ -2022,7 +2014,7 @@ class Document {
         <div class="card">
             <a href="/sub?cc=${country}${
                 proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-            }">
+            }" onclick="scrollToProxySection('${country}')">
                 <img 
                     width="50" 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
@@ -2042,6 +2034,18 @@ class Document {
     console.log(flagElement); // Debug elemen HTML yang dihasilkan
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 }
+
+// Tambahkan fungsi untuk scroll ke elemen proxy-section
+function scrollToProxySection(country) {
+    const proxySection = document.getElementById("proxy-section");
+    if (proxySection) {
+        proxySection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        // Tambahkan logika lain jika diperlukan, misalnya menampilkan informasi negara
+        console.log(`Navigated to Proxy Section for Country: ${country}`);
+    }
+}
+
 
 
 

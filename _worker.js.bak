@@ -1292,7 +1292,7 @@ let baseHTML = `
   background-color: #11101d; /* Latar belakang gelap */
   height: 100px;
   overflow: hidden; /* Menghindari overflow */
-  position: relative;
+  position: fixed;
 }
 
 
