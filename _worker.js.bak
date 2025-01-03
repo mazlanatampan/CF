@@ -1504,7 +1504,9 @@ body.dark .home .text{
 
     <section class="home">
         <div class="text">Dashboard Sidebar</div>
+        <div class="card-container"
         PLACEHOLDER_BENDERA_NEGARA
+        </div>
     </section>
     
     
@@ -2036,7 +2038,7 @@ class Document {
         <div class="card">
             <a href="/sub?cc=${country}${
                 proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-            }" class="py-1">
+            }" class="">
                 <img 
                     width=50 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 

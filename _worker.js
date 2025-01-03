@@ -2038,7 +2038,7 @@ class Document {
         <div class="card">
             <a href="/sub?cc=${country}${
                 proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-            }" class="py-1">
+            }" >
                 <img 
                     width=50 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
