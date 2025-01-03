@@ -2063,6 +2063,7 @@ buildProxyGroup() {
                 }).join('')}
             </div>
         </div>
+        </div>
         `;
     }
     proxyGroupElement += "</div>"; // Close card-container

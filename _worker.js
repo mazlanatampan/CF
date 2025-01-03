@@ -1294,7 +1294,6 @@ let baseHTML = `
   position: fixed; /* Membuat header tetap di posisi atas */
   top: 0; /* Posisi di bagian atas */
   left: 0;
-  z-index: 10; /* Pastikan berada di atas elemen lain */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan jika diperlukan */
 }
 
