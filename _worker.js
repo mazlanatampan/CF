@@ -1366,7 +1366,8 @@ let baseHTML = `
     gap: 20px; /* Jarak antar card */
     padding: 20px;
     overflow-y: auto;
-    width: 100vh;
+  width: 100%; /* Gunakan lebar penuh, bukan 100vh */
+  height: auto; /* Tinggi menyesuaikan konten */
 }
 
 .card {
