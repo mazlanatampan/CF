@@ -1705,7 +1705,7 @@ function menuBtnChange() {
 
 
 
-function scrollToProxySection(country) {
+function scrollToProxySection() {
     const proxySection = document.getElementById("proxy-section");
     if (proxySection) {
         proxySection.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -2026,7 +2026,7 @@ class Document {
         <div class="card">
             <a href="/sub?cc=${country}${
                 proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-            }" onclick="scrollToProxySection('${country}')">
+            }" onclick="scrollToProxySection()">
                 <img 
                     width="50" 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
