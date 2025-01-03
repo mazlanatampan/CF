@@ -1498,21 +1498,7 @@ body.dark .home .text{
       </div>
     </div>
     <!-- Main -->
-    <div id="container-header">
-      <div id="container-info" class="bg-amber-400 border-2 border-neutral-800 text-right px-5">
-        <div class="flex justify-end gap-3 text-sm">
-          <p id="container-info-ip">IP: 127.0.0.1</p>
-          <p id="container-info-country">Country: Indonesia</p>
-          <p id="container-info-isp">ISP: Localhost</p>
-        </div>
-      </div>
-    </div>
     <div class="container">
-      <div
-        id="container-title"
-        class="sticky bg-white dark:bg-neutral-800 border-b-2 border-neutral-800 dark:border-white z-10 py-6 w-screen"
-      >
-      </div>
 
       <!-- Pagination -->
       <nav id="container-pagination" class="w-screen mt-8 sticky bottom-0 right-0 left-0 transition -translate-y-6 z-20">
