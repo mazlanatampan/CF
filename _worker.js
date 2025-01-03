@@ -1512,12 +1512,6 @@ body.dark .home .text{
         id="container-title"
         class="sticky bg-white dark:bg-neutral-800 border-b-2 border-neutral-800 dark:border-white z-10 py-6 w-screen"
       >
-        <h1 class="text-xl text-center text-neutral-800 dark:text-white">
-          
-        </h1>
-      </div>
-      <div class="flex gap-6 pt-10 w-screen justify-center">
-        
       </div>
 
       <!-- Pagination -->
