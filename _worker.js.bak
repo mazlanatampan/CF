@@ -1929,7 +1929,12 @@ function scrollToProxySection(country) {
           const pingElement = document.getElementById("ping-"+i);
           if (pingElement == undefined) return;
 
-          
+          const target = target
+          if (target) {
+            pingElement.textContent = "Checking...";
+          } else {
+            continue;
+          }
 
           let isActive = false;
           new Promise(async (resolve) => {
