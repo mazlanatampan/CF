@@ -1256,8 +1256,12 @@ let baseHTML = `
   background: none;
 }
 .home-section{
+  background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;       
   position: relative;
-  background: #E4E9F7;
   min-height: 100vh;
   top: 0;
   left: 78px;
@@ -1283,6 +1287,7 @@ let baseHTML = `
 }
     
 .card-container {
+ 
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsif */
     gap: 20px; /* Jarak antar card */
