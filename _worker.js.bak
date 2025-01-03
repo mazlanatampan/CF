@@ -1346,7 +1346,7 @@ let baseHTML = `
 .card-container {
  
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); /* Responsif */
+    grid-template-columns: repeat(3, 1fr); /* Responsif */
     gap: 20px; /* Jarak antar card */
     padding: 20px;
     overflow-y: auto;
@@ -1495,6 +1495,7 @@ let baseHTML = `
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
       PLACEHOLDER_PROXY_GROUP
+      PLACEHOLDER_PAGE_BUTTON
     </section>    
     
     
