@@ -1483,7 +1483,7 @@ let baseHTML = `
             <div class="icon-name"> MAZLANA</div>
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
-      PLACEHOLDER_BENDERA_NEGARA
+      PLACEHOLDER_PROXY_GROUP
     </section>    
     
     
