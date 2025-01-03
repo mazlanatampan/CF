@@ -1288,12 +1288,20 @@ let baseHTML = `
 
 
 .header-atas {
-
   background-color: #11101d; /* Latar belakang gelap */
   height: 100px;
+  width: 100%; /* Pastikan header mengambil seluruh lebar layar */
+  position: fixed; /* Membuat header tetap di posisi atas */
+  top: 0; /* Posisi di bagian atas */
+  left: 0;
+  z-index: 10; /* Pastikan berada di atas elemen lain */
+  display: flex;
+  justify-content: center; /* Menempatkan elemen secara horizontal di tengah */
+  align-items: center; /* Menempatkan elemen secara vertikal di tengah */
   overflow: hidden; /* Menghindari overflow */
-  position: relative;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan jika diperlukan */
 }
+
 
 
 .header-atas .icon {
