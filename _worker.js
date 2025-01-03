@@ -1283,7 +1283,42 @@ let baseHTML = `
 }
     
     
-    
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      padding: 20px;
+    }
+    .card {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+    }
+    .info-text {
+      margin-top: 10px;
+      color: #333;
+      font-size: 12px;
+      text-align: left;
+    }
+    .proxy-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 15px;
+      padding: 20px;
+    }
+    .proxy-card {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .proxy-card p {
+      margin: 5px 0;
+    }    
     
     
     
@@ -1380,6 +1415,7 @@ let baseHTML = `
     </div>
     <section class="home-section">
       <div class="text">Dashboard</div>
+      PLACEHOLDER_BENDERA_NEGARA
     </section>
     
     <!-- Notification -->
@@ -1899,26 +1935,29 @@ class Document {
         countryIpCount[country] = (countryIpCount[country] || 0) + 1;
     }
 
-    let flagElement = "";
+    let flagElement = '<div class="card-container">';
     for (const [country, count] of Object.entries(countryIpCount)) {
         flagElement += `
         <div class="card">
             <a href="/sub?cc=${country}${
                 proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-            }" class="py-1">
+            }" class="country-flag">
                 <img 
                     width=50 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
                     alt="Flag of ${country}" 
                 />
             </a>
-            <p class="country-name">${country}</p>
-            <p class="ip-count">${count} IP</p>
+          <div class="info-text">
+          <i class="bx bx-globe"> COUNTRY : ${flag}</i>
+          <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP</i>
         </div>`;
     }
-
+   flagElement += `</div>`
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 }
+
+
 
 
 
