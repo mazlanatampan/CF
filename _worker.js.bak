@@ -2014,7 +2014,7 @@ class Document {
         <div class="card">
             <a href="/sub?cc=${country}${
                 proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-            }">
+            }" onclick="scrollToProxySection('${country}')">
                 <img 
                     width="50" 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
@@ -2034,6 +2034,18 @@ class Document {
     console.log(flagElement); // Debug elemen HTML yang dihasilkan
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 }
+
+// Tambahkan fungsi untuk scroll ke elemen proxy-section
+function scrollToProxySection(country) {
+    const proxySection = document.getElementById("proxy-section");
+    if (proxySection) {
+        proxySection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        // Tambahkan logika lain jika diperlukan, misalnya menampilkan informasi negara
+        console.log(`Navigated to Proxy Section for Country: ${country}`);
+    }
+}
+
 
 
 
