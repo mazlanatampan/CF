@@ -2106,6 +2106,7 @@ buildProxyGroup() {
             </div>
         </div>
         `;
+        checkProxy();
     }
     proxyGroupElement += "</div>"; // Close card-container
 

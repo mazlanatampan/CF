@@ -2092,7 +2092,9 @@ buildProxyGroup() {
                 <i class="bx bx-globe"> IP: ${proxyData.proxyIP}:${proxyData.proxyPort}</i>
                 <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
             </div>
-            <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}</div>
+            <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}
+            checkProxy();
+            </div>
             
                 </div>
             </div>
@@ -2106,7 +2108,6 @@ buildProxyGroup() {
             </div>
         </div>
         `;
-        checkProxy();
     }
     proxyGroupElement += "</div>"; // Close card-container
 
