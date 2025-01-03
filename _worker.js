@@ -1400,6 +1400,39 @@ let baseHTML = `
     color: #555;
 }
 
+
+
+.info-text i {
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Display proxy details like organization, IP, and port */
+.proxy-details {
+    margin-top: 16px;
+}
+
+.proxy-actions {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.action-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.action-btn:hover {
+    background-color: #0056b3;
+}
+
     
     </style>
 
@@ -1995,7 +2028,7 @@ class Document {
       list: proxies,
     });
   }
-
+/*
   buildProxyGroup() {
     let proxyGroupElement = "";
     proxyGroupElement += `<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">`;
@@ -2037,6 +2070,51 @@ class Document {
 
     this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", `${proxyGroupElement}`);
   }
+*/
+
+buildProxyGroup() {
+    let proxyGroupElement = "<div class='card-container'>";
+    for (let i = 0; i < this.proxies.length; i++) {
+        const proxyData = this.proxies[i];
+
+        // Assign proxies
+        proxyGroupElement += `
+        <div class="card">
+      
+                <img 
+                    width="50" 
+                    src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" 
+                    alt="Flag of ${proxyData.country}" 
+                    class="proxy-flag"
+                />
+           
+            <div class="info-text">
+                <i class="bx bx-globe"> IP: ${proxyData.proxyIP}:${proxyData.proxyPort}</i>
+                <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
+            </div>
+            <div class="proxy-details">
+                <h5 class="font-bold text-md text-neutral-900 dark:text-white mb-1">${proxyData.org}</h5>
+                <div class="text-sm text-neutral-900 dark:text-white">
+                    <p>IP: ${proxyData.proxyIP}</p>
+                    <p>Port: ${proxyData.proxyPort}</p>
+                </div>
+            </div>
+            <div class="proxy-actions">
+                ${proxyData.list.map((proxy, x) => {
+                    const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
+                    return `
+                        <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
+                    `;
+                }).join('')}
+            </div>
+        </div>
+        `;
+    }
+    proxyGroupElement += "</div>"; // Close card-container
+
+    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
+}
+
 
   buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
