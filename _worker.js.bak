@@ -1080,7 +1080,7 @@ body {
 }
 
 ::selection {
-    color: #fff;
+   
 }
 
 body.dark {
