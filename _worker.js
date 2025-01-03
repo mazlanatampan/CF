@@ -1924,45 +1924,44 @@ function scrollToProxySection(country) {
         }
       }
 
-      function checkProxy(index, proxyIP, proxyPort) {
-    const pingElement = document.getElementById("ping-" + index);
-    if (!pingElement) return;
+      function checkProxy() {
+        for (let i = 0; ; i++) {
+          const pingElement = document.getElementById("ping-"+i);
+          if (pingElement == undefined) return;
 
-    const target = '${proxyIP}:${proxyPort}';
+          const target = pingElement.textContent.split(" ").filter((ipPort) => ipPort.match(":"))[0];
+          if (target) {
+            pingElement.textContent = "Checking...";
+          } else {
+            continue;
+          }
 
-    pingElement.textContent = "Checking...";
-
-    let isActive = false;
-
-    // Cek status proxy dengan fetch ke endpoint API atau server
-    fetch('https://${serviceName}.${rootDomain}/check?target=${target}')
-        .then(async (res) => {
-            if (isActive) return; // Jika sudah aktif, hentikan
-
-            if (res.status === 200) {
-                const jsonResp = await res.json();
-
-                if (jsonResp.proxyip === true) {
+          let isActive = false;
+          new Promise(async (resolve) => {
+            const res = await fetch("https://${serviceName}.${rootDomain}/check?target=" + target)
+              .then(async (res) => {
+                if (isActive) return;
+                if (res.status == 200) {
+                  pingElement.classList.remove("dark:text-white");
+                  const jsonResp = await res.json();
+                  if (jsonResp.proxyip === true) {
                     isActive = true;
-                    pingElement.textContent = 'Active ${jsonResp.delay} ms'; // Update status aktif
-                    pingElement.classList.remove("dark:text-white");
-                    pingElement.classList.add("text-green-600"); // Tambahkan warna hijau untuk aktif
+                    pingElement.textContent = "Active " + jsonResp.delay + " ms";
+                    pingElement.classList.add("text-green-600");
+                  } else {
+                    pingElement.textContent = "Inactive";
+                    pingElement.classList.add("text-red-600");
+                  }
                 } else {
-                    pingElement.textContent = "Inactive"; // Update status tidak aktif
-                    pingElement.classList.remove("dark:text-white");
-                    pingElement.classList.add("text-red-600"); // Tambahkan warna merah untuk tidak aktif
+                  pingElement.textContent = "Check Failed!";
                 }
-            } else {
-                pingElement.textContent = "Check Failed!"; // Jika permintaan gagal
-                pingElement.classList.add("text-yellow-600"); // Warna untuk gagal
-            }
-        })
-        .catch((error) => {
-            pingElement.textContent = "Check Failed!";
-            pingElement.classList.add("text-yellow-600"); // Warna untuk gagal
-        });
-}
-
+              })
+              .finally(() => {
+                resolve(0);
+              });
+          });
+        }
+      }
 
       function checkGeoip() {
         const containerIP = document.getElementById("container-info-ip");
@@ -2107,7 +2106,6 @@ buildProxyGroup() {
             </div>
         </div>
         `;
-        checkProxy(i, proxyData.proxyIP, proxyData.proxyPort);
     }
     proxyGroupElement += "</div>"; // Close card-container
 
@@ -2116,6 +2114,59 @@ buildProxyGroup() {
 
 
 
+
+
+function buildProxyGroup() {
+    let proxyGroupElement = "<div class='card-container'>";
+
+    // Loop melalui data proxy
+    for (let i = 0; i < this.proxies.length; i++) {
+        const proxyData = this.proxies[i];
+
+        // Bangun elemen HTML untuk setiap proxy
+        proxyGroupElement += `
+        <div class="card">
+            <img 
+                width="50" 
+                src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" 
+                alt="Flag of ${proxyData.country}" 
+                class="proxy-flag"
+            />
+            <div class="info-text">
+                <i class="bx bx-globe"> IP: ${proxyData.proxyIP}:${proxyData.proxyPort}</i>
+                <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
+            </div>
+            <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}</div>
+        </div>
+        <div class="proxy-actions">
+            ${proxyData.list.map((proxy, x) => {
+                const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
+                return `
+                    <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
+                `;
+            }).join('')}
+        </div>
+        </div>
+        `;
+
+        // Cek status proxy setelah membangun elemen
+        checkProxy(i, proxyData.proxyIP, proxyData.proxyPort); // Menambahkan pengecekan status untuk setiap proxy
+    }
+
+    proxyGroupElement += "</div>"; // Close card-container
+
+    // Gantikan placeholder dengan HTML proxy group
+    document.getElementById('proxy-group-container').innerHTML = proxyGroupElement;
+}
+
+// Fungsi untuk memeriksa status proxy
+
+// Fungsi untuk menyalin teks ke clipboard
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text)
+        .then(() => alert("Copied to clipboard!"))
+        .catch(err => alert("Failed to copy: " + err));
+}
 
 
 
@@ -2152,6 +2203,7 @@ buildProxyGroup() {
             </div>
         </div>
         `;
+        checkProxy();
     }
     flagElement += '</div>'; // Tutup card-container
 
