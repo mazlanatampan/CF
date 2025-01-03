@@ -1504,7 +1504,9 @@ body.dark .home .text{
 
     <section class="home">
         <div class="text">Dashboard Sidebar</div>
+        <div class="card-container"
         PLACEHOLDER_BENDERA_NEGARA
+        </div>
     </section>
     
     
