@@ -1517,7 +1517,7 @@ body.dark .home .text{
         </h1>
       </div>
       <div class="flex gap-6 pt-10 w-screen justify-center">
-        PLACEHOLDER_PROXY_GROUP
+        
       </div>
 
       <!-- Pagination -->
