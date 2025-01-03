@@ -1924,44 +1924,45 @@ function scrollToProxySection(country) {
         }
       }
 
-      function checkProxy() {
-        for (let i = 0; ; i++) {
-          const pingElement = document.getElementById("ping-"+i);
-          if (pingElement == undefined) return;
+      function checkProxy(index, proxyIP, proxyPort) {
+    const pingElement = document.getElementById("ping-" + index);
+    if (!pingElement) return;
 
-          const target = pingElement.textContent.split(" ").filter((ipPort) => ipPort.match(":"))[0];
-          if (target) {
-            pingElement.textContent = "Checking...";
-          } else {
-            continue;
-          }
+    const target = '${proxyIP}:${proxyPort}';
 
-          let isActive = false;
-          new Promise(async (resolve) => {
-            const res = await fetch("https://${serviceName}.${rootDomain}/check?target=" + target)
-              .then(async (res) => {
-                if (isActive) return;
-                if (res.status == 200) {
-                  pingElement.classList.remove("dark:text-white");
-                  const jsonResp = await res.json();
-                  if (jsonResp.proxyip === true) {
+    pingElement.textContent = "Checking...";
+
+    let isActive = false;
+
+    // Cek status proxy dengan fetch ke endpoint API atau server
+    fetch('https://${serviceName}.${rootDomain}/check?target=${target}')
+        .then(async (res) => {
+            if (isActive) return; // Jika sudah aktif, hentikan
+
+            if (res.status === 200) {
+                const jsonResp = await res.json();
+
+                if (jsonResp.proxyip === true) {
                     isActive = true;
-                    pingElement.textContent = "Active " + jsonResp.delay + " ms";
-                    pingElement.classList.add("text-green-600");
-                  } else {
-                    pingElement.textContent = "Inactive";
-                    pingElement.classList.add("text-red-600");
-                  }
+                    pingElement.textContent = 'Active ${jsonResp.delay} ms'; // Update status aktif
+                    pingElement.classList.remove("dark:text-white");
+                    pingElement.classList.add("text-green-600"); // Tambahkan warna hijau untuk aktif
                 } else {
-                  pingElement.textContent = "Check Failed!";
+                    pingElement.textContent = "Inactive"; // Update status tidak aktif
+                    pingElement.classList.remove("dark:text-white");
+                    pingElement.classList.add("text-red-600"); // Tambahkan warna merah untuk tidak aktif
                 }
-              })
-              .finally(() => {
-                resolve(0);
-              });
-          });
-        }
-      }
+            } else {
+                pingElement.textContent = "Check Failed!"; // Jika permintaan gagal
+                pingElement.classList.add("text-yellow-600"); // Warna untuk gagal
+            }
+        })
+        .catch((error) => {
+            pingElement.textContent = "Check Failed!";
+            pingElement.classList.add("text-yellow-600"); // Warna untuk gagal
+        });
+}
+
 
       function checkGeoip() {
         const containerIP = document.getElementById("container-info-ip");
@@ -2106,11 +2107,20 @@ buildProxyGroup() {
             </div>
         </div>
         `;
+        checkProxy(i, proxyData.proxyIP, proxyData.proxyPort);
     }
     proxyGroupElement += "</div>"; // Close card-container
 
     this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
 }
+
+
+
+
+
+
+
+
 
 
   buildCountryFlag() {
