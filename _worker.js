@@ -1334,6 +1334,11 @@ let baseHTML = `
 }
 
 }
+
+.proxy-section {
+    display: none; /* Tersembunyi secara default */
+}
+
     
 .card-container {
  
@@ -1342,6 +1347,7 @@ let baseHTML = `
     gap: 20px; /* Jarak antar card */
     padding: 20px;
     overflow-y: auto;
+    width: 100vh;
 }
 
 .card {
@@ -1705,13 +1711,16 @@ function menuBtnChange() {
 
 
 
-function scrollToProxySection() {
-    const proxySection = document.getElementById("proxy-section");
-    if (proxySection) {
-        proxySection.scrollIntoView({ behavior: "smooth", block: "start" });
+function scrollToProxySection(country) {
+    // Sembunyikan home-section
+    const homeSection = document.querySelector(".home-section");
+    if (homeSection) homeSection.style.display = "none";
 
-    }
+    // Tampilkan proxy-section
+    const proxySection = document.querySelector(".proxy-section");
+    if (proxySection) proxySection.style.display = "block";
 }
+
 
 
       const rootDomain = "${serviceName}.${rootDomain}";
