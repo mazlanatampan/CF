@@ -1288,11 +1288,14 @@ let baseHTML = `
 
 
 .header-atas {
-
   background-color: #11101d; /* Latar belakang gelap */
   height: 100px;
-  overflow: hidden; /* Menghindari overflow */
-  position: fixed;
+  width: 100%; /* Pastikan header mengambil seluruh lebar layar */
+  position: fixed; /* Membuat header tetap di posisi atas */
+  top: 0; /* Posisi di bagian atas */
+  left: 0;
+  z-index: 10; /* Pastikan berada di atas elemen lain */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan jika diperlukan */
 }
 
 
@@ -2033,9 +2036,7 @@ class Document {
     for (const [country, count] of Object.entries(countryIpCount)) {
         flagElement += `
         <div class="card">
-            <a href="/sub?cc=${country}${
-                proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-            }" onclick="scrollToProxySection()">
+            <a href="javascript:void(0);" onclick="scrollToProxySection('${country}')">
                 <img 
                     width="50" 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 

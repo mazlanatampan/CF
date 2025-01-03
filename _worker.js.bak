@@ -1334,6 +1334,11 @@ let baseHTML = `
 }
 
 }
+
+.proxy-section {
+    display: none; /* Tersembunyi secara default */
+}
+
     
 .card-container {
  
