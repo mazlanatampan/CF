@@ -1924,17 +1924,12 @@ function scrollToProxySection(country) {
         }
       }
 
-      function checkProxy() {
+      function checkProxy(target) {
         for (let i = 0; ; i++) {
           const pingElement = document.getElementById("ping-"+i);
           if (pingElement == undefined) return;
 
-          const target = pingElement.textContent.split(" ").filter((ipPort) => ipPort.match(":"))[0];
-          if (target) {
-            pingElement.textContent = "Checking...";
-          } else {
-            continue;
-          }
+          
 
           let isActive = false;
           new Promise(async (resolve) => {
@@ -2093,7 +2088,7 @@ buildProxyGroup() {
                 <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
             </div>
             <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}
-            checkProxy();
+            checkProxy(${proxyData.proxyIP}:${proxyData.proxyPort});
             </div>
             
                 </div>
