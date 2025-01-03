@@ -1303,7 +1303,7 @@ let baseHTML = `
     border-radius: 8px;
     padding: 15px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    background: #fff; /* Tambahkan latar belakang putih */
+    background: rgba(255,255,255,0.7);
     text-align: center;
 }
 

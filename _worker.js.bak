@@ -1287,6 +1287,7 @@ let baseHTML = `
 }
     
 .card-container {
+ 
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsif */
     gap: 20px; /* Jarak antar card */
