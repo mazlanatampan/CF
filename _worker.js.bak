@@ -1949,8 +1949,8 @@ class Document {
                 />
             </a>
           <div class="info-text">
-          <i class="bx bx-globe"> COUNTRY : ${flag}</i>
-          <i class='bx bxs-microchip'> TOTAL IP : ${countryCount[flag]} IP</i>
+          <i class="bx bx-globe"> COUNTRY : ${country}</i>
+          <i class='bx bxs-microchip'> TOTAL IP : ${count} IP</i>
         </div>`;
     }
    flagElement += `</div>`

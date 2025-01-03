@@ -1953,7 +1953,6 @@ class Document {
           <i class='bx bxs-microchip'> TOTAL IP : ${count} IP</i>
         </div>`;
     }
-   flagElement += `</div>`
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 }
 
