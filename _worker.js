@@ -1346,7 +1346,7 @@ let baseHTML = `
 .card-container {
  
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsif */
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); /* Responsif */
     gap: 20px; /* Jarak antar card */
     padding: 20px;
     overflow-y: auto;
@@ -1495,6 +1495,7 @@ let baseHTML = `
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
       PLACEHOLDER_PROXY_GROUP
+      PLACEHOLDER_PAGE_BUTTON
     </section>    
     
     
@@ -1536,7 +1537,7 @@ let baseHTML = `
       <!-- Pagination -->
       <nav id="container-pagination" class="w-screen mt-8 sticky bottom-0 right-0 left-0 transition -translate-y-6 z-20">
         <ul class="flex justify-center space-x-4">
-          PLACEHOLDER_PAGE_BUTTON
+          
         </ul>
       </nav>
     </div>
