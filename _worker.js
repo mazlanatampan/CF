@@ -1998,20 +1998,35 @@ class Document {
 
   buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
-    const flagList = [];
+    const countryIpCount = {};
+
+    // Hitung jumlah IP per negara
     for (const proxy of cachedProxyList) {
-      flagList.push(proxy.country);
+        const country = proxy.country;
+        countryIpCount[country] = (countryIpCount[country] || 0) + 1;
     }
 
     let flagElement = "";
-    for (const flag of new Set(flagList)) {
-      flagElement += `<a href="/sub?cc=${flag}${
-        proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-      }" class="py-1" ><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
+    for (const [country, count] of Object.entries(countryIpCount)) {
+        flagElement += `
+        <div class="card" style="display: inline-block; margin: 5px; text-align: center; width: 100px;">
+            <a href="/sub?cc=${country}${
+                proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
+            }" class="py-1">
+                <img 
+                    width=50 
+                    src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
+                    alt="Flag of ${country}" 
+                />
+            </a>
+            <p style="margin: 5px 0;">${country}</p>
+            <p style="margin: 0; font-size: 12px;">${count} IP</p>
+        </div>`;
     }
 
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
-  }
+}
+
 
   addPageButton(text, link, isDisabled) {
     const pageButton = `<li><button ${
