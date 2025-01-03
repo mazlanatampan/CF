@@ -2106,72 +2106,12 @@ buildProxyGroup() {
             </div>
         </div>
         `;
+        checkProxy();
     }
     proxyGroupElement += "</div>"; // Close card-container
 
     this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
 }
-
-
-
-
-
-function buildProxyGroup() {
-    let proxyGroupElement = "<div class='card-container'>";
-
-    // Loop melalui data proxy
-    for (let i = 0; i < this.proxies.length; i++) {
-        const proxyData = this.proxies[i];
-
-        // Bangun elemen HTML untuk setiap proxy
-        proxyGroupElement += `
-        <div class="card">
-            <img 
-                width="50" 
-                src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" 
-                alt="Flag of ${proxyData.country}" 
-                class="proxy-flag"
-            />
-            <div class="info-text">
-                <i class="bx bx-globe"> IP: ${proxyData.proxyIP}:${proxyData.proxyPort}</i>
-                <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
-            </div>
-            <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}</div>
-        </div>
-        <div class="proxy-actions">
-            ${proxyData.list.map((proxy, x) => {
-                const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
-                return `
-                    <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
-                `;
-            }).join('')}
-        </div>
-        </div>
-        `;
-
-        // Cek status proxy setelah membangun elemen
-        checkProxy(i, proxyData.proxyIP, proxyData.proxyPort); // Menambahkan pengecekan status untuk setiap proxy
-    }
-
-    proxyGroupElement += "</div>"; // Close card-container
-
-    // Gantikan placeholder dengan HTML proxy group
-    document.getElementById('proxy-group-container').innerHTML = proxyGroupElement;
-}
-
-// Fungsi untuk memeriksa status proxy
-
-// Fungsi untuk menyalin teks ke clipboard
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text)
-        .then(() => alert("Copied to clipboard!"))
-        .catch(err => alert("Failed to copy: " + err));
-}
-
-
-
-
-
 
 
   buildCountryFlag() {
@@ -2203,7 +2143,6 @@ function copyToClipboard(text) {
             </div>
         </div>
         `;
-        checkProxy();
     }
     flagElement += '</div>'; // Tutup card-container
 
