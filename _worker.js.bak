@@ -1702,6 +1702,20 @@ function menuBtnChange() {
    closeBtn.classList.replace("bx-menu-alt-right","bx-menu");//replacing the iocns class
  }
 }
+
+
+
+function scrollToProxySection(country) {
+    const proxySection = document.getElementById("proxy-section");
+    if (proxySection) {
+        proxySection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        // Tambahkan logika lain jika diperlukan, misalnya menampilkan informasi negara
+        console.log(`Navigated to Proxy Section for Country: ${country}`);
+    }
+}
+
+
       const rootDomain = "${serviceName}.${rootDomain}";
       const notification = document.getElementById("notification-badge");
       const windowContainer = document.getElementById("container-window");
@@ -2035,16 +2049,7 @@ class Document {
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 }
 
-// Tambahkan fungsi untuk scroll ke elemen proxy-section
-function scrollToProxySection(country) {
-    const proxySection = document.getElementById("proxy-section");
-    if (proxySection) {
-        proxySection.scrollIntoView({ behavior: "smooth", block: "start" });
 
-        // Tambahkan logika lain jika diperlukan, misalnya menampilkan informasi negara
-        console.log(`Navigated to Proxy Section for Country: ${country}`);
-    }
-}
 
 
 

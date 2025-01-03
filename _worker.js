@@ -1710,8 +1710,6 @@ function scrollToProxySection(country) {
     if (proxySection) {
         proxySection.scrollIntoView({ behavior: "smooth", block: "start" });
 
-        // Tambahkan logika lain jika diperlukan, misalnya menampilkan informasi negara
-        console.log(`Navigated to Proxy Section for Country: ${country}`);
     }
 }
 
