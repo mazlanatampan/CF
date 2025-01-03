@@ -1493,7 +1493,7 @@ body.dark .home .text{
         class="h-full fixed top-0 w-14 bg-white dark:bg-neutral-800 border-r-2 border-neutral-800 dark:border-white z-20 overflow-y-scroll scrollbar-hide"
       >
         <div class="text-2xl flex flex-col items-center h-full gap-2">
-          PLACEHOLDER_BENDERA_NEGARA
+         
         </div>
       </div>
     </div>
@@ -1513,7 +1513,7 @@ body.dark .home .text{
         class="sticky bg-white dark:bg-neutral-800 border-b-2 border-neutral-800 dark:border-white z-10 py-6 w-screen"
       >
         <h1 class="text-xl text-center text-neutral-800 dark:text-white">
-          PLACEHOLDER_JUDUL
+          
         </h1>
       </div>
       <div class="flex gap-6 pt-10 w-screen justify-center">
