@@ -1976,6 +1976,27 @@ function scrollToProxySection(country) {
           }
         });
       }
+      
+      
+      
+      
+      function loadCountryData(country) {
+    // Membuat URL untuk request
+    const url = '/sub?cc=${country}';
+
+    // Menggunakan fetch untuk memuat data
+    fetch(url)
+        .then(response => response.json()) // Mengasumsikan respons berupa JSON
+        .then(data => {
+            // Menangani data yang diterima dan memuatnya ke bagian halaman yang sesuai
+            // Misalnya, menampilkan data pada bagian tertentu dari halaman
+            document.getElementById("ip-info").innerHTML = 'Data for country ${country}: ${JSON.stringify(data)}'
+        })
+        .catch(error => {
+            console.error('Error loading data:', error);
+            document.getElementById("ip-info").innerHTML = 'Failed to load data.';
+        });
+}
 
       window.onload = () => {
         checkGeoip();
@@ -2090,7 +2111,8 @@ buildProxyGroup() {
     for (const [country, count] of Object.entries(countryIpCount)) {
         flagElement += `
         <div class="card">
-            <a href="javascript:void(0);" onclick="scrollToProxySection('${country}')">
+            <a href="javascript:void(0);" onclick="loadCountryData('${country}')">
+                
                 <img 
                     width="50" 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
