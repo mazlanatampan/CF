@@ -2031,15 +2031,17 @@ class Document {
     });
   }
 
-buildProxyGroup() {
+buildProxyGroup(country) {
     let proxyGroupElement = "<div class='card-container'>";
-    for (let i = 0; i < this.proxies.length; i++) {
-        const proxyData = this.proxies[i];
 
-        // Assign proxies
+    // Filter proxies berdasarkan negara yang dipilih
+    const filteredProxies = this.proxies.filter(proxy => proxy.country.toLowerCase() === country.toLowerCase());
+
+    for (let i = 0; i < filteredProxies.length; i++) {
+        const proxyData = filteredProxies[i];
+
         proxyGroupElement += `
         <div class="card">
-      
                 <img 
                     width="50" 
                     src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" 
@@ -2070,11 +2072,13 @@ buildProxyGroup() {
     }
     proxyGroupElement += "</div>"; // Close card-container
 
+    // Replace placeholder dengan elemen HTML baru
     this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
 }
 
 
-  buildCountryFlag() {
+
+buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
     const countryIpCount = {};
 
@@ -2090,7 +2094,7 @@ buildProxyGroup() {
     for (const [country, count] of Object.entries(countryIpCount)) {
         flagElement += `
         <div class="card">
-            <a href="javascript:void(0);" onclick="scrollToProxySection('${country}')">
+            <a href="javascript:void(0);" onclick="scrollToProxySection('${country}'); buildProxyGroup('${country}');">
                 <img 
                     width="50" 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
@@ -2107,9 +2111,9 @@ buildProxyGroup() {
     flagElement += '</div>'; // Tutup card-container
 
     // Gantikan placeholder dengan elemen HTML yang dihasilkan
-    console.log(flagElement); // Debug elemen HTML yang dihasilkan
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 }
+
 
 
 
