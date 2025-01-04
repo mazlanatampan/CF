@@ -2100,7 +2100,9 @@ async buildProxyGroup(country) {
     for (const [country, count] of Object.entries(countryIpCount)) {
         flagElement += `
         <div class="card">
-            <a href="javascript:void(0);" onclick="buildProxyGroup('${country}')">
+<a href="javascript:void(0);" 
+               onclick="handleCountryClick('${country}')">
+                
                 <img 
                     width="50" 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 

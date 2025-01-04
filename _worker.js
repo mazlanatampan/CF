@@ -2037,7 +2037,7 @@ class Document {
     });
   }
 
-async buildProxyGroup(country) {
+buildProxyGroup(country) {
     // Filter proxies by country
     const filteredProxies = this.proxies.filter(proxy => proxy.country.toUpperCase() === country.toUpperCase());
 
