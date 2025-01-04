@@ -1764,6 +1764,14 @@ function menuBtnChange() {
 }
 
 
+function handleCountryClick(country) {
+    // Call buildProxyGroup to show the proxies for the selected country
+    buildProxyGroup(country);
+
+    // Call scrollToProxySection to scroll to the proxy section for the selected country
+    scrollToProxySection(country);
+}
+
 
 function scrollToProxySection(country) {
     // Sembunyikan home-section
@@ -2071,7 +2079,7 @@ async buildProxyGroup(country) {
     proxyGroupElement += "</div>"; // Close card-container
 
     // Replace the placeholder with the generated proxy group HTML
-    this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", proxyGroupElement);
+    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
 }
 
 
@@ -2092,7 +2100,9 @@ async buildProxyGroup(country) {
     for (const [country, count] of Object.entries(countryIpCount)) {
         flagElement += `
         <div class="card">
-            <a href="javascript:void(0);" onclick="buildProxyGroup('${country}')">
+<a href="javascript:void(0);" 
+               onclick="handleCountryClick('${country}')">
+                
                 <img 
                     width="50" 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
