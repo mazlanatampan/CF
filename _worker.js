@@ -1292,6 +1292,7 @@ let baseHTML = `
   height: 100px;
   width: 100%; /* Pastikan header mengambil seluruh lebar layar */
   position: fixed; /* Membuat header tetap di posisi atas */
+  z-index:10;
   top: 0; /* Posisi di bagian atas */
   left: 0;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan jika diperlukan */
