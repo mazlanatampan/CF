@@ -181,12 +181,12 @@ export default {
         isApiReady = true;
       }
 
-      // Handle proxy client (WebSocket)
+      // Handle proxy client
       if (upgradeHeader === "websocket") {
         const proxyMatch = url.pathname.match(/^\/(.+[:=-]\d+)$/);
 
         if (url.pathname.length == 3 || url.pathname.match(",")) {
-          // Example: /ID, /SG, etc.
+          // Contoh: /ID, /SG, dll
           const proxyKeys = url.pathname.replace("/", "").toUpperCase().split(",");
           const proxyKey = proxyKeys[Math.floor(Math.random() * proxyKeys.length)];
           let kvProxy = await env.nautica.get("kvProxy");
@@ -208,7 +208,6 @@ export default {
         }
       }
 
-      // Handle proxy and flag sections
       if (url.pathname.startsWith("/sub")) {
         const page = url.pathname.match(/^\/sub\/(\d+)$/);
         const pageIndex = parseInt(page ? page[1] : "0");
@@ -218,34 +217,20 @@ export default {
         const countrySelect = url.searchParams.get("cc")?.split(",");
         const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
         let proxyList = (await getProxyList(proxyBankUrl)).filter((proxy) => {
-          // Filter proxies by country if provided
+          // Filter proxies by Country
           if (countrySelect) {
             return countrySelect.includes(proxy.country);
           }
+
           return true;
         });
 
-        // Create instances of DocumentProxies and DocumentFlags
-        const proxiesDoc = new DocumentProxies(request);
-        const flagsDoc = new DocumentFlags(request, proxyList);
-
-        // Process proxy section (for example `/sub`)
-        proxiesDoc.setTitle("Proxy List for Sub");
-        proxiesDoc.buildProxyGroup(countrySelect ? countrySelect[0] : "sg");  // Example: filter by first country in cc
-        flagsDoc.buildCountryFlag();  // Build the country flag section
-
-        // Combine both HTML sections (Proxies + Flags)
-        let finalHTML = proxiesDoc.build();  // Proxy HTML
-        finalHTML += flagsDoc.build();       // Country flag HTML
-
-        return new Response(finalHTML, {
+        const result = getAllConfig(request, hostname, proxyList, pageIndex);
+        return new Response(result, {
           status: 200,
-          headers: { "Content-Type": "text/html;charset=utf-8" }
+          headers: { "Content-Type": "text/html;charset=utf-8" },
         });
-      }
-
-      // Handle other paths like /check, /api/v1, etc.
-      if (url.pathname.startsWith("/check")) {
+      } else if (url.pathname.startsWith("/check")) {
         const target = url.searchParams.get("target").split(":");
         const result = await checkProxyHealth(target[0], target[1] || "443");
 
@@ -259,7 +244,6 @@ export default {
       } else if (url.pathname.startsWith("/api/v1")) {
         const apiPath = url.pathname.replace("/api/v1", "");
 
-        // Example API handling
         if (apiPath.startsWith("/domains")) {
           if (!isApiReady) {
             return new Response("Api not ready", {
@@ -288,14 +272,117 @@ export default {
               },
             });
           }
+        } else if (apiPath.startsWith("/sub")) {
+          const filterCC = url.searchParams.get("cc")?.split(",") || [];
+          const filterPort = url.searchParams.get("port")?.split(",") || PORTS;
+          const filterVPN = url.searchParams.get("vpn")?.split(",") || PROTOCOLS;
+          const filterLimit = parseInt(url.searchParams.get("limit")) || 10;
+          const filterFormat = url.searchParams.get("format") || "raw";
+          const fillerDomain = url.searchParams.get("domain") || APP_DOMAIN;
+
+          const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
+          const proxyList = await getProxyList(proxyBankUrl)
+            .then((proxies) => {
+              // Filter CC
+              if (filterCC.length) {
+                return proxies.filter((proxy) => filterCC.includes(proxy.country));
+              }
+              return proxies;
+            })
+            .then((proxies) => {
+              // shuffle result
+              shuffleArray(proxies);
+              return proxies;
+            });
+
+          const uuid = crypto.randomUUID();
+          const result = [];
+          for (const proxy of proxyList) {
+            const uri = new URL(`trojan://${fillerDomain}`);
+            uri.searchParams.set("encryption", "none");
+            uri.searchParams.set("type", "ws");
+            uri.searchParams.set("host", APP_DOMAIN);
+
+            for (const port of filterPort) {
+              for (const protocol of filterVPN) {
+                if (result.length >= filterLimit) break;
+
+                uri.protocol = protocol;
+                uri.port = port.toString();
+                if (protocol == "ss") {
+                  uri.username = btoa(`none:${uuid}`);
+                } else {
+                  uri.username = uuid;
+                }
+
+                uri.searchParams.set("security", port == 443 ? "tls" : "none");
+                uri.searchParams.set("sni", port == 80 && protocol == "vless" ? "" : APP_DOMAIN);
+                uri.searchParams.set("path", `/${proxy.proxyIP}-${proxy.proxyPort}`);
+
+                uri.hash = `${result.length + 1} ${getFlagEmoji(proxy.country)} ${proxy.org} WS ${
+                  port == 443 ? "TLS" : "NTLS"
+                } [${serviceName}]`;
+                result.push(uri.toString());
+              }
+            }
+          }
+
+          let finalResult = "";
+          switch (filterFormat) {
+            case "raw":
+              finalResult = result.join("\n");
+              break;
+            case "clash":
+            case "sfa":
+            case "bfr":
+            case "v2ray":
+              const encodedResult = [];
+              for (const proxy of result) {
+                encodedResult.push(encodeURIComponent(proxy));
+              }
+
+              // finalResult = `${CONVERTER_URL}?target=${filterFormat}&url=${encodedResult.join(",")}`;
+              const res = await fetch(`${CONVERTER_URL}?target=${filterFormat}&url=${encodedResult.join(",")}`);
+              if (res.status == 200) {
+                finalResult = await res.text();
+              } else {
+                return new Response(res.statusText, {
+                  status: res.status,
+                  headers: {
+                    ...CORS_HEADER_OPTIONS,
+                  },
+                });
+              }
+              break;
+          }
+
+          return new Response(finalResult, {
+            status: 200,
+            headers: {
+              ...CORS_HEADER_OPTIONS,
+            },
+          });
+        } else if (apiPath.startsWith("/myip")) {
+          return new Response(
+            JSON.stringify({
+              ip:
+                request.headers.get("cf-connecting-ipv6") ||
+                request.headers.get("cf-connecting-ip") ||
+                request.headers.get("x-real-ip"),
+              colo: request.headers.get("cf-ray")?.split("-")[1],
+              ...request.cf,
+            }),
+            {
+              headers: {
+                ...CORS_HEADER_OPTIONS,
+              },
+            }
+          );
         }
-        // Additional API routes can be added here as needed
       }
 
-      // Reverse Proxy fallback
       const targetReverseProxy = env.REVERSE_PROXY_TARGET || "example.com";
       return await reverseProxy(request, targetReverseProxy);
-
     } catch (err) {
       return new Response(`An error occurred: ${err.toString()}`, {
         status: 500,
@@ -306,8 +393,6 @@ export default {
     }
   },
 };
-
-
 
 async function websocketHandler(request) {
   const webSocketPair = new WebSocketPair();
@@ -1946,25 +2031,18 @@ class Document {
     });
   }
 
-buildProxyGroup(country) {
+buildProxyGroup() {
     let proxyGroupElement = "<div class='card-container'>";
+    for (let i = 0; i < this.proxies.length; i++) {
+        const proxyData = this.proxies[i];
 
-// Filter proxies berdasarkan negara yang dipilih tanpa mengubah menjadi lowercase
-const filteredProxies = this.proxies.filter(proxy => 
-    proxy.country && proxy.country === country
-);
-
-if (filteredProxies.length === 0) {
-    proxyGroupElement = '<p>No proxies available for the selected country.</p>';
-} else {
-    for (let i = 0; i < filteredProxies.length; i++) {
-        const proxyData = filteredProxies[i];
-
+        // Assign proxies
         proxyGroupElement += `
         <div class="card">
+      
                 <img 
                     width="50" 
-                    src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country}.svg" 
+                    src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" 
                     alt="Flag of ${proxyData.country}" 
                     class="proxy-flag"
                 />
@@ -1990,18 +2068,13 @@ if (filteredProxies.length === 0) {
         </div>
         `;
     }
-}
+    proxyGroupElement += "</div>"; // Close card-container
 
-proxyGroupElement += "</div>"; // Close card-container
-
-// Replace placeholder dengan elemen HTML baru
-this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
-
-
+    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
 }
 
 
-buildCountryFlag() {
+  buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
     const countryIpCount = {};
 
@@ -2017,7 +2090,7 @@ buildCountryFlag() {
     for (const [country, count] of Object.entries(countryIpCount)) {
         flagElement += `
         <div class="card">
-            <a href="javascript:void(0);" onclick="scrollToProxySection('${country}'); buildProxyGroup('${country}');">
+            <a href="javascript:void(0);" onclick="scrollToProxySection('${country}')">
                 <img 
                     width="50" 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
@@ -2034,10 +2107,9 @@ buildCountryFlag() {
     flagElement += '</div>'; // Tutup card-container
 
     // Gantikan placeholder dengan elemen HTML yang dihasilkan
+    console.log(flagElement); // Debug elemen HTML yang dihasilkan
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 }
-
-
 
 
 
@@ -2062,143 +2134,6 @@ buildCountryFlag() {
 
     this.html = this.html.replaceAll("PLACEHOLDER_API_READY", isApiReady ? "block" : "hidden");
 
-    return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
-  }
-}
-
-
-
-
-class DocumentProxies {
-  proxies = [];
-
-  constructor(request) {
-    this.html = baseHTML;
-    this.request = request;
-    this.url = new URL(this.request.url);
-  }
-
-  setTitle(title) {
-    this.html = this.html.replaceAll("PLACEHOLDER_JUDUL", title);
-  }
-
-  addInfo(text) {
-    text = `<span>${text}</span>`;
-    this.html = this.html.replaceAll("PLACEHOLDER_INFO", `${text}\nPLACEHOLDER_INFO`);
-  }
-
-  registerProxies(data, proxies) {
-    this.proxies.push({
-      ...data,
-      list: proxies,
-    });
-  }
-
-  buildProxyGroup(country) {
-    let proxyGroupElement = "<div class='card-container'>";
-
-    // Filter proxies based on the selected country
-    const filteredProxies = this.proxies.filter(proxy => 
-      proxy.country && proxy.country === country
-    );
-
-    if (filteredProxies.length === 0) {
-      proxyGroupElement = '<p>No proxies available for the selected country.</p>';
-    } else {
-      for (let i = 0; i < filteredProxies.length; i++) {
-        const proxyData = filteredProxies[i];
-
-        proxyGroupElement += `
-        <div class="card">
-                <img 
-                    width="50" 
-                    src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country}.svg" 
-                    alt="Flag of ${proxyData.country}" 
-                    class="proxy-flag"
-                />
-           
-            <div class="info-text">
-                <i class="bx bx-globe"> IP: ${proxyData.proxyIP}</i>
-                <i class="bx bx-globe"> PORT: ${proxyData.proxyPort}</i>
-                <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
-                <i class="bx bxs-microchip"> STATUS: </i>
-            <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}
-            checkProxy();
-            </div>
-            
-            <div class="proxy-actions">
-                ${proxyData.list.map((proxy, x) => {
-                    const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
-                    return `
-                        <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
-                    `;
-                }).join('')}
-            </div>
-        </div>
-        </div>
-        `;
-      }
-    }
-
-    proxyGroupElement += "</div>"; // Close card-container
-
-    // Replace placeholder with the generated HTML element
-    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
-  }
-
-  build() {
-    this.html = this.html.replaceAll("PLACEHOLDER_API_READY", isApiReady ? "block" : "hidden");
-    return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
-  }
-}
-
-
-
-class DocumentFlags {
-  constructor(request, cachedProxyList) {
-    this.html = baseHTML;
-    this.request = request;
-    this.url = new URL(this.request.url);
-    this.cachedProxyList = cachedProxyList;
-  }
-
-  buildCountryFlag() {
-    const proxyBankUrl = this.url.searchParams.get("proxy-list");
-    const countryIpCount = {};
-
-    // Count IPs per country
-    for (const proxy of this.cachedProxyList) {
-      if (!proxy.country) continue; // Skip if no country info
-      const country = proxy.country.toUpperCase(); // Ensure uppercase consistency
-      countryIpCount[country] = (countryIpCount[country] || 0) + 1;
-    }
-
-    // Build HTML element
-    let flagElement = '<div class="card-container">';
-    for (const [country, count] of Object.entries(countryIpCount)) {
-      flagElement += `
-      <div class="card">
-          <a href="javascript:void(0);" onclick="scrollToProxySection('${country}'); buildProxyGroup('${country}');">
-              <img 
-                  width="50" 
-                  src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
-                  alt="Flag of ${country}" 
-              />
-          </a>
-          <div class="info-text">
-              <i class="bx bx-globe"> COUNTRY : ${country}</i>
-              <i class="bx bxs-microchip"> TOTAL IP : ${count} IP</i>
-          </div>
-      </div>
-      `;
-    }
-    flagElement += '</div>'; // Close card-container
-
-    // Replace placeholder with the generated HTML element
-    this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
-  }
-
-  build() {
     return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
   }
 }
