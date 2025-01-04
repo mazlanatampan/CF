@@ -1544,8 +1544,8 @@ let baseHTML = `
             <div class="icon-name"> MAZLANA</div>
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
-      PLACEHOLDER_PROXY_GROUP
-      PLACEHOLDER_PAGE_BUTTON
+      <div id="proxy-group"></div>
+
     </section>    
     
     

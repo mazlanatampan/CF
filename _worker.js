@@ -1999,8 +1999,9 @@ function scrollToProxySection(country) {
         }
       };
       
-      async function buildProxyGroup(selectedCountry) {
+      async function buildProxyGroup(country) {
     try {
+    let selectedCountry = country;
         // Fetch data dari URL berdasarkan negara yang dipilih
         const response = await fetch('https://mazlana.destimyangel.my.id/sub?cc=${selectedCountry.toLowerCase()}');
         
