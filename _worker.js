@@ -1351,7 +1351,7 @@ let baseHTML = `
   width: calc(100% - 78px);
   transition: all 0.5s ease;
   z-index: 2;
-  overflow: hidden;
+  
   display: none;
 }
 .sidebar.open ~ .home-section{
@@ -2005,12 +2005,13 @@ function scrollToProxySection(country) {
 `;
 
 class Document {
-  proxies = [];
-  
+  proxies = []; // Menyimpan daftar proxy
+  cachedProxyList = []; // Cache untuk daftar proxy yang diambil dari proxy-bank URL
+
   constructor(request) {
-    this.html = baseHTML;
+    this.html = baseHTML; // HTML dasar yang akan diubah
     this.request = request;
-    this.url = new URL(this.request.url);
+    this.url = new URL(this.request.url); // Mengambil URL dari request
   }
 
   setTitle(title) {
@@ -2029,122 +2030,91 @@ class Document {
     });
   }
 
-  // Method to generate the country flag list and handle click events
+  // Fungsi untuk menampilkan grup proxy sesuai dengan negara yang dipilih
+  buildProxyGroup(country) {
+    // Filter proxies berdasarkan negara yang dipilih
+    let filteredProxies = this.proxies.filter(proxy => proxy.country === country);
+
+    let proxyGroupElement = "<div class='card-container'>";
+
+    if (filteredProxies.length === 0) {
+      proxyGroupElement += `<div class="card">No proxies available for ${country}</div>`;
+    } else {
+      for (let i = 0; i < filteredProxies.length; i++) {
+        const proxyData = filteredProxies[i];
+
+        // Bangun elemen HTML untuk proxy
+        proxyGroupElement += `
+        <div class="card">
+          <img 
+              width="50" 
+              src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" 
+              alt="Flag of ${proxyData.country}" 
+              class="proxy-flag"
+          />
+          <div class="info-text">
+              <i class="bx bx-globe"> IP: ${proxyData.proxyIP}</i>
+              <i class="bx bx-globe"> PORT: ${proxyData.proxyPort}</i>
+              <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
+              <i class="bx bxs-microchip"> STATUS: </i>
+              <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}</div>
+          </div>
+          <div class="proxy-actions">
+              ${proxyData.list.map((proxy, x) => {
+                  const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
+                  return `
+                      <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
+                  `;
+              }).join('')}
+          </div>
+        </div>`;
+      }
+    }
+
+    proxyGroupElement += "</div>"; // Tutup card-container
+
+    // Gantikan placeholder dengan elemen HTML yang dihasilkan
+    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
+  }
+
+  // Fungsi untuk menampilkan bendera negara dan informasi jumlah proxy berdasarkan negara
   buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
     const countryIpCount = {};
 
-    // Count IPs per country
-    for (const proxy of cachedProxyList) {
-      if (!proxy.country) continue; // Skip if no country information
-      const country = proxy.country.toUpperCase(); // Ensure consistency with uppercase
+    // Hitung jumlah IP per negara dari cachedProxyList
+    for (const proxy of this.cachedProxyList) {
+      if (!proxy.country) continue; // Lewati jika tidak ada informasi negara
+      const country = proxy.country.toUpperCase(); // Pastikan konsistensi uppercase
       countryIpCount[country] = (countryIpCount[country] || 0) + 1;
     }
 
-    // Build the HTML for country flags and corresponding sections
+    // Bangun elemen HTML untuk bendera negara
     let flagElement = '<div class="card-container">';
     for (const [country, count] of Object.entries(countryIpCount)) {
-      // Generate the country flag
       flagElement += `
-        <div class="card">
-          <a href="javascript:void(0);" onclick="documentInstance.scrollToProxySection('${country}')">
-            <img 
-              width="50" 
-              src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
-              alt="Flag of ${country}" 
-            />
-          </a>
-          <div class="info-text">
-            <i class="bx bx-globe"> COUNTRY : ${country}</i>
-            <i class="bx bxs-microchip"> TOTAL IP : ${count} IP</i>
-          </div>
+      <div class="card">
+        <a href="javascript:void(0);" onclick="buildProxyGroup('${country}')">
+          <img 
+            width="50" 
+            src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
+            alt="Flag of ${country}" 
+          />
+        </a>
+        <div class="info-text">
+          <i class="bx bx-globe"> COUNTRY : ${country}</i>
+          <i class="bx bxs-microchip"> TOTAL IP : ${count} IP</i>
         </div>
-      `;
-
-      // Generate a section for the country
-      let section = `
-        <div id="proxy-section-${country.toUpperCase()}" class="country-section">
-          <h2>Proxies for ${country}</h2>
-          <div class="proxy-list" id="proxy-list-${country.toUpperCase()}">
-            <!-- Proxies for ${country} will be dynamically inserted here -->
-          </div>
-        </div>
-      `;
-      this.html += section; // Append the section to the HTML
+      </div>`;
     }
-    flagElement += '</div>'; // Close card-container
+    flagElement += '</div>'; // Tutup card-container
 
-    // Replace the placeholder with the generated flag HTML
+    // Gantikan placeholder dengan elemen HTML yang dihasilkan
+    console.log(flagElement); // Debug elemen HTML yang dihasilkan
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
   }
 
-  // Method to dynamically build the proxy group for the selected country
-  buildProxyGroup(country) {
-    const filteredProxies = this.proxies.filter(proxy => proxy.country.toUpperCase() === country.toUpperCase());
-    let proxyGroupElement = "<div class='card-container'>";
-
-    for (let i = 0; i < filteredProxies.length; i++) {
-      const proxyData = filteredProxies[i];
-
-      // Build the proxy card for each proxy data
-      proxyGroupElement += `
-        <div class="card">
-          <img 
-            width="50" 
-            src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" 
-            alt="Flag of ${proxyData.country}" 
-            class="proxy-flag"
-          />
-          <div class="info-text">
-            <i class="bx bx-globe"> IP: ${proxyData.proxyIP}</i>
-            <i class="bx bx-globe"> PORT: ${proxyData.proxyPort}</i>
-            <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
-            <i class="bx bxs-microchip"> STATUS: </i>
-            <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">
-              Idle ${proxyData.proxyIP}:${proxyData.proxyPort}
-            </div>
-            <div class="proxy-actions">
-              ${proxyData.list.map((proxy, x) => {
-                const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
-                return `
-                  <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
-                `;
-              }).join('')}
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    proxyGroupElement += "</div>"; // Close card-container
-
-    // Insert the proxy group into the country-specific section
-    const proxyListContainer = document.getElementById(`proxy-list-${country.toUpperCase()}`);
-    if (proxyListContainer) {
-      proxyListContainer.innerHTML = proxyGroupElement;
-    }
-  }
-
-  // Method to scroll to the proxy section for the selected country
-  scrollToProxySection(country) {
-    // Filter proxies for the selected country
-    const filteredProxies = this.proxies.filter(proxy => proxy.country.toUpperCase() === country.toUpperCase());
-
-    // Call buildProxyGroup to display the proxies for the selected country
-    this.buildProxyGroup(country);
-
-    // Scroll to the section for that country
-    const sectionId = `proxy-section-${country.toUpperCase()}`;
-    const section = document.getElementById(sectionId);
-
-    if (section) {
-      // Scroll smoothly to the section
-      section.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      console.error(`Section with ID ${sectionId} not found.`);
-    }
-  }
-
+  // Fungsi untuk menambahkan tombol halaman
   addPageButton(text, link, isDisabled) {
     const pageButton = `<li><button ${
       isDisabled ? "disabled" : ""
@@ -2153,18 +2123,15 @@ class Document {
     this.html = this.html.replaceAll("PLACEHOLDER_PAGE_BUTTON", `${pageButton}\nPLACEHOLDER_PAGE_BUTTON`);
   }
 
+  // Fungsi utama untuk membangun HTML secara keseluruhan
   build() {
-    this.buildProxyGroup();
-    this.buildCountryFlag();
+    this.buildProxyGroup(); // Membangun grup proxy
+    this.buildCountryFlag(); // Membangun bendera negara
 
+    // Mengatur visibilitas elemen API siap
     this.html = this.html.replaceAll("PLACEHOLDER_API_READY", isApiReady ? "block" : "hidden");
 
+    // Menghapus semua placeholder lainnya yang belum digantikan
     return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
   }
 }
-
-// Create an instance of the Document class
-const documentInstance = new Document(request);
-
-// Call build methods on the instance
-documentInstance.build();
