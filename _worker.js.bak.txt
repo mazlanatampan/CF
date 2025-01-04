@@ -15,8 +15,10 @@ let cachedProxyList = [];
 const APP_DOMAIN = `${serviceName}.${rootDomain}`;
 const PORTS = [443, 80];
 const PROTOCOLS = ["trojan", "vless", "ss"];
-const KV_PROXY_URL = "https://raw.githubusercontent.com/dickymuliafiqri/Nautica/refs/heads/main/kvProxyList.json";
-const PROXY_BANK_URL = "https://raw.githubusercontent.com/dickymuliafiqri/Nautica/refs/heads/main/proxyList.txt";
+const KV_PROXY_URL =
+  "https://raw.githubusercontent.com/mazlanatampan/CF/refs/heads/main/kvProxyList.json";
+const PROXY_BANK_URL =
+  "https://raw.githubusercontent.com/mazlanatampan/CF/refs/heads/main/proxyList.txt";
 const DNS_SERVER_ADDRESS = "1.1.1.1";
 const DNS_SERVER_PORT = 53;
 const PROXY_HEALTH_CHECK_API = "https://id1.foolvpn.me/api/v1/check";
@@ -1027,18 +1029,414 @@ let baseHTML = `
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Proxy List</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <style>
-      /* For Webkit-based browsers (Chrome, Safari and Opera) */
-      .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-      }
+/* Google Font Link */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins" , sans-serif;
+}
+.sidebar{
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 78px;
+  background: #11101D;
+  padding: 6px 14px;
+  z-index: 99;
+  transition: all 0.5s ease;
+}
+.sidebar.open{
+  width: 250px;
+}
+.sidebar .logo-details{
+  height: 60px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.sidebar .logo-details .icon{
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+.sidebar .logo-details .logo_name{
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+.sidebar.open .logo-details .icon,
+.sidebar.open .logo-details .logo_name{
+  opacity: 1;
+}
+.sidebar .logo-details #btn{
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  font-size: 22px;
+  transition: all 0.4s ease;
+  font-size: 23px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+.sidebar.open .logo-details #btn{
+  text-align: right;
+}
+.sidebar i{
+  color: #fff;
+  height: 60px;
+  min-width: 50px;
+  font-size: 28px;
+  text-align: center;
+  line-height: 60px;
+}
+.sidebar .nav-list{
+  margin-top: 20px;
+  height: 100%;
+}
+.sidebar li{
+  position: relative;
+  margin: 8px 0;
+  list-style: none;
+}
+.sidebar li .tooltip{
+  position: absolute;
+  top: -20px;
+  left: calc(100% + 15px);
+  z-index: 3;
+  background: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 400;
+  opacity: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: 0s;
+}
+.sidebar li:hover .tooltip{
+  opacity: 1;
+  pointer-events: auto;
+  transition: all 0.4s ease;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.sidebar.open li .tooltip{
+  display: none;
+}
+.sidebar input{
+  font-size: 15px;
+  color: #FFF;
+  font-weight: 400;
+  outline: none;
+  height: 50px;
+  width: 100%;
+  width: 50px;
+  border: none;
+  border-radius: 12px;
+  transition: all 0.5s ease;
+  background: #1d1b31;
+}
+.sidebar.open input{
+  padding: 0 20px 0 50px;
+  width: 100%;
+}
+.sidebar .bx-search{
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  font-size: 22px;
+  background: #1d1b31;
+  color: #FFF;
+}
+.sidebar.open .bx-search:hover{
+  background: #1d1b31;
+  color: #FFF;
+}
+.sidebar .bx-search:hover{
+  background: #FFF;
+  color: #11101d;
+}
+.sidebar li a{
+  display: flex;
+  height: 100%;
+  width: 100%;
+  border-radius: 12px;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  background: #11101D;
+}
+.sidebar li a:hover{
+  background: #FFF;
+}
+.sidebar li a .links_name{
+  color: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.4s;
+}
+.sidebar.open li a .links_name{
+  opacity: 1;
+  pointer-events: auto;
+}
+.sidebar li a:hover .links_name,
+.sidebar li a:hover i{
+  transition: all 0.5s ease;
+  color: #11101D;
+}
+.sidebar li i{
+  height: 50px;
+  line-height: 50px;
+  font-size: 18px;
+  border-radius: 12px;
+}
+.sidebar li.profile{
+  position: fixed;
+  height: 60px;
+  width: 78px;
+  left: 0;
+  bottom: -8px;
+  padding: 10px 14px;
+  background: #1d1b31;
+  transition: all 0.5s ease;
+  overflow: hidden;
+}
+.sidebar.open li.profile{
+  width: 250px;
+}
+.sidebar li .profile-details{
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.sidebar li img{
+  height: 45px;
+  width: 45px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 10px;
+}
+.sidebar li.profile .name,
+.sidebar li.profile .job{
+  font-size: 15px;
+  font-weight: 400;
+  color: #fff;
+  white-space: nowrap;
+}
+.sidebar li.profile .job{
+  font-size: 12px;
+}
+.sidebar .profile #log_out{
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background: #1d1b31;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  border-radius: 0px;
+  transition: all 0.5s ease;
+}
+.sidebar.open .profile #log_out{
+  width: 50px;
+  background: none;
+}
+.home-section{
+  background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;       
+  position: relative;
+  min-height: 100vh;
+  top: 0;
+  left: 78px;
+  width: calc(100% - 78px);
+  transition: all 0.5s ease;
+  z-index: 2;
+  overflow: hidden;
+}
+.sidebar.open ~ .home-section{
+  left: 250px;
+  width: calc(100% - 250px);
+}
+.home-section .text{
+  display: inline-block;
+  color: #11101d;
+  font-size: 25px;
+  font-weight: 500;
+  margin: 18px
+}
+@media (max-width: 420px) {
+  .sidebar li .tooltip{
+    display: none;
+  }
 
-      /* For IE, Edge and Firefox */
-      .scrollbar-hide {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
-      }
+
+.header-atas {
+  background-color: #11101d; /* Latar belakang gelap */
+  height: 100px;
+  width: 100%; /* Pastikan header mengambil seluruh lebar layar */
+  position: fixed; /* Membuat header tetap di posisi atas */
+  z-index:10;
+  top: 0; /* Posisi di bagian atas */
+  left: 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan jika diperlukan */
+}
+
+
+.header-atas .icon {
+  color: white;
+  height: 60px;
+  width: 100%;
+  display: flex;
+  justify-content: center; /* Menempatkan elemen secara horizontal di tengah */
+  align-items: center; /* Menempatkan elemen secara vertikal di tengah */
+  font-size: 4rem;
+}
+
+.icon-name {
+  color: white;
+  height: 60px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.marquee {
+  position: absolute;
+  font-size: 5px;
+  color: white;
+  bottom: 5px;
+  padding: 0px;
+  animation: marquee 20s linear infinite; /* Animasi teks berjalan */
+  white-space: nowrap; /* Mencegah teks membungkus */
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+}
+
+.proxy-section{
+  background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;       
+  position: relative;
+  min-height: 100vh;
+  top: 0;
+  left: 78px;
+  width: calc(100% - 78px);
+  transition: all 0.5s ease;
+  z-index: 2;
+  overflow: hidden;
+  display: none;
+}
+.sidebar.open ~ .home-section{
+  left: 250px;
+  width: calc(100% - 250px);
+}
+
+    
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Responsif */
+    gap: 20px; /* Jarak antar card */
+    padding: 20px;
+    overflow-y: auto;
+    width: 100%; /* Gunakan lebar penuh */
+    margin-top: 100px; /* Kurangi bagian atas sebesar 60px */
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background: rgba(255,255,255,0.7);
+    text-align: center;
+}
+
+.card img {
+    width: 60px;
+    margin-bottom: 10px;
+}
+
+.country-name {
+    margin: 5px 0;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.ip-count {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+}
+
+
+
+.info-text i {
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Display proxy details like organization, IP, and port */
+.proxy-details {
+    margin-top: 16px;
+}
+
+.proxy-actions {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.action-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.action-btn:hover {
+    background-color: #0056b3;
+}
+
+    
     </style>
+
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
     <script>
       tailwind.config = {
@@ -1046,7 +1444,111 @@ let baseHTML = `
       }
     </script>
   </head>
-  <body class="bg-white dark:bg-neutral-800 bg-fixed">
+  <body>
+    <div class="sidebar">
+      <div class="logo-details">
+        <i class="bx bxl-c-plus-plus icon"></i>
+        <div class="logo_name">CodingLab</div>
+        <i class="bx bx-menu" id="btn"></i>
+      </div>
+      <ul class="nav-list">
+        <li>
+          <i class="bx bx-search"></i>
+          <input type="text" placeholder="Search..." />
+          <span class="tooltip">Search</span>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bx bx-grid-alt"></i>
+            <span class="links_name">Dashboard</span>
+          </a>
+          <span class="tooltip">Dashboard</span>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bx bx-user"></i>
+            <span class="links_name">User</span>
+          </a>
+          <span class="tooltip">User</span>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bx bx-chat"></i>
+            <span class="links_name">Messages</span>
+          </a>
+          <span class="tooltip">Messages</span>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bx bx-pie-chart-alt-2"></i>
+            <span class="links_name">Analytics</span>
+          </a>
+          <span class="tooltip">Analytics</span>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bx bx-folder"></i>
+            <span class="links_name">File Manager</span>
+          </a>
+          <span class="tooltip">Files</span>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bx bx-cart-alt"></i>
+            <span class="links_name">Order</span>
+          </a>
+          <span class="tooltip">Order</span>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bx bx-heart"></i>
+            <span class="links_name">Saved</span>
+          </a>
+          <span class="tooltip">Saved</span>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bx bx-cog"></i>
+            <span class="links_name">Setting</span>
+          </a>
+          <span class="tooltip">Setting</span>
+        </li>
+        <li class="profile">
+          <div class="profile-details">
+            <img src="profile.jpg" alt="profileImg" />
+            <div class="name_job">
+              <div class="name">Prem Shahi</div>
+              <div class="job">Web designer</div>
+            </div>
+          </div>
+          <i class="bx bx-log-out" id="log_out"></i>
+        </li>
+      </ul>
+    </div>
+    <section class="home-section">
+      <div class="header-atas">
+          <div class="icon">
+          <i class='bx bxl-slack'></i>
+          </div>
+            <div class="icon-name"> MAZLANA</div>
+            <div class="marquee" id="ip-info">Loading IP...</div>
+        </div>
+      PLACEHOLDER_BENDERA_NEGARA
+    </section>
+    
+    <section class="proxy-section">
+      <div class="header-atas">
+          <div class="icon">
+          <i class='bx bxl-slack'></i>
+          </div>
+            <div class="icon-name"> MAZLANA</div>
+            <div class="marquee" id="ip-info">Loading IP...</div>
+        </div>
+      PLACEHOLDER_PROXY_GROUP
+      PLACEHOLDER_PAGE_BUTTON
+    </section>    
+    
+    
     <!-- Notification -->
     <div
       id="notification-badge"
@@ -1075,37 +1577,17 @@ let baseHTML = `
         class="h-full fixed top-0 w-14 bg-white dark:bg-neutral-800 border-r-2 border-neutral-800 dark:border-white z-20 overflow-y-scroll scrollbar-hide"
       >
         <div class="text-2xl flex flex-col items-center h-full gap-2">
-          PLACEHOLDER_BENDERA_NEGARA
+         
         </div>
       </div>
     </div>
     <!-- Main -->
-    <div id="container-header">
-      <div id="container-info" class="bg-amber-400 border-2 border-neutral-800 text-right px-5">
-        <div class="flex justify-end gap-3 text-sm">
-          <p id="container-info-ip">IP: 127.0.0.1</p>
-          <p id="container-info-country">Country: Indonesia</p>
-          <p id="container-info-isp">ISP: Localhost</p>
-        </div>
-      </div>
-    </div>
     <div class="container">
-      <div
-        id="container-title"
-        class="sticky bg-white dark:bg-neutral-800 border-b-2 border-neutral-800 dark:border-white z-10 py-6 w-screen"
-      >
-        <h1 class="text-xl text-center text-neutral-800 dark:text-white">
-          PLACEHOLDER_JUDUL
-        </h1>
-      </div>
-      <div class="flex gap-6 pt-10 w-screen justify-center">
-        PLACEHOLDER_PROXY_GROUP
-      </div>
 
       <!-- Pagination -->
       <nav id="container-pagination" class="w-screen mt-8 sticky bottom-0 right-0 left-0 transition -translate-y-6 z-20">
         <ul class="flex justify-center space-x-4">
-          PLACEHOLDER_PAGE_BUTTON
+          
         </ul>
       </nav>
     </div>
@@ -1257,6 +1739,44 @@ let baseHTML = `
 
     <script>
       // Shared
+      
+let sidebar = document.querySelector(".sidebar");
+let closeBtn = document.querySelector("#btn");
+let searchBtn = document.querySelector(".bx-search");
+
+closeBtn.addEventListener("click", ()=>{
+  sidebar.classList.toggle("open");
+  menuBtnChange();//calling the function(optional)
+});
+
+searchBtn.addEventListener("click", ()=>{ // Sidebar open when you click on the search iocn
+  sidebar.classList.toggle("open");
+  menuBtnChange(); //calling the function(optional)
+});
+
+// following are the code to change sidebar button(optional)
+function menuBtnChange() {
+ if(sidebar.classList.contains("open")){
+   closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");//replacing the iocns class
+ }else {
+   closeBtn.classList.replace("bx-menu-alt-right","bx-menu");//replacing the iocns class
+ }
+}
+
+
+
+function scrollToProxySection(country) {
+    // Sembunyikan home-section
+    const homeSection = document.querySelector(".home-section");
+    if (homeSection) homeSection.style.display = "none";
+
+    // Tampilkan proxy-section
+    const proxySection = document.querySelector(".proxy-section");
+    if (proxySection) proxySection.style.display = "block";
+}
+
+
+
       const rootDomain = "${serviceName}.${rootDomain}";
       const notification = document.getElementById("notification-badge");
       const windowContainer = document.getElementById("container-window");
@@ -1418,7 +1938,7 @@ let baseHTML = `
 
           let isActive = false;
           new Promise(async (resolve) => {
-            const res = await fetch("https://${serviceName}.${rootDomain}/check?target=" + target)
+            const res = await fetch("https://nautica.foolvpn.me/check?target=" + target)
               .then(async (res) => {
                 if (isActive) return;
                 if (res.status == 200) {
@@ -1485,12 +2005,13 @@ let baseHTML = `
 `;
 
 class Document {
-  proxies = [];
+  proxies = []; // Menyimpan daftar proxy
+  cachedProxyList = []; // Cache untuk daftar proxy yang diambil dari proxy-bank URL
 
   constructor(request) {
-    this.html = baseHTML;
+    this.html = baseHTML; // HTML dasar yang akan diubah
     this.request = request;
-    this.url = new URL(this.request.url);
+    this.url = new URL(this.request.url); // Mengambil URL dari request
   }
 
   setTitle(title) {
@@ -1509,65 +2030,91 @@ class Document {
     });
   }
 
-  buildProxyGroup() {
-    let proxyGroupElement = "";
-    proxyGroupElement += `<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">`;
-    for (let i = 0; i < this.proxies.length; i++) {
-      const proxyData = this.proxies[i];
+  // Fungsi untuk menampilkan grup proxy sesuai dengan negara yang dipilih
+  buildProxyGroup(country) {
+    // Filter proxies berdasarkan negara yang dipilih
+    let filteredProxies = this.proxies.filter(proxy => proxy.country === country);
 
-      // Assign proxies
-      proxyGroupElement += `<div class="lozad scale-95 mb-2 bg-white dark:bg-neutral-800 transition-transform duration-200 rounded-lg p-4 w-60 border-2 border-neutral-800">`;
-      proxyGroupElement += `  <div id="countryFlag" class="absolute -translate-y-9 -translate-x-2 border-2 border-neutral-800 rounded-full overflow-hidden"><img width="32" src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" /></div>`;
-      proxyGroupElement += `  <div>`;
-      proxyGroupElement += `    <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}</div>`;
-      proxyGroupElement += `  </div>`;
-      proxyGroupElement += `  <div class="rounded py-1 px-2 bg-amber-400 dark:bg-neutral-800 dark:border-2 dark:border-amber-400">`;
-      proxyGroupElement += `    <h5 class="font-bold text-md text-neutral-900 dark:text-white mb-1 overflow-x-scroll scrollbar-hide text-nowrap">${proxyData.org}</h5>`;
-      proxyGroupElement += `    <div class="text-neutral-900 dark:text-white text-sm">`;
-      proxyGroupElement += `      <p>IP: ${proxyData.proxyIP}</p>`;
-      proxyGroupElement += `      <p>Port: ${proxyData.proxyPort}</p>`;
-      proxyGroupElement += `    </div>`;
-      proxyGroupElement += `  </div>`;
-      proxyGroupElement += `  <div class="flex flex-col gap-2 mt-3 text-sm">`;
-      for (let x = 0; x < proxyData.list.length; x++) {
-        const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
-        const proxy = proxyData.list[x];
+    let proxyGroupElement = "<div class='card-container'>";
 
-        if (x % 2 == 0) {
-          proxyGroupElement += `<div class="flex gap-2 justify-around w-full">`;
-        }
+    if (filteredProxies.length === 0) {
+      proxyGroupElement += `<div class="card">No proxies available for ${country}</div>`;
+    } else {
+      for (let i = 0; i < filteredProxies.length; i++) {
+        const proxyData = filteredProxies[i];
 
-        proxyGroupElement += `<button class="bg-blue-500 dark:bg-neutral-800 dark:border-2 dark:border-blue-500 rounded p-1 w-full text-white" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>`;
-
-        if (x % 2 == 1) {
-          proxyGroupElement += `</div>`;
-        }
+        // Bangun elemen HTML untuk proxy
+        proxyGroupElement += `
+        <div class="card">
+          <img 
+              width="50" 
+              src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" 
+              alt="Flag of ${proxyData.country}" 
+              class="proxy-flag"
+          />
+          <div class="info-text">
+              <i class="bx bx-globe"> IP: ${proxyData.proxyIP}</i>
+              <i class="bx bx-globe"> PORT: ${proxyData.proxyPort}</i>
+              <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
+              <i class="bx bxs-microchip"> STATUS: </i>
+              <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}</div>
+          </div>
+          <div class="proxy-actions">
+              ${proxyData.list.map((proxy, x) => {
+                  const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
+                  return `
+                      <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
+                  `;
+              }).join('')}
+          </div>
+        </div>`;
       }
-      proxyGroupElement += `  </div>`;
-      proxyGroupElement += `</div>`;
     }
-    proxyGroupElement += `</div>`;
 
-    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", `${proxyGroupElement}`);
+    proxyGroupElement += "</div>"; // Tutup card-container
+
+    // Gantikan placeholder dengan elemen HTML yang dihasilkan
+    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
   }
 
+  // Fungsi untuk menampilkan bendera negara dan informasi jumlah proxy berdasarkan negara
   buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
-    const flagList = [];
-    for (const proxy of cachedProxyList) {
-      flagList.push(proxy.country);
+    const countryIpCount = {};
+
+    // Hitung jumlah IP per negara dari cachedProxyList
+    for (const proxy of this.cachedProxyList) {
+      if (!proxy.country) continue; // Lewati jika tidak ada informasi negara
+      const country = proxy.country.toUpperCase(); // Pastikan konsistensi uppercase
+      countryIpCount[country] = (countryIpCount[country] || 0) + 1;
     }
 
-    let flagElement = "";
-    for (const flag of new Set(flagList)) {
-      flagElement += `<a href="/sub?cc=${flag}${
-        proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-      }" class="py-1" ><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
+    // Bangun elemen HTML untuk bendera negara
+    let flagElement = '<div class="card-container">';
+    for (const [country, count] of Object.entries(countryIpCount)) {
+      flagElement += `
+      <div class="card">
+        <a href="javascript:void(0);" onclick="buildProxyGroup('${country}')">
+          <img 
+            width="50" 
+            src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
+            alt="Flag of ${country}" 
+          />
+        </a>
+        <div class="info-text">
+          <i class="bx bx-globe"> COUNTRY : ${country}</i>
+          <i class="bx bxs-microchip"> TOTAL IP : ${count} IP</i>
+        </div>
+      </div>`;
     }
+    flagElement += '</div>'; // Tutup card-container
 
+    // Gantikan placeholder dengan elemen HTML yang dihasilkan
+    console.log(flagElement); // Debug elemen HTML yang dihasilkan
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
   }
 
+  // Fungsi untuk menambahkan tombol halaman
   addPageButton(text, link, isDisabled) {
     const pageButton = `<li><button ${
       isDisabled ? "disabled" : ""
@@ -1576,12 +2123,15 @@ class Document {
     this.html = this.html.replaceAll("PLACEHOLDER_PAGE_BUTTON", `${pageButton}\nPLACEHOLDER_PAGE_BUTTON`);
   }
 
+  // Fungsi utama untuk membangun HTML secara keseluruhan
   build() {
-    this.buildProxyGroup();
-    this.buildCountryFlag();
+    this.buildProxyGroup(); // Membangun grup proxy
+    this.buildCountryFlag(); // Membangun bendera negara
 
+    // Mengatur visibilitas elemen API siap
     this.html = this.html.replaceAll("PLACEHOLDER_API_READY", isApiReady ? "block" : "hidden");
 
+    // Menghapus semua placeholder lainnya yang belum digantikan
     return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
   }
 }
