@@ -2150,3 +2150,140 @@ buildCountryFlag() {
     return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
   }
 }
+
+
+
+
+class DocumentProxies {
+  proxies = [];
+
+  constructor(request) {
+    this.html = baseHTML;
+    this.request = request;
+    this.url = new URL(this.request.url);
+  }
+
+  setTitle(title) {
+    this.html = this.html.replaceAll("PLACEHOLDER_JUDUL", title);
+  }
+
+  addInfo(text) {
+    text = `<span>${text}</span>`;
+    this.html = this.html.replaceAll("PLACEHOLDER_INFO", `${text}\nPLACEHOLDER_INFO`);
+  }
+
+  registerProxies(data, proxies) {
+    this.proxies.push({
+      ...data,
+      list: proxies,
+    });
+  }
+
+  buildProxyGroup(country) {
+    let proxyGroupElement = "<div class='card-container'>";
+
+    // Filter proxies based on the selected country
+    const filteredProxies = this.proxies.filter(proxy => 
+      proxy.country && proxy.country === country
+    );
+
+    if (filteredProxies.length === 0) {
+      proxyGroupElement = '<p>No proxies available for the selected country.</p>';
+    } else {
+      for (let i = 0; i < filteredProxies.length; i++) {
+        const proxyData = filteredProxies[i];
+
+        proxyGroupElement += `
+        <div class="card">
+                <img 
+                    width="50" 
+                    src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country}.svg" 
+                    alt="Flag of ${proxyData.country}" 
+                    class="proxy-flag"
+                />
+           
+            <div class="info-text">
+                <i class="bx bx-globe"> IP: ${proxyData.proxyIP}</i>
+                <i class="bx bx-globe"> PORT: ${proxyData.proxyPort}</i>
+                <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
+                <i class="bx bxs-microchip"> STATUS: </i>
+            <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}
+            checkProxy();
+            </div>
+            
+            <div class="proxy-actions">
+                ${proxyData.list.map((proxy, x) => {
+                    const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
+                    return `
+                        <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
+                    `;
+                }).join('')}
+            </div>
+        </div>
+        </div>
+        `;
+      }
+    }
+
+    proxyGroupElement += "</div>"; // Close card-container
+
+    // Replace placeholder with the generated HTML element
+    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
+  }
+
+  build() {
+    this.html = this.html.replaceAll("PLACEHOLDER_API_READY", isApiReady ? "block" : "hidden");
+    return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
+  }
+}
+
+
+
+class DocumentFlags {
+  constructor(request, cachedProxyList) {
+    this.html = baseHTML;
+    this.request = request;
+    this.url = new URL(this.request.url);
+    this.cachedProxyList = cachedProxyList;
+  }
+
+  buildCountryFlag() {
+    const proxyBankUrl = this.url.searchParams.get("proxy-list");
+    const countryIpCount = {};
+
+    // Count IPs per country
+    for (const proxy of this.cachedProxyList) {
+      if (!proxy.country) continue; // Skip if no country info
+      const country = proxy.country.toUpperCase(); // Ensure uppercase consistency
+      countryIpCount[country] = (countryIpCount[country] || 0) + 1;
+    }
+
+    // Build HTML element
+    let flagElement = '<div class="card-container">';
+    for (const [country, count] of Object.entries(countryIpCount)) {
+      flagElement += `
+      <div class="card">
+          <a href="javascript:void(0);" onclick="scrollToProxySection('${country}'); buildProxyGroup('${country}');">
+              <img 
+                  width="50" 
+                  src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
+                  alt="Flag of ${country}" 
+              />
+          </a>
+          <div class="info-text">
+              <i class="bx bx-globe"> COUNTRY : ${country}</i>
+              <i class="bx bxs-microchip"> TOTAL IP : ${count} IP</i>
+          </div>
+      </div>
+      `;
+    }
+    flagElement += '</div>'; // Close card-container
+
+    // Replace placeholder with the generated HTML element
+    this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
+  }
+
+  build() {
+    return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
+  }
+}
