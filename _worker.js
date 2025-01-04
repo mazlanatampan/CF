@@ -1609,7 +1609,7 @@ class Document {
 
   build() {
     this.buildProxyGroup();
-    this.buildCountryFlag();
+/*    this.buildCountryFlag();*/
 
     this.html = this.html.replaceAll("PLACEHOLDER_API_READY", isApiReady ? "block" : "hidden");
 
