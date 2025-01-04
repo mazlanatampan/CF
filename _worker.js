@@ -167,230 +167,7 @@ function getAllConfig(request, hostName, proxyList, page = 0) {
     return `An error occurred while generating the VLESS configurations. ${error}`;
   }
 }
-
-export default {
-  async fetch(request, env, ctx) {
-    try {
-      const url = new URL(request.url);
-      const upgradeHeader = request.headers.get("Upgrade");
-
-      // Gateway check
-      if (apiKey && apiEmail && accountID && zoneID) {
-        isApiReady = true;
-      }
-
-      // Handle proxy client
-      if (upgradeHeader === "websocket") {
-        const proxyMatch = url.pathname.match(/^\/(.+[:=-]\d+)$/);
-
-        if (url.pathname.length == 3 || url.pathname.match(",")) {
-          // Contoh: /ID, /SG, dll
-          const proxyKeys = url.pathname.replace("/", "").toUpperCase().split(",");
-          const proxyKey = proxyKeys[Math.floor(Math.random() * proxyKeys.length)];
-          let kvProxy = await env.nautica.get("kvProxy");
-          if (kvProxy) {
-            kvProxy = JSON.parse(kvProxy);
-          } else {
-            kvProxy = await getKVProxyList();
-            env.nautica.put("kvProxy", JSON.stringify(kvProxy), {
-              expirationTtl: 3600,
-            });
-          }
-
-          proxyIP = kvProxy[proxyKey][Math.floor(Math.random() * kvProxy[proxyKey].length)];
-
-          return await websocketHandler(request);
-        } else if (proxyMatch) {
-          proxyIP = proxyMatch[1];
-          return await websocketHandler(request);
-        }
-      }
-
-      if (url.pathname.startsWith("/sub")) {
-        const page = url.pathname.match(/^\/sub\/(\d+)$/);
-        const pageIndex = parseInt(page ? page[1] : "0");
-        const hostname = request.headers.get("Host");
-
-        // Queries
-        const countrySelect = url.searchParams.get("cc")?.split(",");
-        const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
-        let proxyList = (await getProxyList(proxyBankUrl)).filter((proxy) => {
-          // Filter proxies by Country
-          if (countrySelect) {
-            return countrySelect.includes(proxy.country);
-          }
-
-          return true;
-        });
-
-        const result = getAllConfig(request, hostname, proxyList, pageIndex);
-        return new Response(result, {
-          status: 200,
-          headers: { "Content-Type": "text/html;charset=utf-8" },
-        });
-      } else if (url.pathname.startsWith("/check")) {
-        const target = url.searchParams.get("target").split(":");
-        const result = await checkProxyHealth(target[0], target[1] || "443");
-
-        return new Response(JSON.stringify(result), {
-          status: 200,
-          headers: {
-            ...CORS_HEADER_OPTIONS,
-            "Content-Type": "application/json",
-          },
-        });
-      } else if (url.pathname.startsWith("/api/v1")) {
-        const apiPath = url.pathname.replace("/api/v1", "");
-
-        if (apiPath.startsWith("/domains")) {
-          if (!isApiReady) {
-            return new Response("Api not ready", {
-              status: 500,
-            });
-          }
-
-          const wildcardApiPath = apiPath.replace("/domains", "");
-          const cloudflareApi = new CloudflareApi();
-
-          if (wildcardApiPath == "/get") {
-            const domains = await cloudflareApi.getDomainList();
-            return new Response(JSON.stringify(domains), {
-              headers: {
-                ...CORS_HEADER_OPTIONS,
-              },
-            });
-          } else if (wildcardApiPath == "/put") {
-            const domain = url.searchParams.get("domain");
-            const register = await cloudflareApi.registerDomain(domain);
-
-            return new Response(register.toString(), {
-              status: register,
-              headers: {
-                ...CORS_HEADER_OPTIONS,
-              },
-            });
-          }
-        } else if (apiPath.startsWith("/sub")) {
-          const filterCC = url.searchParams.get("cc")?.split(",") || [];
-          const filterPort = url.searchParams.get("port")?.split(",") || PORTS;
-          const filterVPN = url.searchParams.get("vpn")?.split(",") || PROTOCOLS;
-          const filterLimit = parseInt(url.searchParams.get("limit")) || 10;
-          const filterFormat = url.searchParams.get("format") || "raw";
-          const fillerDomain = url.searchParams.get("domain") || APP_DOMAIN;
-
-          const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
-          const proxyList = await getProxyList(proxyBankUrl)
-            .then((proxies) => {
-              // Filter CC
-              if (filterCC.length) {
-                return proxies.filter((proxy) => filterCC.includes(proxy.country));
-              }
-              return proxies;
-            })
-            .then((proxies) => {
-              // shuffle result
-              shuffleArray(proxies);
-              return proxies;
-            });
-
-          const uuid = crypto.randomUUID();
-          const result = [];
-          for (const proxy of proxyList) {
-            const uri = new URL(`trojan://${fillerDomain}`);
-            uri.searchParams.set("encryption", "none");
-            uri.searchParams.set("type", "ws");
-            uri.searchParams.set("host", APP_DOMAIN);
-
-            for (const port of filterPort) {
-              for (const protocol of filterVPN) {
-                if (result.length >= filterLimit) break;
-
-                uri.protocol = protocol;
-                uri.port = port.toString();
-                if (protocol == "ss") {
-                  uri.username = btoa(`none:${uuid}`);
-                } else {
-                  uri.username = uuid;
-                }
-
-                uri.searchParams.set("security", port == 443 ? "tls" : "none");
-                uri.searchParams.set("sni", port == 80 && protocol == "vless" ? "" : APP_DOMAIN);
-                uri.searchParams.set("path", `/${proxy.proxyIP}-${proxy.proxyPort}`);
-
-                uri.hash = `${result.length + 1} ${getFlagEmoji(proxy.country)} ${proxy.org} WS ${
-                  port == 443 ? "TLS" : "NTLS"
-                } [${serviceName}]`;
-                result.push(uri.toString());
-              }
-            }
-          }
-
-          let finalResult = "";
-          switch (filterFormat) {
-            case "raw":
-              finalResult = result.join("\n");
-              break;
-            case "clash":
-            case "sfa":
-            case "bfr":
-            case "v2ray":
-              const encodedResult = [];
-              for (const proxy of result) {
-                encodedResult.push(encodeURIComponent(proxy));
-              }
-
-              // finalResult = `${CONVERTER_URL}?target=${filterFormat}&url=${encodedResult.join(",")}`;
-              const res = await fetch(`${CONVERTER_URL}?target=${filterFormat}&url=${encodedResult.join(",")}`);
-              if (res.status == 200) {
-                finalResult = await res.text();
-              } else {
-                return new Response(res.statusText, {
-                  status: res.status,
-                  headers: {
-                    ...CORS_HEADER_OPTIONS,
-                  },
-                });
-              }
-              break;
-          }
-
-          return new Response(finalResult, {
-            status: 200,
-            headers: {
-              ...CORS_HEADER_OPTIONS,
-            },
-          });
-        } else if (apiPath.startsWith("/myip")) {
-          return new Response(
-            JSON.stringify({
-              ip:
-                request.headers.get("cf-connecting-ipv6") ||
-                request.headers.get("cf-connecting-ip") ||
-                request.headers.get("x-real-ip"),
-              colo: request.headers.get("cf-ray")?.split("-")[1],
-              ...request.cf,
-            }),
-            {
-              headers: {
-                ...CORS_HEADER_OPTIONS,
-              },
-            }
-          );
-        }
-      }
-
-      const targetReverseProxy = env.REVERSE_PROXY_TARGET || "example.com";
-      return await reverseProxy(request, targetReverseProxy);
-    } catch (err) {
-      return new Response(`An error occurred: ${err.toString()}`, {
-        status: 500,
-        headers: {
-          ...CORS_HEADER_OPTIONS,
-        },
-      });
-    }
-  },
-};
+;
 
 async function websocketHandler(request) {
   const webSocketPair = new WebSocketPair();
@@ -1012,6 +789,260 @@ class CloudflareApi {
 
     return res.status;
   }
+}
+
+
+
+
+export default {
+  async fetch(request, env, ctx) {
+    try {
+      const url = new URL(request.url);
+      const upgradeHeader = request.headers.get("Upgrade");
+
+      // Gateway check
+      if (apiKey && apiEmail && accountID && zoneID) {
+        isApiReady = true;
+      }
+
+      // Handle proxy client
+      if (upgradeHeader === "websocket") {
+        const proxyMatch = url.pathname.match(/^\/(.+[:=-]\d+)$/);
+
+        if (url.pathname.length == 3 || url.pathname.match(",")) {
+          // Contoh: /ID, /SG, dll
+          const proxyKeys = url.pathname.replace("/", "").toUpperCase().split(",");
+          const proxyKey = proxyKeys[Math.floor(Math.random() * proxyKeys.length)];
+          let kvProxy = await env.nautica.get("kvProxy");
+          if (kvProxy) {
+            kvProxy = JSON.parse(kvProxy);
+          } else {
+            kvProxy = await getKVProxyList();
+            env.nautica.put("kvProxy", JSON.stringify(kvProxy), {
+              expirationTtl: 3600,
+            });
+          }
+
+          proxyIP = kvProxy[proxyKey][Math.floor(Math.random() * kvProxy[proxyKey].length)];
+
+          return await websocketHandler(request);
+        } else if (proxyMatch) {
+          proxyIP = proxyMatch[1];
+          return await websocketHandler(request);
+        }
+      }
+
+      if (url.pathname.startsWith("/sub")) {
+  const page = url.pathname.match(/^\/sub\/(\d+)$/);  // Memastikan /sub/ diikuti dengan angka (ID halaman)
+  const pageIndex = parseInt(page ? page[1] : "0");  // Mendapatkan index halaman atau 0 jika tidak ada
+  const hostname = request.headers.get("Host");
+
+  // Queries
+  const countrySelect = url.searchParams.get("cc")?.split(",");  // Mendapatkan parameter "cc" jika ada
+  const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;  // Mendapatkan URL proxy list
+
+  let proxyList = (await getProxyList(proxyBankUrl)).filter((proxy) => {
+    // Filter proxies berdasarkan negara
+    if (countrySelect) {
+      return countrySelect.includes(proxy.country);  // Memfilter proxy berdasarkan negara yang dipilih
+    }
+
+    return true;  // Jika tidak ada filter negara, kembalikan semua proxy
+  });
+
+  const result = getAllConfig(request, hostname, proxyList, pageIndex);  // Mendapatkan hasil konfigurasi berdasarkan data yang sudah difilter
+  return new Response(result, {
+    status: 200,
+    headers: { "Content-Type": "text/html;charset=utf-8" },
+  });
+}
+
+if (url.pathname.startsWith("/cc")) {
+  const countrySelect = url.pathname.match(/^\/cc\/([a-zA-Z,]+)$/);  // Memastikan path /cc/ diikuti dengan kode negara
+  const countries = countrySelect ? countrySelect[1].split(",") : [];  // Mengambil daftar kode negara dari URL
+
+  const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;  // Mendapatkan URL proxy list
+
+  let proxyList = (await getProxyList(proxyBankUrl)).filter((proxy) => {
+    // Filter proxies berdasarkan negara yang dipilih
+    if (countries.length > 0) {
+      return countries.includes(proxy.country);  // Memfilter proxy berdasarkan negara yang dipilih
+    }
+
+    return true;  // Jika tidak ada filter negara, kembalikan semua proxy
+  });
+
+  const result = getAllConfig(request, request.headers.get("Host"), proxyList, 0);  // Mendapatkan hasil konfigurasi untuk country-specific proxy
+  return new Response(result, {
+    status: 200,
+    headers: { "Content-Type": "text/html;charset=utf-8" },
+  });
+}
+
+      
+       
+         else if (url.pathname.startsWith("/check")) {
+        const target = url.searchParams.get("target").split(":");
+        const result = await checkProxyHealth(target[0], target[1] || "443");
+
+        return new Response(JSON.stringify(result), {
+          status: 200,
+          headers: {
+            ...CORS_HEADER_OPTIONS,
+            "Content-Type": "application/json",
+          },
+        });
+      } else if (url.pathname.startsWith("/api/v1")) {
+        const apiPath = url.pathname.replace("/api/v1", "");
+
+        if (apiPath.startsWith("/domains")) {
+          if (!isApiReady) {
+            return new Response("Api not ready", {
+              status: 500,
+            });
+          }
+
+          const wildcardApiPath = apiPath.replace("/domains", "");
+          const cloudflareApi = new CloudflareApi();
+
+          if (wildcardApiPath == "/get") {
+            const domains = await cloudflareApi.getDomainList();
+            return new Response(JSON.stringify(domains), {
+              headers: {
+                ...CORS_HEADER_OPTIONS,
+              },
+            });
+          } else if (wildcardApiPath == "/put") {
+            const domain = url.searchParams.get("domain");
+            const register = await cloudflareApi.registerDomain(domain);
+
+            return new Response(register.toString(), {
+              status: register,
+              headers: {
+                ...CORS_HEADER_OPTIONS,
+              },
+            });
+          }
+        } else if (apiPath.startsWith("/sub")) {
+          const filterCC = url.searchParams.get("cc")?.split(",") || [];
+          const filterPort = url.searchParams.get("port")?.split(",") || PORTS;
+          const filterVPN = url.searchParams.get("vpn")?.split(",") || PROTOCOLS;
+          const filterLimit = parseInt(url.searchParams.get("limit")) || 10;
+          const filterFormat = url.searchParams.get("format") || "raw";
+          const fillerDomain = url.searchParams.get("domain") || APP_DOMAIN;
+
+          const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
+          const proxyList = await getProxyList(proxyBankUrl)
+            .then((proxies) => {
+              // Filter CC
+              if (filterCC.length) {
+                return proxies.filter((proxy) => filterCC.includes(proxy.country));
+              }
+              return proxies;
+            })
+            .then((proxies) => {
+              // shuffle result
+              shuffleArray(proxies);
+              return proxies;
+            });
+
+          const uuid = crypto.randomUUID();
+          const result = [];
+          for (const proxy of proxyList) {
+            const uri = new URL(`trojan://${fillerDomain}`);
+            uri.searchParams.set("encryption", "none");
+            uri.searchParams.set("type", "ws");
+            uri.searchParams.set("host", APP_DOMAIN);
+
+            for (const port of filterPort) {
+              for (const protocol of filterVPN) {
+                if (result.length >= filterLimit) break;
+
+                uri.protocol = protocol;
+                uri.port = port.toString();
+                if (protocol == "ss") {
+                  uri.username = btoa(`none:${uuid}`);
+                } else {
+                  uri.username = uuid;
+                }
+
+                uri.searchParams.set("security", port == 443 ? "tls" : "none");
+                uri.searchParams.set("sni", port == 80 && protocol == "vless" ? "" : APP_DOMAIN);
+                uri.searchParams.set("path", `/${proxy.proxyIP}-${proxy.proxyPort}`);
+
+                uri.hash = `${result.length + 1} ${getFlagEmoji(proxy.country)} ${proxy.org} WS ${
+                  port == 443 ? "TLS" : "NTLS"
+                } [${serviceName}]`;
+                result.push(uri.toString());
+              }
+            }
+          }
+
+          let finalResult = "";
+          switch (filterFormat) {
+            case "raw":
+              finalResult = result.join("\n");
+              break;
+            case "clash":
+            case "sfa":
+            case "bfr":
+            case "v2ray":
+              const encodedResult = [];
+              for (const proxy of result) {
+                encodedResult.push(encodeURIComponent(proxy));
+              }
+
+              // finalResult = `${CONVERTER_URL}?target=${filterFormat}&url=${encodedResult.join(",")}`;
+              const res = await fetch(`${CONVERTER_URL}?target=${filterFormat}&url=${encodedResult.join(",")}`);
+              if (res.status == 200) {
+                finalResult = await res.text();
+              } else {
+                return new Response(res.statusText, {
+                  status: res.status,
+                  headers: {
+                    ...CORS_HEADER_OPTIONS,
+                  },
+                });
+              }
+              break;
+          }
+
+          return new Response(finalResult, {
+            status: 200,
+            headers: {
+              ...CORS_HEADER_OPTIONS,
+            },
+          });
+        } else if (apiPath.startsWith("/myip")) {
+          return new Response(
+            JSON.stringify({
+              ip:
+                request.headers.get("cf-connecting-ipv6") ||
+                request.headers.get("cf-connecting-ip") ||
+                request.headers.get("x-real-ip"),
+              colo: request.headers.get("cf-ray")?.split("-")[1],
+              ...request.cf,
+            }),
+            {
+              headers: {
+                ...CORS_HEADER_OPTIONS,
+              },
+            }
+          );
+        }
+      }
+
+      const targetReverseProxy = env.REVERSE_PROXY_TARGET || "example.com";
+      return await reverseProxy(request, targetReverseProxy);
+    } catch (err) {
+      return new Response(`An error occurred: ${err.toString()}`, {
+        status: 500,
+        headers: {
+          ...CORS_HEADER_OPTIONS,
+        },
+      });
+    }
+  },
 }
 
 // HTML page base
