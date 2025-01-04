@@ -1990,7 +1990,7 @@ function scrollToProxySection(country) {
         .then(data => {
             // Menangani data yang diterima dan memuatnya ke bagian halaman yang sesuai
             // Misalnya, menampilkan data pada bagian tertentu dari halaman
-            document.getElementById("ip-info").innerHTML = 'Data for country  : ${JSON.stringify(data)}'
+            document.getElementById("ip-info").innerHTML = 'Data for country  : JSON.stringify(data)'
         })
         .catch(error => {
             console.error('Error loading data:', error);

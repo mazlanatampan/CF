@@ -1982,7 +1982,7 @@ function scrollToProxySection(country) {
       
       function loadCountryData(country) {
     // Membuat URL untuk request
-    const url = '/sub?cc=${country}';
+    const url = '/sub?cc= ' + country
 
     // Menggunakan fetch untuk memuat data
     fetch(url)
@@ -1990,7 +1990,7 @@ function scrollToProxySection(country) {
         .then(data => {
             // Menangani data yang diterima dan memuatnya ke bagian halaman yang sesuai
             // Misalnya, menampilkan data pada bagian tertentu dari halaman
-            document.getElementById("ip-info").innerHTML = 'Data for country ${country}: ${JSON.stringify(data)}'
+            document.getElementById("ip-info").innerHTML = 'Data for country  : {JSON.stringify(data)}'
         })
         .catch(error => {
             console.error('Error loading data:', error);
