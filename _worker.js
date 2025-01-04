@@ -857,7 +857,7 @@ export default {
   });
 }
 
-if (url.pathname.startsWith("/cc")) {
+else if (url.pathname.startsWith("/cc")) {
   const countrySelect = url.pathname.match(/^\/cc\/([a-zA-Z,]+)$/);  // Memastikan path /cc/ diikuti dengan kode negara
   const countries = countrySelect ? countrySelect[1].split(",") : [];  // Mengambil daftar kode negara dari URL
 
@@ -872,13 +872,39 @@ if (url.pathname.startsWith("/cc")) {
     return true;  // Jika tidak ada filter negara, kembalikan semua proxy
   });
 
-  const result = getAllConfig(request, request.headers.get("Host"), proxyList, 0);  // Mendapatkan hasil konfigurasi untuk country-specific proxy
-  return new Response(result, {
+  // Gunakan kelas DocumentForProxies untuk menampilkan daftar proxy sesuai dengan negara
+  const docForProxies = new DocumentForProxies(request);
+  const htmlProxies = docForProxies.build();  // Ambil HTML yang dibangun berdasarkan proxy dan negara
+
+  // Atau jika hanya menampilkan bendera negara, gunakan DocumentForCountryFlags
+  const docForCountryFlags = new DocumentForCountryFlags(request);
+  const htmlCountryFlags = docForCountryFlags.build();  // Ambil HTML yang menampilkan bendera negara
+
+  // Pilih tampilan yang sesuai berdasarkan kebutuhan (misalnya, menampilkan proxy atau bendera negara)
+  return new Response(htmlProxies, {
     status: 200,
     headers: { "Content-Type": "text/html;charset=utf-8" },
   });
 }
 
+if (url.pathname.startsWith("/country")) {
+        const countryMatch = url.pathname.match(/^\/country\/([a-zA-Z]{2,3})$/);  // Match country code (e.g., /country/ID)
+        const countryCode = countryMatch ? countryMatch[1].toUpperCase() : null;
+
+        if (countryCode) {
+          // Create DocumentForCountryFlags for the given country
+          const documentForFlags = new DocumentForCountryFlags(request);
+          documentForFlags.setTitle(`Bendera Negara: ${countryCode}`);
+          documentForFlags.buildCountryFlag(countryCode);  // Generate the country flag for the given country
+
+          return new Response(documentForFlags.html, {
+            status: 200,
+            headers: { "Content-Type": "text/html;charset=utf-8" },
+          });
+        } else {
+          return new Response("Country code not provided", { status: 400 });
+        }
+      }
       
        
          else if (url.pathname.startsWith("/check")) {
@@ -1612,6 +1638,125 @@ class Document {
 /*    this.buildCountryFlag();*/
 
     this.html = this.html.replaceAll("PLACEHOLDER_API_READY", isApiReady ? "block" : "hidden");
+
+    return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
+  }
+}
+
+
+class DocumentForProxies {
+  proxies = [];
+
+  constructor(request) {
+    this.html = baseHTML; // Pastikan baseHTML sudah didefinisikan sebelumnya
+    this.request = request;
+    this.url = new URL(this.request.url);
+  }
+
+  setTitle(title) {
+    this.html = this.html.replaceAll("PLACEHOLDER_JUDUL", title);
+  }
+
+  addInfo(text) {
+    text = `<span>${text}</span>`;
+    this.html = this.html.replaceAll("PLACEHOLDER_INFO", `${text}\nPLACEHOLDER_INFO`);
+  }
+
+  registerProxies(data, proxies) {
+    this.proxies.push({
+      ...data,
+      list: proxies,
+    });
+  }
+
+  buildProxyGroup(country = null) {
+    let proxyGroupElement = "";
+    proxyGroupElement += `<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">`;
+
+    // Filter proxies by country if passed
+    const filteredProxies = country
+      ? this.proxies.filter(proxyData => proxyData.country === country)
+      : this.proxies;
+
+    // Loop through the filtered or all proxies
+    for (let i = 0; i < filteredProxies.length; i++) {
+      const proxyData = filteredProxies[i];
+
+      proxyGroupElement += `<div class="lozad scale-95 mb-2 bg-white dark:bg-neutral-800 transition-transform duration-200 rounded-lg p-4 w-60 border-2 border-neutral-800">`;
+      proxyGroupElement += `  <div id="countryFlag" class="absolute -translate-y-9 -translate-x-2 border-2 border-neutral-800 rounded-full overflow-hidden"><img width="32" src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" /></div>`;
+      proxyGroupElement += `  <div>`;
+      proxyGroupElement += `    <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}</div>`;
+      proxyGroupElement += `  </div>`;
+      proxyGroupElement += `  <div class="rounded py-1 px-2 bg-amber-400 dark:bg-neutral-800 dark:border-2 dark:border-amber-400">`;
+      proxyGroupElement += `    <h5 class="font-bold text-md text-neutral-900 dark:text-white mb-1 overflow-x-scroll scrollbar-hide text-nowrap">${proxyData.org}</h5>`;
+      proxyGroupElement += `    <div class="text-neutral-900 dark:text-white text-sm">`;
+      proxyGroupElement += `      <p>IP: ${proxyData.proxyIP}</p>`;
+      proxyGroupElement += `      <p>Port: ${proxyData.proxyPort}</p>`;
+      proxyGroupElement += `    </div>`;
+      proxyGroupElement += `  </div>`;
+      proxyGroupElement += `  <div class="flex flex-col gap-2 mt-3 text-sm">`;
+      for (let x = 0; x < proxyData.list.length; x++) {
+        const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
+        const proxy = proxyData.list[x];
+
+        if (x % 2 == 0) {
+          proxyGroupElement += `<div class="flex gap-2 justify-around w-full">`;
+        }
+
+        proxyGroupElement += `<button class="bg-blue-500 dark:bg-neutral-800 dark:border-2 dark:border-blue-500 rounded p-1 w-full text-white" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>`;
+
+        if (x % 2 == 1) {
+          proxyGroupElement += `</div>`;
+        }
+      }
+      proxyGroupElement += `  </div>`;
+      proxyGroupElement += `</div>`;
+    }
+    proxyGroupElement += `</div>`;
+
+    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", `${proxyGroupElement}`);
+  }
+
+  build() {
+    const country = this.url.pathname.split("/cc/")[1]; // Extract country code from URL
+    this.buildProxyGroup(country);  // Call the method with the country filter if available
+
+    this.html = this.html.replaceAll("PLACEHOLDER_API_READY", isApiReady ? "block" : "hidden");
+
+    return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
+  }
+}
+
+
+
+class DocumentForCountryFlags {
+  constructor(request) {
+    this.html = baseHTML; // Pastikan baseHTML sudah didefinisikan sebelumnya
+    this.request = request;
+    this.url = new URL(this.request.url);
+  }
+
+  buildCountryFlag() {
+    const proxyBankUrl = this.url.searchParams.get("proxy-list");
+    const flagList = [];
+
+    // Mengambil negara dari cachedProxyList
+    for (const proxy of cachedProxyList) { // Pastikan cachedProxyList sudah didefinisikan
+      flagList.push(proxy.country);
+    }
+
+    let flagElement = "";
+    for (const flag of new Set(flagList)) {
+      flagElement += `<a href="/cc/${flag}${
+        proxyBankUrl ? "?proxy-list=" + proxyBankUrl : ""
+      }" class="py-1" ><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
+    }
+
+    this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
+  }
+
+  build() {
+    this.buildCountryFlag();
 
     return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
   }
