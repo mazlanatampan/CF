@@ -1544,8 +1544,8 @@ let baseHTML = `
             <div class="icon-name"> MAZLANA</div>
             <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
-      PLACEHOLDER_PROXY_GROUP
-      PLACEHOLDER_PAGE_BUTTON
+      <div id="proxy-group"></div>
+
     </section>    
     
     
@@ -1998,6 +1998,62 @@ function scrollToProxySection(country) {
           paginationContainer.classList.add("-translate-y-6");
         }
       };
+      
+      async function buildProxyGroup(selectedCountry) {
+    try {
+        // Fetch data dari URL berdasarkan negara yang dipilih
+        const response = await fetch('https://mazlana.destimyangel.my.id/sub?cc=${selectedCountry.toLowerCase()}');
+        
+        if (!response.ok) {
+            throw new Error('HTTP error! Status: ${response.status}');
+        }
+
+        // Parse hasil fetch menjadi JSON
+        const proxyData = await response.json();
+
+        // Mulai membangun elemen kartu
+        let proxyGroupElement = "<div class='card-container'>";
+        for (let i = 0; i < proxyData.length; i++) {
+            const data = proxyData[i];
+            
+            proxyGroupElement += '
+                <div class="card">
+                    <img 
+                        width="50" 
+                        src="https://hatscripts.github.io/circle-flags/flags/${data.country.toLowerCase()}.svg" 
+                        alt="Flag of ${data.country}" 
+                        class="proxy-flag" 
+                    />
+                    <div class="info-text">
+                        <i class="bx bx-globe"> IP: ${data.proxyIP}</i>
+                        <i class="bx bx-globe"> PORT: ${data.proxyPort}</i>
+                        <i class="bx bxs-microchip"> ORG: ${data.org}</i>
+                        <i class="bx bxs-microchip"> STATUS: </i>
+                        <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">
+                            Idle ${data.proxyIP}:${data.proxyPort}
+                        </div>
+                        <div class="proxy-actions">
+                            ${data.list.map((proxy, x) => {
+                                const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
+                                return `
+                                    <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            ';
+        }
+        proxyGroupElement += "</div>"; // Tutup container kartu
+
+        // Replace placeholder dengan elemen yang dibangun
+        document.querySelector("#proxy-group").innerHTML = proxyGroupElement;
+    } catch (error) {
+        console.error("Error fetching proxy data:", error);
+        document.querySelector("#proxy-group").innerHTML = '<p>Failed to load proxies. Please try again later.</p>'
+    }
+}
+
     </script>
     </body>
 
@@ -2029,6 +2085,7 @@ class Document {
     });
   }
 
+/*
 buildProxyGroup() {
     let proxyGroupElement = "<div class='card-container'>";
     for (let i = 0; i < this.proxies.length; i++) {
@@ -2071,7 +2128,7 @@ buildProxyGroup() {
     this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
 }
 
-
+*/
   buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
     const countryIpCount = {};
@@ -2088,7 +2145,8 @@ buildProxyGroup() {
     for (const [country, count] of Object.entries(countryIpCount)) {
         flagElement += `
         <div class="card">
-            <a href="javascript:void(0);" onclick="scrollToProxySection('${country}')">
+           <a href="javascript:void(0);" onclick="scrollToProxySection('${country}'); buildProxyGroup('${country}')">
+
                 <img 
                     width="50" 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
