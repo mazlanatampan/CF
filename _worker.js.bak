@@ -2001,9 +2001,13 @@ function scrollToProxySection(country) {
       
       async function buildProxyGroup(country) {
     try {
-    let selectedCountry = country;
+  if (!country) {
+    console.error("Country is not defined");
+    return;
+}
+
         // Fetch data dari URL berdasarkan negara yang dipilih
-        const response = await fetch('https://mazlana.destimyangel.my.id/sub?cc=${selectedCountry.toLowerCase()}');
+        const response = await fetch('https://mazlana.destimyangel.my.id/sub?cc=${country.toLowerCase()}');
         
         if (!response.ok) {
             throw new Error('HTTP error! Status: ${response.status}');
