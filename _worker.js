@@ -208,7 +208,7 @@ export default {
         }
       }
 
-      if (url.pathname.startsWith("/sub")) {
+      else if (url.pathname.startsWith("/sub")) {
         const page = url.pathname.match(/^\/sub\/(\d+)$/);
         const pageIndex = parseInt(page ? page[1] : "0");
         const hostname = request.headers.get("Host");
@@ -230,7 +230,31 @@ export default {
           status: 200,
           headers: { "Content-Type": "text/html;charset=utf-8" },
         });
-      } else if (url.pathname.startsWith("/check")) {
+      } if (url.pathname.startsWith("/proxylist")) {
+    const countrySelect = url.searchParams.get("cc")?.split(",");
+    const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
+    
+    // Fetch the proxy list from the given URL
+    let proxyList = await getProxyList(proxyBankUrl);
+
+    if (countrySelect) {
+        // Filter proxies by selected country codes
+        proxyList = proxyList.filter((proxy) => {
+            return countrySelect.includes(proxy.country);
+        });
+    }
+
+    // Generate the HTML or JSON response based on the filtered proxy list
+    const result = generateProxyListResponse(proxyList);  // Assuming this function generates the HTML or JSON
+    return new Response(result, {
+        status: 200,
+        headers: { "Content-Type": "application/json;charset=utf-8" }, // Change content type based on response format
+    });
+}
+
+      
+      
+      else if (url.pathname.startsWith("/check")) {
         const target = url.searchParams.get("target").split(":");
         const result = await checkProxyHealth(target[0], target[1] || "443");
 

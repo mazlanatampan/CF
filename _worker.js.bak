@@ -2034,56 +2034,56 @@ class Document {
 buildProxyGroup(country) {
     let proxyGroupElement = "<div class='card-container'>";
 
-    // Filter proxies berdasarkan negara yang dipilih
-    const filteredProxies = this.proxies.filter(proxy => 
-        proxy.country && proxy.country.toLowerCase() === country.toLowerCase()
-    );
+// Filter proxies berdasarkan negara yang dipilih tanpa mengubah menjadi lowercase
+const filteredProxies = this.proxies.filter(proxy => 
+    proxy.country && proxy.country === country
+);
 
-    if (filteredProxies.length === 0) {
-        proxyGroupElement = '<p>No proxies available for the selected country.</p>';
-    } else {
-        for (let i = 0; i < filteredProxies.length; i++) {
-            const proxyData = filteredProxies[i];
+if (filteredProxies.length === 0) {
+    proxyGroupElement = '<p>No proxies available for the selected country.</p>';
+} else {
+    for (let i = 0; i < filteredProxies.length; i++) {
+        const proxyData = filteredProxies[i];
 
-            proxyGroupElement += `
-            <div class="card">
-                    <img 
-                        width="50" 
-                        src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" 
-                        alt="Flag of ${proxyData.country}" 
-                        class="proxy-flag"
-                    />
-               
-                <div class="info-text">
-                    <i class="bx bx-globe"> IP: ${proxyData.proxyIP}</i>
-                    <i class="bx bx-globe"> PORT: ${proxyData.proxyPort}</i>
-                    <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
-                    <i class="bx bxs-microchip"> STATUS: </i>
-                <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}
-                checkProxy();
-                </div>
-                
-                <div class="proxy-actions">
-                    ${proxyData.list.map((proxy, x) => {
-                        const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
-                        return `
-                            <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
-                        `;
-                    }).join('')}
-                </div>
+        proxyGroupElement += `
+        <div class="card">
+                <img 
+                    width="50" 
+                    src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country}.svg" 
+                    alt="Flag of ${proxyData.country}" 
+                    class="proxy-flag"
+                />
+           
+            <div class="info-text">
+                <i class="bx bx-globe"> IP: ${proxyData.proxyIP}</i>
+                <i class="bx bx-globe"> PORT: ${proxyData.proxyPort}</i>
+                <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
+                <i class="bx bxs-microchip"> STATUS: </i>
+            <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}
+            checkProxy();
             </div>
+            
+            <div class="proxy-actions">
+                ${proxyData.list.map((proxy, x) => {
+                    const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
+                    return `
+                        <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
+                    `;
+                }).join('')}
             </div>
-            `;
-        }
+        </div>
+        </div>
+        `;
     }
-
-    proxyGroupElement += "</div>"; // Close card-container
-
-    // Replace placeholder dengan elemen HTML baru
-    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
 }
 
+proxyGroupElement += "</div>"; // Close card-container
 
+// Replace placeholder dengan elemen HTML baru
+this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
+
+
+}
 
 
 buildCountryFlag() {
