@@ -1982,7 +1982,7 @@ function scrollToProxySection(country) {
       
       function loadCountryData(country) {
     // Membuat URL untuk request
-    const url = '/sub?cc=${country}';
+    const url = '/sub?cc= ' + country
 
     // Menggunakan fetch untuk memuat data
     fetch(url)
@@ -1990,7 +1990,7 @@ function scrollToProxySection(country) {
         .then(data => {
             // Menangani data yang diterima dan memuatnya ke bagian halaman yang sesuai
             // Misalnya, menampilkan data pada bagian tertentu dari halaman
-            document.getElementById("ip-info").innerHTML = 'Data for country ${country}: ${JSON.stringify(data)}'
+            document.getElementById("ip-info").innerHTML = 'Data for country  : ${JSON.stringify(data)}'
         })
         .catch(error => {
             console.error('Error loading data:', error);
@@ -2136,6 +2136,56 @@ buildProxyGroup() {
 
 
 
+
+
+
+
+async fetchProxyDataByCountry(country) {
+    const proxyBankUrl = this.url.searchParams.get("proxy-list");
+
+    try {
+        // Fetch data from the proxy bank URL
+        const response = await fetch(proxyBankUrl);
+        const proxyData = await response.text(); // Get the raw text from the response
+        
+        // Parse the proxy data
+        const proxies = proxyData.split("\n").map(line => {
+            const [ip, port, proxyCountry, org] = line.split(",");
+            if (proxyCountry === country) {
+                return { ip, port, proxyCountry, org };
+            }
+            return null;
+        }).filter(proxy => proxy !== null);
+
+        // Process and display data specific to the selected country
+        this.displayCountryProxies(proxies, country);
+    } catch (error) {
+        console.error("Failed to fetch proxy data for country:", error);
+    }
+}
+
+
+
+displayCountryProxies(proxies, country) {
+    let proxyInfoHtml = `<h3>Proxy Data for ${country}</h3><ul>`;
+
+    proxies.forEach(proxy => {
+        proxyInfoHtml += `
+            <li>
+                <strong>IP:</strong> ${proxy.ip}<br>
+                <strong>Port:</strong> ${proxy.port}<br>
+                <strong>Organization:</strong> ${proxy.org}
+            </li>
+        `;
+    });
+
+    proxyInfoHtml += '</ul>';
+    
+    // Replace the placeholder with the actual proxy info for the selected country
+    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyInfoHtml)
+    
+    
+}
 
 
 
