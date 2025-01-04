@@ -1976,27 +1976,6 @@ function scrollToProxySection(country) {
           }
         });
       }
-      
-      
-      
-      
-      function loadCountryData(country) {
-    // Membuat URL untuk request
-    const url = '/sub?cc= ' + country
-
-    // Menggunakan fetch untuk memuat data
-    fetch(url)
-        .then(response => response.json()) // Mengasumsikan respons berupa JSON
-        .then(data => {
-            // Menangani data yang diterima dan memuatnya ke bagian halaman yang sesuai
-            // Misalnya, menampilkan data pada bagian tertentu dari halaman
-            document.getElementById("ip-info").innerHTML = 'Data for country  : JSON.stringify(data)'
-        })
-        .catch(error => {
-            console.error('Error loading data:', error);
-            document.getElementById("ip-info").innerHTML = 'Failed to load data.';
-        });
-}
 
       window.onload = () => {
         checkGeoip();
@@ -2019,8 +1998,6 @@ function scrollToProxySection(country) {
           paginationContainer.classList.add("-translate-y-6");
         }
       };
-      
-      
     </script>
     </body>
 
@@ -2052,47 +2029,51 @@ class Document {
     });
   }
 
-buildProxyGroup() {
-    let proxyGroupElement = "<div class='card-container'>";
-    for (let i = 0; i < this.proxies.length; i++) {
-        const proxyData = this.proxies[i];
+async buildProxyGroup(country) {
+    // Filter proxies by country
+    const filteredProxies = this.proxies.filter(proxy => proxy.country.toUpperCase() === country.toUpperCase());
 
-        // Assign proxies
+    let proxyGroupElement = "<div class='card-container'>";
+
+    // Loop through the filtered proxies and build the HTML
+    for (let i = 0; i < filteredProxies.length; i++) {
+        const proxyData = filteredProxies[i];
+
+        // Assign proxy information
         proxyGroupElement += `
         <div class="card">
-      
-                <img 
-                    width="50" 
-                    src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" 
-                    alt="Flag of ${proxyData.country}" 
-                    class="proxy-flag"
-                />
-           
+            <img 
+                width="50" 
+                src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" 
+                alt="Flag of ${proxyData.country}" 
+                class="proxy-flag"
+            />
             <div class="info-text">
                 <i class="bx bx-globe"> IP: ${proxyData.proxyIP}</i>
                 <i class="bx bx-globe"> PORT: ${proxyData.proxyPort}</i>
                 <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
                 <i class="bx bxs-microchip"> STATUS: </i>
-            <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}
-            checkProxy();
+                <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}
+                    checkProxy();
+                </div>
+                <div class="proxy-actions">
+                    ${proxyData.list.map((proxy, x) => {
+                        const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
+                        return `
+                            <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
+                        `;
+                    }).join('')}
+                </div>
             </div>
-            
-            <div class="proxy-actions">
-                ${proxyData.list.map((proxy, x) => {
-                    const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
-                    return `
-                        <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
-                    `;
-                }).join('')}
-            </div>
-        </div>
         </div>
         `;
     }
     proxyGroupElement += "</div>"; // Close card-container
 
-    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
+    // Replace the placeholder with the generated proxy group HTML
+    this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", proxyGroupElement);
 }
+
 
 
   buildCountryFlag() {
@@ -2111,8 +2092,7 @@ buildProxyGroup() {
     for (const [country, count] of Object.entries(countryIpCount)) {
         flagElement += `
         <div class="card">
-            <a href="javascript:void(0);" onclick="loadCountryData('${country}')">
-                
+            <a href="javascript:void(0);" onclick="buildProxyGroup('${country}')">
                 <img 
                     width="50" 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
@@ -2136,56 +2116,6 @@ buildProxyGroup() {
 
 
 
-
-
-
-
-async fetchProxyDataByCountry(country) {
-    const proxyBankUrl = this.url.searchParams.get("proxy-list");
-
-    try {
-        // Fetch data from the proxy bank URL
-        const response = await fetch(proxyBankUrl);
-        const proxyData = await response.text(); // Get the raw text from the response
-        
-        // Parse the proxy data
-        const proxies = proxyData.split("\n").map(line => {
-            const [ip, port, proxyCountry, org] = line.split(",");
-            if (proxyCountry === country) {
-                return { ip, port, proxyCountry, org };
-            }
-            return null;
-        }).filter(proxy => proxy !== null);
-
-        // Process and display data specific to the selected country
-        this.displayCountryProxies(proxies, country);
-    } catch (error) {
-        console.error("Failed to fetch proxy data for country:", error);
-    }
-}
-
-
-
-displayCountryProxies(proxies, country) {
-    let proxyInfoHtml = `<h3>Proxy Data for ${country}</h3><ul>`;
-
-    proxies.forEach(proxy => {
-        proxyInfoHtml += `
-            <li>
-                <strong>IP:</strong> ${proxy.ip}<br>
-                <strong>Port:</strong> ${proxy.port}<br>
-                <strong>Organization:</strong> ${proxy.org}
-            </li>
-        `;
-    });
-
-    proxyInfoHtml += '</ul>';
-    
-    // Replace the placeholder with the actual proxy info for the selected country
-    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyInfoHtml)
-    
-    
-}
 
 
 
