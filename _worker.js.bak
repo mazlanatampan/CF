@@ -1764,14 +1764,6 @@ function menuBtnChange() {
 }
 
 
-function handleCountryClick(country) {
-    // Call buildProxyGroup to show the proxies for the selected country
-    buildProxyGroup(country);
-
-    // Call scrollToProxySection to scroll to the proxy section for the selected country
-    scrollToProxySection(country);
-}
-
 
 function scrollToProxySection(country) {
     // Sembunyikan home-section
@@ -2037,51 +2029,47 @@ class Document {
     });
   }
 
-async buildProxyGroup(country) {
-    // Filter proxies by country
-    const filteredProxies = this.proxies.filter(proxy => proxy.country.toUpperCase() === country.toUpperCase());
-
+buildProxyGroup() {
     let proxyGroupElement = "<div class='card-container'>";
+    for (let i = 0; i < this.proxies.length; i++) {
+        const proxyData = this.proxies[i];
 
-    // Loop through the filtered proxies and build the HTML
-    for (let i = 0; i < filteredProxies.length; i++) {
-        const proxyData = filteredProxies[i];
-
-        // Assign proxy information
+        // Assign proxies
         proxyGroupElement += `
         <div class="card">
-            <img 
-                width="50" 
-                src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" 
-                alt="Flag of ${proxyData.country}" 
-                class="proxy-flag"
-            />
+      
+                <img 
+                    width="50" 
+                    src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" 
+                    alt="Flag of ${proxyData.country}" 
+                    class="proxy-flag"
+                />
+           
             <div class="info-text">
                 <i class="bx bx-globe"> IP: ${proxyData.proxyIP}</i>
                 <i class="bx bx-globe"> PORT: ${proxyData.proxyPort}</i>
                 <i class="bx bxs-microchip"> ORG: ${proxyData.org}</i>
                 <i class="bx bxs-microchip"> STATUS: </i>
-                <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}
-                    checkProxy();
-                </div>
-                <div class="proxy-actions">
-                    ${proxyData.list.map((proxy, x) => {
-                        const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
-                        return `
-                            <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
-                        `;
-                    }).join('')}
-                </div>
+            <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}
+            checkProxy();
             </div>
+            
+            <div class="proxy-actions">
+                ${proxyData.list.map((proxy, x) => {
+                    const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
+                    return `
+                        <button class="action-btn" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>
+                    `;
+                }).join('')}
+            </div>
+        </div>
         </div>
         `;
     }
     proxyGroupElement += "</div>"; // Close card-container
 
-    // Replace the placeholder with the generated proxy group HTML
     this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", proxyGroupElement);
 }
-
 
 
   buildCountryFlag() {
@@ -2100,9 +2088,7 @@ async buildProxyGroup(country) {
     for (const [country, count] of Object.entries(countryIpCount)) {
         flagElement += `
         <div class="card">
-<a href="javascript:void(0);" 
-               onclick="handleCountryClick('${country}')">
-                
+            <a href="javascript:void(0);" onclick="scrollToProxySection('${country}')">
                 <img 
                     width="50" 
                     src="https://hatscripts.github.io/circle-flags/flags/${country.toLowerCase()}.svg" 
