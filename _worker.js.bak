@@ -181,12 +181,12 @@ export default {
         isApiReady = true;
       }
 
-      // Handle proxy client
+      // Handle proxy client (WebSocket)
       if (upgradeHeader === "websocket") {
         const proxyMatch = url.pathname.match(/^\/(.+[:=-]\d+)$/);
 
         if (url.pathname.length == 3 || url.pathname.match(",")) {
-          // Contoh: /ID, /SG, dll
+          // Example: /ID, /SG, etc.
           const proxyKeys = url.pathname.replace("/", "").toUpperCase().split(",");
           const proxyKey = proxyKeys[Math.floor(Math.random() * proxyKeys.length)];
           let kvProxy = await env.nautica.get("kvProxy");
@@ -208,6 +208,7 @@ export default {
         }
       }
 
+      // Handle proxy and flag sections
       if (url.pathname.startsWith("/sub")) {
         const page = url.pathname.match(/^\/sub\/(\d+)$/);
         const pageIndex = parseInt(page ? page[1] : "0");
@@ -217,20 +218,34 @@ export default {
         const countrySelect = url.searchParams.get("cc")?.split(",");
         const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
         let proxyList = (await getProxyList(proxyBankUrl)).filter((proxy) => {
-          // Filter proxies by Country
+          // Filter proxies by country if provided
           if (countrySelect) {
             return countrySelect.includes(proxy.country);
           }
-
           return true;
         });
 
-        const result = getAllConfig(request, hostname, proxyList, pageIndex);
-        return new Response(result, {
+        // Create instances of DocumentProxies and DocumentFlags
+        const proxiesDoc = new DocumentProxies(request);
+        const flagsDoc = new DocumentFlags(request, proxyList);
+
+        // Process proxy section (for example `/sub`)
+        proxiesDoc.setTitle("Proxy List for Sub");
+        proxiesDoc.buildProxyGroup(countrySelect ? countrySelect[0] : "sg");  // Example: filter by first country in cc
+        flagsDoc.buildCountryFlag();  // Build the country flag section
+
+        // Combine both HTML sections (Proxies + Flags)
+        let finalHTML = proxiesDoc.build();  // Proxy HTML
+        finalHTML += flagsDoc.build();       // Country flag HTML
+
+        return new Response(finalHTML, {
           status: 200,
-          headers: { "Content-Type": "text/html;charset=utf-8" },
+          headers: { "Content-Type": "text/html;charset=utf-8" }
         });
-      } else if (url.pathname.startsWith("/check")) {
+      }
+
+      // Handle other paths like /check, /api/v1, etc.
+      if (url.pathname.startsWith("/check")) {
         const target = url.searchParams.get("target").split(":");
         const result = await checkProxyHealth(target[0], target[1] || "443");
 
@@ -244,6 +259,7 @@ export default {
       } else if (url.pathname.startsWith("/api/v1")) {
         const apiPath = url.pathname.replace("/api/v1", "");
 
+        // Example API handling
         if (apiPath.startsWith("/domains")) {
           if (!isApiReady) {
             return new Response("Api not ready", {
@@ -272,117 +288,14 @@ export default {
               },
             });
           }
-        } else if (apiPath.startsWith("/sub")) {
-          const filterCC = url.searchParams.get("cc")?.split(",") || [];
-          const filterPort = url.searchParams.get("port")?.split(",") || PORTS;
-          const filterVPN = url.searchParams.get("vpn")?.split(",") || PROTOCOLS;
-          const filterLimit = parseInt(url.searchParams.get("limit")) || 10;
-          const filterFormat = url.searchParams.get("format") || "raw";
-          const fillerDomain = url.searchParams.get("domain") || APP_DOMAIN;
-
-          const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
-          const proxyList = await getProxyList(proxyBankUrl)
-            .then((proxies) => {
-              // Filter CC
-              if (filterCC.length) {
-                return proxies.filter((proxy) => filterCC.includes(proxy.country));
-              }
-              return proxies;
-            })
-            .then((proxies) => {
-              // shuffle result
-              shuffleArray(proxies);
-              return proxies;
-            });
-
-          const uuid = crypto.randomUUID();
-          const result = [];
-          for (const proxy of proxyList) {
-            const uri = new URL(`trojan://${fillerDomain}`);
-            uri.searchParams.set("encryption", "none");
-            uri.searchParams.set("type", "ws");
-            uri.searchParams.set("host", APP_DOMAIN);
-
-            for (const port of filterPort) {
-              for (const protocol of filterVPN) {
-                if (result.length >= filterLimit) break;
-
-                uri.protocol = protocol;
-                uri.port = port.toString();
-                if (protocol == "ss") {
-                  uri.username = btoa(`none:${uuid}`);
-                } else {
-                  uri.username = uuid;
-                }
-
-                uri.searchParams.set("security", port == 443 ? "tls" : "none");
-                uri.searchParams.set("sni", port == 80 && protocol == "vless" ? "" : APP_DOMAIN);
-                uri.searchParams.set("path", `/${proxy.proxyIP}-${proxy.proxyPort}`);
-
-                uri.hash = `${result.length + 1} ${getFlagEmoji(proxy.country)} ${proxy.org} WS ${
-                  port == 443 ? "TLS" : "NTLS"
-                } [${serviceName}]`;
-                result.push(uri.toString());
-              }
-            }
-          }
-
-          let finalResult = "";
-          switch (filterFormat) {
-            case "raw":
-              finalResult = result.join("\n");
-              break;
-            case "clash":
-            case "sfa":
-            case "bfr":
-            case "v2ray":
-              const encodedResult = [];
-              for (const proxy of result) {
-                encodedResult.push(encodeURIComponent(proxy));
-              }
-
-              // finalResult = `${CONVERTER_URL}?target=${filterFormat}&url=${encodedResult.join(",")}`;
-              const res = await fetch(`${CONVERTER_URL}?target=${filterFormat}&url=${encodedResult.join(",")}`);
-              if (res.status == 200) {
-                finalResult = await res.text();
-              } else {
-                return new Response(res.statusText, {
-                  status: res.status,
-                  headers: {
-                    ...CORS_HEADER_OPTIONS,
-                  },
-                });
-              }
-              break;
-          }
-
-          return new Response(finalResult, {
-            status: 200,
-            headers: {
-              ...CORS_HEADER_OPTIONS,
-            },
-          });
-        } else if (apiPath.startsWith("/myip")) {
-          return new Response(
-            JSON.stringify({
-              ip:
-                request.headers.get("cf-connecting-ipv6") ||
-                request.headers.get("cf-connecting-ip") ||
-                request.headers.get("x-real-ip"),
-              colo: request.headers.get("cf-ray")?.split("-")[1],
-              ...request.cf,
-            }),
-            {
-              headers: {
-                ...CORS_HEADER_OPTIONS,
-              },
-            }
-          );
         }
+        // Additional API routes can be added here as needed
       }
 
+      // Reverse Proxy fallback
       const targetReverseProxy = env.REVERSE_PROXY_TARGET || "example.com";
       return await reverseProxy(request, targetReverseProxy);
+
     } catch (err) {
       return new Response(`An error occurred: ${err.toString()}`, {
         status: 500,
@@ -393,6 +306,7 @@ export default {
     }
   },
 };
+
 
 async function websocketHandler(request) {
   const webSocketPair = new WebSocketPair();
