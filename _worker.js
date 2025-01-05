@@ -1965,7 +1965,10 @@ let baseHTML = `
 }
 .home-section{
   position: relative;
-  background: #E4E9F7;
+  background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
+   background-attachment: fixed;
+   background-size: cover;
+   background-position: center;
   min-height: 100vh;
   top: 0;
   left: 78px;
@@ -1991,10 +1994,10 @@ let baseHTML = `
 }
 
 iframe {
-    width: 100%;       /* Lebar 100% dari container */
-    height: 100vh;     /* Tinggi penuh dari viewport */
-    border: none;      /* Menghilangkan border iframe */
-    display: block;    /* Pastikan iframe menjadi block element */
+ width: 100%;       /* Lebar 100% dari container */
+  height: 100vh;     /* Tinggi penuh dari viewport */
+  border: none;      /* Menghilangkan border iframe */
+  display: block;    /* Pastikan iframe menjadi block element */
 }
 
 
@@ -2008,7 +2011,7 @@ iframe {
 
 /* Card Style */
 .card {
-  background-color: white;
+  background: rgba(255,255,255,0.6);
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -2018,6 +2021,12 @@ iframe {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+}
+
+.card img{
+  height: 15px;
+  width: 15px;
+  border-radius: 10px;
 }
 
 /* Card Info Style */
