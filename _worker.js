@@ -1084,15 +1084,29 @@ let baseHTML = `
       </div>
     </div>
     <!-- Select Country -->
-    <div>
-      <div
-        class="h-full fixed top-0 w-14 bg-white dark:bg-neutral-800 border-r-2 border-neutral-800 dark:border-white z-20 overflow-y-scroll scrollbar-hide"
-      >
-        <div class="text-2xl flex flex-col items-center h-full gap-2">
-          PLACEHOLDER_BENDERA_NEGARA
-        </div>
-      </div>
+  <div>
+  <!-- Sidebar Button to toggle visibility -->
+  <button 
+    id="sidebar-toggle" 
+    class="fixed left-0 top-1/2 z-30 transform -translate-x-1/2 bg-neutral-800 text-white p-3 rounded-full shadow-md"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
+  </button>
+  
+  <!-- Sidebar -->
+  <div
+    id="sidebar"
+    class="h-full fixed top-0 left-0 w-14 bg-white dark:bg-neutral-800 border-r-2 border-neutral-800 dark:border-white z-20 overflow-y-scroll scrollbar-hide transform transition-all duration-300"
+    style="transform: translateX(-100%);"
+  >
+    <div class="text-2xl flex flex-col items-center h-full gap-2">
+      <!-- Flag or country placeholder -->
+      PLACEHOLDER_BENDERA_NEGARA
     </div>
+  </div>
+</div>
     <!-- Main -->
     <div id="container-header">
       <div id="container-info" class="bg-amber-400 border-2 border-neutral-800 text-right px-5">
@@ -1513,6 +1527,22 @@ let baseHTML = `
           paginationContainer.classList.add("-translate-y-6");
         }
       };
+      
+      const sidebar = document.getElementById('sidebar');
+  const sidebarToggleButton = document.getElementById('sidebar-toggle');
+
+  // Function to toggle sidebar visibility
+  sidebarToggleButton.addEventListener('click', () => {
+    const isSidebarVisible = sidebar.style.transform === 'translateX(0%)';
+    
+    if (isSidebarVisible) {
+      // Close the sidebar
+      sidebar.style.transform = 'translateX(-100%)';
+    } else {
+      // Open the sidebar
+      sidebar.style.transform = 'translateX(0%)';
+    }
+  });
     </script>
     </body>
 
@@ -1545,59 +1575,49 @@ class Document {
   }
 
   buildProxyGroup() {
-  let proxyGroupElement = "";
-  // Mengubah layout grid ke 2 kolom di berbagai ukuran layar
-  proxyGroupElement += `<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6">`;
+    let proxyGroupElement = "";
+    proxyGroupElement += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols- gap-6">`;
+    for (let i = 0; i < this.proxies.length; i++) {
+      const proxyData = this.proxies[i];
 
-  // Loop untuk menampilkan data proxy
-  for (let i = 0; i < this.proxies.length; i++) {
-    const proxyData = this.proxies[i];
+      // Assign proxies
+      proxyGroupElement += `<div class="lozad scale-95 mb-2 bg-white dark:bg-neutral-800 transition-transform duration-200 rounded-lg p-4 w-60 border-2 border-neutral-800">`;
+      proxyGroupElement += `  <div id="countryFlag" class="absolute -translate-y-9 -translate-x-2 border-2 border-neutral-800 rounded-full overflow-hidden"><img width="32" src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" /></div>`;
+      proxyGroupElement += `  <div>`;
+      proxyGroupElement += `    <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}</div>`;
+      proxyGroupElement += `  </div>`;
+      proxyGroupElement += `  <div class="rounded py-1 px-2 bg-amber-400 dark:bg-neutral-800 dark:border-2 dark:border-amber-400">`;
+      proxyGroupElement += `    <h5 class="font-bold text-md text-neutral-900 dark:text-white mb-1 overflow-x-scroll scrollbar-hide text-nowrap">${proxyData.org}</h5>`;
+      proxyGroupElement += `    <div class="text-neutral-900 dark:text-white text-sm">`;
+      proxyGroupElement += `      <p>IP: ${proxyData.proxyIP}</p>`;
+      proxyGroupElement += `      <p>Port: ${proxyData.proxyPort}</p>`;
+      proxyGroupElement += `      <div id="container-region-check-${i}">`;
+      proxyGroupElement += `        <input id="config-sample-${i}" class="hidden" type="text" value="${proxyData.list[0]}">`;
+      proxyGroupElement += `      </div>`;
+      proxyGroupElement += `    </div>`;
+      proxyGroupElement += `  </div>`;
+      proxyGroupElement += `  <div class="flex flex-col gap-2 mt-3 text-sm">`;
+      for (let x = 0; x < proxyData.list.length; x++) {
+        const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
+        const proxy = proxyData.list[x];
 
-    // Menambahkan elemen proxy dalam grid
-    proxyGroupElement += `<div class="lozad scale-95 mb-2 bg-white dark:bg-neutral-800 transition-transform duration-200 rounded-lg p-4 border-2 border-neutral-800">`;
-    
-    // Bendera negara
-    proxyGroupElement += `  <div id="countryFlag" class="absolute -translate-y-9 -translate-x-2 border-2 border-neutral-800 rounded-full overflow-hidden"><img width="32" src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" /></div>`;
-    proxyGroupElement += `  <div>`;
-    proxyGroupElement += `    <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}</div>`;
-    proxyGroupElement += `  </div>`;
-    proxyGroupElement += `  <div class="rounded py-1 px-2 bg-amber-400 dark:bg-neutral-800 dark:border-2 dark:border-amber-400">`;
-    proxyGroupElement += `    <h5 class="font-bold text-md text-neutral-900 dark:text-white mb-1 overflow-x-scroll scrollbar-hide text-nowrap">${proxyData.org}</h5>`;
-    proxyGroupElement += `    <div class="text-neutral-900 dark:text-white text-sm">`;
-    proxyGroupElement += `      <p>IP: ${proxyData.proxyIP}</p>`;
-    proxyGroupElement += `      <p>Port: ${proxyData.proxyPort}</p>`;
-    proxyGroupElement += `      <div id="container-region-check-${i}">`;
-    proxyGroupElement += `        <input id="config-sample-${i}" class="hidden" type="text" value="${proxyData.list[0]}">`;
-    proxyGroupElement += `      </div>`;
-    proxyGroupElement += `    </div>`;
-    proxyGroupElement += `  </div>`;
+        if (x % 2 == 0) {
+          proxyGroupElement += `<div class="flex gap-2 justify-around w-full">`;
+        }
 
-    // Daftar proxy
-    proxyGroupElement += `  <div class="flex flex-col gap-2 mt-3 text-sm">`;
-    for (let x = 0; x < proxyData.list.length; x++) {
-      const indexName = ["Trojan TLS", "VLESS TLS", "SS TLS", "Trojan NTLS", "VLESS NTLS", "SS NTLS"];
-      const proxy = proxyData.list[x];
+        proxyGroupElement += `<button class="bg-blue-500 dark:bg-neutral-800 dark:border-2 dark:border-blue-500 rounded p-1 w-full text-white" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>`;
 
-      // Membagi dua tombol dalam satu baris
-      if (x % 2 == 0) {
-        proxyGroupElement += `<div class="flex gap-2 justify-around w-full">`;
+        if (x % 2 == 1) {
+          proxyGroupElement += `</div>`;
+        }
       }
-
-      proxyGroupElement += `<button class="bg-blue-500 dark:bg-neutral-800 dark:border-2 dark:border-blue-500 rounded p-1 w-full text-white" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>`;
-
-      if (x % 2 == 1) {
-        proxyGroupElement += `</div>`;
-      }
+      proxyGroupElement += `  </div>`;
+      proxyGroupElement += `</div>`;
     }
-    proxyGroupElement += `  </div>`;
     proxyGroupElement += `</div>`;
+
+    this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", `${proxyGroupElement}`);
   }
-  proxyGroupElement += `</div>`;
-
-  // Menambahkan hasil grid ke dalam HTML
-  this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", `${proxyGroupElement}`);
-}
-
 
   buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
