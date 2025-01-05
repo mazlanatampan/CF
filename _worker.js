@@ -177,77 +177,14 @@ function getAllConfig(request, hostName, proxyList, page = 0) {
 
 
 
-function homeDocument(request, hostName, proxyList, page = 0) {
-  const startIndex = PROXY_PER_PAGE * page;
-
+function homeDocument(request) {
   try {
-    const uuid = crypto.randomUUID();
-
-    // Build URI
-    const uri = new URL(`trojan://${hostName}`);
-    uri.searchParams.set("encryption", "none");
-    uri.searchParams.set("type", "ws");
-    uri.searchParams.set("host", hostName);
-
+    
     // Build HTML
     const document = new FlagsDocument(request);
-    document.setTitle("Welcome to <span class='text-blue-500 font-semibold'>Nautica</span>");
-    document.addInfo(`Total: ${proxyList.length}`);
-    document.addInfo(`Page: ${page}/${Math.floor(proxyList.length / PROXY_PER_PAGE)}`);
-
-    for (let i = startIndex; i < startIndex + PROXY_PER_PAGE; i++) {
-      const proxy = proxyList[i];
-      if (!proxy) break;
-
-      const { proxyIP, proxyPort, country, org } = proxy;
-
-      uri.searchParams.set("path", `/${proxyIP}-${proxyPort}`);
-
-      const proxies = [];
-      for (const port of PORTS) {
-        uri.port = port.toString();
-        uri.hash = `${i + 1} ${getFlagEmoji(country)} ${org} WS ${port == 443 ? "TLS" : "NTLS"} [${serviceName}]`;
-        for (const protocol of PROTOCOLS) {
-          // Special exceptions
-          if (protocol === "ss") {
-            uri.username = btoa(`none:${uuid}`);
-            uri.searchParams.set(
-              "plugin",
-              `v2ray-plugin${
-                port == 80 ? "" : ";tls"
-              };mux=0;mode=websocket;path=/${proxyIP}-${proxyPort};host=${hostName}`
-            );
-          } else {
-            uri.username = uuid;
-            uri.searchParams.delete("plugin");
-          }
-
-          uri.protocol = protocol;
-          uri.searchParams.set("security", port == 443 ? "tls" : "none");
-          uri.searchParams.set("sni", port == 80 && protocol == "vless" ? "" : hostName);
-
-          // Build VPN URI
-          proxies.push(uri.toString());
-        }
-      }
-      document.registerProxies(
-        {
-          proxyIP,
-          proxyPort,
-          country,
-          org,
-        },
-        proxies
-      );
-    }
-
-    // Build pagination
-    document.addPageButton("Prev", `/sub/${page > 0 ? page - 1 : 0}`, page > 0 ? false : true);
-    document.addPageButton("Next", `/sub/${page + 1}`, page < Math.floor(proxyList.length / 10) ? false : true);
-
     return document.build();
   } catch (error) {
-    return `An error occurred while generating the VLESS configurations. ${error}`;
+    return `ERROR BOSKUH ${error}`;
   }
 }
 
@@ -293,23 +230,8 @@ export default {
       }
       
       if (url.pathname.startsWith("/home")) {
-        const page = url.pathname.match(/^\/sub\/(\d+)$/);
-        const pageIndex = parseInt(page ? page[1] : "0");
-        const hostname = request.headers.get("Host");
-
-        // Queries
-        const countrySelect = url.searchParams.get("cc")?.split(",");
-        const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
-        let proxyList = (await getProxyList(proxyBankUrl)).filter((proxy) => {
-          // Filter proxies by Country
-          if (countrySelect) {
-            return countrySelect.includes(proxy.country);
-          }
-
-          return true;
-        });
-
-        const result = homeDocument(request, hostname, proxyList, pageIndex);
+      
+        const result = homeDocument(request);
         return new Response(result, {
           status: 200,
           headers: { "Content-Type": "text/html;charset=utf-8" },
@@ -2264,15 +2186,6 @@ class FlagsDocument {
     this.url = new URL(this.request.url);
   }
 
-setTitle(title) {
-    this.html = this.html.replaceAll("PLACEHOLDER_JUDUL", title);
-  }
-
-  addInfo(text) {
-    text = `<span>${text}</span>`;
-    this.html = this.html.replaceAll("PLACEHOLDER_INFO", `${text}\nPLACEHOLDER_INFO`);
-  }
-  
   
   registerProxies(data, proxies) {
     this.proxies.push({
@@ -2318,14 +2231,6 @@ setTitle(title) {
   this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
 }
 
-
-  addPageButton(text, link, isDisabled) {
-    const pageButton = `<li><button ${
-      isDisabled ? "disabled" : ""
-    } class="px-3 py-1 bg-amber-400 border-2 border-neutral-800 rounded" onclick=navigateTo('${link}')>${text}</button></li>`;
-
-    this.html = this.html.replaceAll("PLACEHOLDER_PAGE_BUTTON", `${pageButton}\nPLACEHOLDER_PAGE_BUTTON`);
-  }
 
   build() {
     
