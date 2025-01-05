@@ -1990,7 +1990,7 @@ let baseHTML = `
   }
 }
 
-.iframe {
+iframe {
     width: 100%;       /* Lebar 100% dari container */
     height: 100vh;     /* Tinggi penuh dari viewport */
     border: none;      /* Menghilangkan border iframe */
@@ -2360,8 +2360,10 @@ registerProxies(data, proxies) {
       <div class="card">
           <img width="30" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${countryName}" />
           <div class="card-info">
-            <h5>${countryName}</h5>
-            <p>IP Count: ${ipCount}</p>
+            <i class= "bx bx-globe"> </i>
+           <span class="links_name">COUNTRY :  ${countryName}</span>
+            <i class= "bx bx-laptop"> </i>
+           <span class="links_name">TOTAL IP :  ${ipCount}</span>
             <a href="#" onclick="loadIframe('https://mazlana.destimyangel.my.id/sub?cc=${flag}')">View</a>
           </div>
       </div>
