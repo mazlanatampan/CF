@@ -2036,6 +2036,7 @@ let baseHTML=`
     </div>
     <section class="home-section">
       <div class="text">Dashboard</div>
+      PLACEHOLDER_BENDERA_NEGARA
         <div id="iframe-container"></div>
     </section>
 
