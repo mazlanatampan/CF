@@ -1085,6 +1085,7 @@ let baseHTML = `
     </div>
     <!-- Select Country -->
   <div>
+  <div>
   <!-- Sidebar Button to toggle visibility -->
   <button 
     id="sidebar-toggle" 
@@ -1101,12 +1102,23 @@ let baseHTML = `
     class="h-full fixed top-0 left-0 w-14 bg-white dark:bg-neutral-800 border-r-2 border-neutral-800 dark:border-white z-20 overflow-y-scroll scrollbar-hide transform transition-all duration-300"
     style="transform: translateX(-100%);"
   >
-    <div class="text-2xl flex flex-col items-center h-full gap-2">
-      <!-- Flag or country placeholder -->
-      PLACEHOLDER_BENDERA_NEGARA
+    <div class="text-2xl flex flex-col items-center h-full gap-4">
+      <!-- Menu Negara (Button to toggle flag) -->
+      <button id="toggle-country" class="text-white bg-neutral-800 p-2 rounded-md w-full text-center">Negara</button>
+      
+      <!-- Section Bendera Negara -->
+      <div id="country-flag" class="hidden mt-4">
+        <!-- Contoh Bendera (gantikan dengan gambar bendera yang sesuai) -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_Indonesia.svg" alt="Bendera Negara" class="w-12 h-8" />
+      </div>
     </div>
   </div>
 </div>
+
+
+
+
+
     <!-- Main -->
     <div id="container-header">
       <div id="container-info" class="bg-amber-400 border-2 border-neutral-800 text-right px-5">
@@ -1528,8 +1540,11 @@ let baseHTML = `
         }
       };
       
-      const sidebar = document.getElementById('sidebar');
+  // Get elements
+  const sidebar = document.getElementById('sidebar');
   const sidebarToggleButton = document.getElementById('sidebar-toggle');
+  const toggleCountryButton = document.getElementById('toggle-country');
+  const countryFlag = document.getElementById('country-flag');
 
   // Function to toggle sidebar visibility
   sidebarToggleButton.addEventListener('click', () => {
@@ -1542,6 +1557,11 @@ let baseHTML = `
       // Open the sidebar
       sidebar.style.transform = 'translateX(0%)';
     }
+  });
+
+  // Toggle country flag visibility with one button
+  toggleCountryButton.addEventListener('click', () => {
+    countryFlag.classList.toggle('hidden'); // Show or hide the flag
   });
     </script>
     </body>

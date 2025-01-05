@@ -1527,6 +1527,22 @@ let baseHTML = `
           paginationContainer.classList.add("-translate-y-6");
         }
       };
+      
+      const sidebar = document.getElementById('sidebar');
+  const sidebarToggleButton = document.getElementById('sidebar-toggle');
+
+  // Function to toggle sidebar visibility
+  sidebarToggleButton.addEventListener('click', () => {
+    const isSidebarVisible = sidebar.style.transform === 'translateX(0%)';
+    
+    if (isSidebarVisible) {
+      // Close the sidebar
+      sidebar.style.transform = 'translateX(-100%)';
+    } else {
+      // Open the sidebar
+      sidebar.style.transform = 'translateX(0%)';
+    }
+  });
     </script>
     </body>
 
