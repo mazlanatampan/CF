@@ -1989,8 +1989,14 @@ let baseHTML = `
     display: none;
   }
 }
-    
-    
+
+.iframe {
+    width: 100%;       /* Lebar 100% dari container */
+    height: 100vh;     /* Tinggi penuh dari viewport */
+    border: none;      /* Menghilangkan border iframe */
+    display: block;    /* Pastikan iframe menjadi block element */
+}
+
 
 /* Grid Container */
 .flag-cards-container {
@@ -2324,7 +2330,7 @@ class HomeDocument {
     this.url = new URL(this.request.url);
     this.cachedProxyList = cachedProxyList; // Proxies dari luar
   }
-proxies = [];
+
 registerProxies(data, proxies) {
     this.proxies.push({
       ...data,
