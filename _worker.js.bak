@@ -877,8 +877,7 @@ else if (url.pathname.startsWith("/cc")) {
   const htmlProxies = docForProxies.build();  // Ambil HTML yang dibangun berdasarkan proxy dan negara
 
   // Atau jika hanya menampilkan bendera negara, gunakan DocumentForCountryFlags
-  const docForCountryFlags = new DocumentForCountryFlags(request);
-  const htmlCountryFlags = docForCountryFlags.build();  // Ambil HTML yang menampilkan bendera negara
+   // Ambil HTML yang menampilkan bendera negara
 
   // Pilih tampilan yang sesuai berdasarkan kebutuhan (misalnya, menampilkan proxy atau bendera negara)
   return new Response(htmlProxies, {
@@ -888,14 +887,12 @@ else if (url.pathname.startsWith("/cc")) {
 }
 
 else if (url.pathname.startsWith("/country")) {
-  // Buat instance dari DocumentForCountryFlags
-  const documentForFlags = new DocumentForCountryFlags(request);
 
   // Generate semua bendera negara (tanpa parameter countryCode)
-  documentForFlags.buildCountryFlag();
-
+  const docForCountryFlags = new DocumentForCountryFlags(request);
+  const htmlCountryFlags = docForCountryFlags.build(); 
   // Mengembalikan HTML dengan semua bendera negara
-  return new Response(documentForFlags.html, {
+  return new Response(htmlCountryFlags, {
     status: 200,
     headers: { "Content-Type": "text/html;charset=utf-8" },
   });
