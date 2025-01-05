@@ -1989,8 +1989,14 @@ let baseHTML = `
     display: none;
   }
 }
-    
-    
+
+.iframe {
+    width: 100%;       /* Lebar 100% dari container */
+    height: 100vh;     /* Tinggi penuh dari viewport */
+    border: none;      /* Menghilangkan border iframe */
+    display: block;    /* Pastikan iframe menjadi block element */
+}
+
 
 /* Grid Container */
 .flag-cards-container {
@@ -2151,6 +2157,9 @@ function loadIframe(url) {
     // Membuat elemen iframe
     var iframe = document.createElement('iframe');
     iframe.src = url;  // URL yang diberikan
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.frameBorder = '0';
 
     // Mengosongkan konten .home-section dan memasukkan iframe
     homeSection.innerHTML = '';  // Hapus semua konten yang ada di dalam .home-section
@@ -2321,7 +2330,7 @@ class HomeDocument {
     this.url = new URL(this.request.url);
     this.cachedProxyList = cachedProxyList; // Proxies dari luar
   }
-proxies = [];
+
 registerProxies(data, proxies) {
     this.proxies.push({
       ...data,
