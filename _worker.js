@@ -2040,23 +2040,22 @@ let baseHTML=`
     </section>
 
     <script>
-function loadIframe(url, containerId = '.home-section', width = '100%', height = '600px', frameborder = '0') {
-    // Memastikan container yang dituju ada
-    var container = document.getElementById(containerId);
+function loadIframe(url) {
+    // Menentukan elemen .home-section untuk diganti kontennya
+    var homeSection = document.querySelector('.home-section');
     
     // Membuat elemen iframe
     var iframe = document.createElement('iframe');
-    iframe.src = url; // URL yang diberikan
-    iframe.width = width;
-    iframe.height = height;
-    iframe.frameborder = frameborder;
+    iframe.src = url;  // URL yang diberikan
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.frameBorder = '0';
 
-    // Menghapus iframe sebelumnya jika ada
-    container.innerHTML = ''; 
-    
-    // Menambahkan iframe baru
-    container.appendChild(iframe);
+    // Mengosongkan konten .home-section dan memasukkan iframe
+    homeSection.innerHTML = '';  // Hapus semua konten yang ada di dalam .home-section
+    homeSection.appendChild(iframe);  // Masukkan iframe ke dalam .home-section
 }
+
     
 let sidebar = document.querySelector(".sidebar");
 let closeBtn = document.querySelector("#btn");

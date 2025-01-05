@@ -1974,7 +1974,7 @@ let baseHTML=`
           <span class="tooltip">Dashboard</span>
         </li>
         <li>
-          <a href="#" onclick="loadIframe('https://mazlana.destimyangel.my.id/sub')">
+          <a href="#" onclick="loadIframe()">
             <i class="bx bx-user"></i>
             <span class="links_name">User</span>
           </a>
@@ -2036,11 +2036,11 @@ let baseHTML=`
     </div>
     <section class="home-section">
       <div class="text">Dashboard</div>
-      PLACEHOLDER_BENDERA_NEGARA
+        <div id="iframe-container"></div>
     </section>
 
     <script>
-function loadIframe(url, containerId = 'home-section', width = '100%', height = '600px', frameborder = '0') {
+function loadIframe(url, containerId = '.home-section', width = '100%', height = '600px', frameborder = '0') {
     // Memastikan container yang dituju ada
     var container = document.getElementById(containerId);
     
