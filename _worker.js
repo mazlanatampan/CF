@@ -201,10 +201,6 @@ function homeDocument(request, hostName, proxyList, page = 0) {
         },
         proxies
       );
-    }
-    }
-
-
     return document.build();
   } catch (error) {
     return `An error occurred while generating the VLESS configurations. ${error}`;

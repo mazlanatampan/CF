@@ -2215,15 +2215,7 @@ class FlagsDocument {
     this.url = new URL(this.request.url);
   }
 
-setTitle(title) {
-    this.html = this.html.replaceAll("PLACEHOLDER_JUDUL", title);
-  }
 
-  addInfo(text) {
-    text = `<span>${text}</span>`;
-    this.html = this.html.replaceAll("PLACEHOLDER_INFO", `${text}\nPLACEHOLDER_INFO`);
-  }
-  
   
   registerProxies(data, proxies) {
     this.proxies.push({
@@ -2270,13 +2262,6 @@ setTitle(title) {
 }
 
 
-  addPageButton(text, link, isDisabled) {
-    const pageButton = `<li><button ${
-      isDisabled ? "disabled" : ""
-    } class="px-3 py-1 bg-amber-400 border-2 border-neutral-800 rounded" onclick=navigateTo('${link}')>${text}</button></li>`;
-
-    this.html = this.html.replaceAll("PLACEHOLDER_PAGE_BUTTON", `${pageButton}\nPLACEHOLDER_PAGE_BUTTON`);
-  }
 
   build() {
     
