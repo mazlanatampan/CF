@@ -1083,19 +1083,7 @@ let baseHTML = `
         <p class="text-sm text-neutral-800">Akun berhasil disalin</p>
       </div>
     </div>
-    <!-- Select Country -->
-  <div>
-  <div>
-  <!-- Sidebar Button to toggle visibility -->
-  <button 
-    id="sidebar-toggle" 
-    class="fixed left-0 top-1/2 z-30 transform -translate-x-1/2 bg-neutral-800 text-white p-3 rounded-full shadow-md"
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
-    </svg>
-  </button>
-  
+<div>
   <!-- Sidebar -->
   <div
     id="sidebar"
@@ -1103,22 +1091,21 @@ let baseHTML = `
     style="transform: translateX(-100%);"
   >
     <div class="text-2xl flex flex-col items-center h-full gap-4">
-      <!-- Menu Negara (Button to toggle flag) -->
-      <button id="toggle-country" class="text-white bg-neutral-800 p-2 rounded-md w-full text-center">Negara</button>
-      
-      <!-- Section Bendera Negara -->
-      <div id="country-flag" class="hidden mt-4">
-        <!-- Contoh Bendera (gantikan dengan gambar bendera yang sesuai) -->
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_Indonesia.svg" alt="Bendera Negara" class="w-12 h-8" />
+      <!-- Main Menu Item: Negara -->
+      <button id="toggle-country-menu" class="text-white bg-neutral-800 p-2 rounded-md w-full text-center">
+        Negara
+      </button>
+
+      <!-- Submenu Negara (hidden by default) -->
+      <div id="country-menu" class="hidden flex flex-col items-center gap-2 mt-4 w-full">
+        <!-- List of countries with flags, dynamically inserted here -->
+        <div id="country-flag-list">
+          <!-- Placeholder for dynamic flags -->
+          PLACEHOLDER_BENDERA_NEGARA
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-
-
-
-
     <!-- Main -->
     <div id="container-header">
       <div id="container-info" class="bg-amber-400 border-2 border-neutral-800 text-right px-5">
@@ -1540,13 +1527,12 @@ let baseHTML = `
         }
       };
       
-  // Get elements
-  const sidebar = document.getElementById('sidebar');
+      
+const sidebar = document.getElementById('sidebar');
   const sidebarToggleButton = document.getElementById('sidebar-toggle');
-  const toggleCountryButton = document.getElementById('toggle-country');
-  const countryFlag = document.getElementById('country-flag');
+  const toggleCountryMenuButton = document.getElementById('toggle-country-menu');
+  const countryMenu = document.getElementById('country-menu');
 
-  // Function to toggle sidebar visibility
   sidebarToggleButton.addEventListener('click', () => {
     const isSidebarVisible = sidebar.style.transform === 'translateX(0%)';
     
@@ -1559,11 +1545,19 @@ let baseHTML = `
     }
   });
 
-  // Toggle country flag visibility with one button
-  toggleCountryButton.addEventListener('click', () => {
-    countryFlag.classList.toggle('hidden'); // Show or hide the flag
-  });
+  // Toggle country menu visibility
+  toggleCountryMenuButton.addEventListener('click', () => {
+    countryMenu.classList.toggle('hidden'); // Show or hide the country submenu
+  });      
+      
+      
+      
+      
     </script>
+    
+    
+    
+    
     </body>
 
 </html>
@@ -1596,7 +1590,7 @@ class Document {
 
   buildProxyGroup() {
     let proxyGroupElement = "";
-    proxyGroupElement += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols- gap-6">`;
+    proxyGroupElement += `<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">`;
     for (let i = 0; i < this.proxies.length; i++) {
       const proxyData = this.proxies[i];
 
