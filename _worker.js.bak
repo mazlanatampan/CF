@@ -1734,24 +1734,17 @@ class DocumentForCountryFlags {
   buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
     const flagList = [];
-
-    // Mengambil negara dari cachedProxyList (pastikan cachedProxyList sudah didefinisikan)
     for (const proxy of cachedProxyList) {
       flagList.push(proxy.country);
     }
 
     let flagElement = "";
-    // Menampilkan bendera untuk semua negara yang ada di cachedProxyList
     for (const flag of new Set(flagList)) {
-      // Membuat elemen untuk setiap bendera dengan link ke halaman /cc/{flag}
-      flagElement += `<a href="/cc/${flag}${
-        proxyBankUrl ? "?proxy-list=" + proxyBankUrl : ""
-      }" class="py-1" >
-                        <img width="20" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" />
-                      </a>`;
+      flagElement += `<a href="/sub?cc=${flag}${
+        proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
+      }" class="py-1" ><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
     }
 
-    // Memasukkan semua bendera yang telah dihasilkan ke dalam HTML template
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
   }
 
