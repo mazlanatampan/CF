@@ -1087,13 +1087,13 @@ let baseHTML = `
   <!-- Sidebar -->
   <div
     id="sidebar"
-    class="h-full fixed top-0 left-0 w-14 bg-white dark:bg-neutral-800 border-r-2 border-neutral-800 dark:border-white z-20 overflow-y-scroll scrollbar-hide transform transition-all duration-300"
+    class="h-full fixed top-0 left-0 w-20 bg-white dark:bg-neutral-800 border-r-2 border-neutral-800 dark:border-white z-20 overflow-y-scroll scrollbar-hide transform transition-all duration-300"
     style="transform: translateX(-100%);"
   >
     <div class="text-2xl flex flex-col items-center h-full gap-4">
       <!-- Main Menu Item: Negara -->
       <button id="toggle-country-menu" class="text-white bg-neutral-800 p-2 rounded-md w-full text-center">
-        Negara
+        NEG
       </button>
 
       <!-- Submenu Negara (hidden by default) -->
