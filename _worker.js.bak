@@ -2297,7 +2297,7 @@ class FlagsDocument {
           <div class="card-info">
             <h5>${countryName}</h5>
             <p>IP Count: ${ipCount}</p>
-            <a href="javascript:void(0);" onclick="loadIframe('https://mazlana.destimyangel.my.id/sub?cc=${flag}')">View</a>
+            <a href="#" onclick="loadIframe('https://mazlana.destimyangel.my.id/sub?cc=${flag}')">View</a>
           </div>
       </div>
     `;
@@ -2319,7 +2319,7 @@ class FlagsDocument {
   }
 
   build() {
-    this.buildProxyGroup();
+    
     this.buildCountryFlag();
 
     this.html = this.html.replaceAll("PLACEHOLDER_API_READY", isApiReady ? "block" : "hidden");

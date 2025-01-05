@@ -2264,6 +2264,15 @@ class FlagsDocument {
     this.url = new URL(this.request.url);
   }
 
+setTitle(title) {
+    this.html = this.html.replaceAll("PLACEHOLDER_JUDUL", title);
+  }
+
+  addInfo(text) {
+    text = `<span>${text}</span>`;
+    this.html = this.html.replaceAll("PLACEHOLDER_INFO", `${text}\nPLACEHOLDER_INFO`);
+  }
+  
   
   registerProxies(data, proxies) {
     this.proxies.push({
@@ -2319,7 +2328,7 @@ class FlagsDocument {
   }
 
   build() {
-    this.buildProxyGroup();
+    
     this.buildCountryFlag();
 
     this.html = this.html.replaceAll("PLACEHOLDER_API_READY", isApiReady ? "block" : "hidden");
