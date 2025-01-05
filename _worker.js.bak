@@ -1974,7 +1974,7 @@ let baseHTML=`
           <span class="tooltip">Dashboard</span>
         </li>
         <li>
-          <a href="#" onclick="loadIframe('${serviceName}.${rootDomain}/sub')">
+          <a href="#" onclick="loadIframe('https://mazlana.destimyangel.my.id/sub')">
             <i class="bx bx-user"></i>
             <span class="links_name">User</span>
           </a>
@@ -2169,9 +2169,7 @@ class Document {
 
     let flagElement = "";
     for (const flag of new Set(flagList)) {
-      flagElement += `<a href="/sub?cc=${flag}${
-        proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-      }" class="py-1" ><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
+      flagElement += `<a href="javascript:void(0);" onclick="loadIframe('https://mazlana.destimyangel.myid/sub?cc=${flag}')" class="py-1">><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
     }
 
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
