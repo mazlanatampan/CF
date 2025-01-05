@@ -177,10 +177,12 @@ function getAllConfig(request, hostName, proxyList, page = 0) {
 
 
 
-function homeDocument(request, proxyList, page = 0) {
+function homeDocument(request, hostName, proxyList, page = 0) {
   const startIndex = PROXY_PER_PAGE * page;
 
   try {
+    // Build HTML
+    const document = new FlagsDocument(request);
 
     for (let i = startIndex; i < startIndex + PROXY_PER_PAGE; i++) {
       const proxy = proxyList[i];
@@ -188,8 +190,8 @@ function homeDocument(request, proxyList, page = 0) {
 
       const { proxyIP, proxyPort, country, org } = proxy;
 
-      
-      
+      const proxies = [];
+      }
       document.registerProxies(
         {
           proxyIP,
@@ -200,10 +202,8 @@ function homeDocument(request, proxyList, page = 0) {
         proxies
       );
     }
+    }
 
-    // Build pagination
-    document.addPageButton("Prev", `/sub/${page > 0 ? page - 1 : 0}`, page > 0 ? false : true);
-    document.addPageButton("Next", `/sub/${page + 1}`, page < Math.floor(proxyList.length / 10) ? false : true);
 
     return document.build();
   } catch (error) {
@@ -255,19 +255,12 @@ export default {
       if (url.pathname.startsWith("/home")) {
         const page = url.pathname.match(/^\/sub\/(\d+)$/);
         const pageIndex = parseInt(page ? page[1] : "0");
-
-        // Queries
+        const hostname = request.headers.get("Host");
+        
         const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
         let proxyList = (await getProxyList(proxyBankUrl)).filter((proxy) => {
-          // Filter proxies by Country
-          if (countrySelect) {
-            return countrySelect.includes(proxy.country);
-          }
 
-          return true;
-        });
-
-        const result = homeDocument(request, proxyList, pageIndex);
+        const result = homeDocument(request, hostname, proxyList, pageIndex);
         return new Response(result, {
           status: 200,
           headers: { "Content-Type": "text/html;charset=utf-8" },
@@ -2224,7 +2217,6 @@ class FlagsDocument {
 
 
   
-  
   registerProxies(data, proxies) {
     this.proxies.push({
       ...data,
@@ -2270,7 +2262,7 @@ class FlagsDocument {
 }
 
 
-  
+
   build() {
     
     this.buildCountryFlag();
