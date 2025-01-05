@@ -2324,6 +2324,13 @@ class HomeDocument {
     this.cachedProxyList = cachedProxyList; // Proxies dari luar
   }
 
+registerProxies(data, proxies) {
+    this.proxies.push({
+      ...data,
+      list: proxies,
+    });
+  }
+  
   buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
     const flagList = [];

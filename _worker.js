@@ -2317,13 +2317,21 @@ class Document {
 }
 
 class HomeDocument {
+
   constructor(request, cachedProxyList = []) {
     this.html = baseHTML; // Template HTML dasar
     this.request = request;
     this.url = new URL(this.request.url);
     this.cachedProxyList = cachedProxyList; // Proxies dari luar
   }
-
+proxies = [];
+registerProxies(data, proxies) {
+    this.proxies.push({
+      ...data,
+      list: proxies,
+    });
+  }
+  
   buildCountryFlag() {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
     const flagList = [];
