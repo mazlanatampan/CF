@@ -1974,7 +1974,7 @@ let baseHTML=`
           <span class="tooltip">Dashboard</span>
         </li>
         <li>
-          <a href="#">
+          <a href="#" onclick="loadIframe('https://mazlana.destimyangel.my.id/sub')">
             <i class="bx bx-user"></i>
             <span class="links_name">User</span>
           </a>
@@ -2036,9 +2036,27 @@ let baseHTML=`
     </div>
     <section class="home-section">
       <div class="text">Dashboard</div>
+        <div id="iframe-container"></div>
     </section>
 
     <script>
+function loadIframe(url, containerId = 'iframe-container', width = '100%', height = '600px', frameborder = '0') {
+    // Memastikan container yang dituju ada
+    var container = document.getElementById(containerId);
+    
+    // Membuat elemen iframe
+    var iframe = document.createElement('iframe');
+    iframe.src = url; // URL yang diberikan
+    iframe.width = width;
+    iframe.height = height;
+    iframe.frameborder = frameborder;
+
+    // Menghapus iframe sebelumnya jika ada
+    container.innerHTML = ''; 
+    
+    // Menambahkan iframe baru
+    container.appendChild(iframe);
+}
     
 let sidebar = document.querySelector(".sidebar");
 let closeBtn = document.querySelector("#btn");
