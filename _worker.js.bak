@@ -1546,7 +1546,7 @@ class Document {
 
   buildProxyGroup() {
     let proxyGroupElement = "";
-    proxyGroupElement += `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">`;
+    proxyGroupElement += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">`;
     for (let i = 0; i < this.proxies.length; i++) {
       const proxyData = this.proxies[i];
 
