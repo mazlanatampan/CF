@@ -2011,7 +2011,7 @@ iframe {
 
 /* Card Style */
 .card {
-  background: rgba(255,255,255,0.6);
+  background: rgba(128, 128, 128, 0.5);
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -2023,11 +2023,13 @@ iframe {
   justify-content: space-between;
 }
 
-.card img{
-  height: 15px;
-  width: 15px;
-  border-radius: 10px;
+.card img {
+  height: 50px;
+  width: 50px;
+  border: 2px solid rgba(0, 0, 0, 0.3); /* Border hitam semi-transparan */
+  border-radius: 50%;  /* Membuat border melengkung seperti lingkaran */
 }
+
 
 /* Card Info Style */
 .card-info {
