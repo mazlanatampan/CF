@@ -2169,7 +2169,9 @@ class Document {
 
     let flagElement = "";
     for (const flag of new Set(flagList)) {
-      flagElement += `<a href="javascript:void(0);" onclick="loadIframe('https://mazlana.destimyangel.myid/sub?cc=${flag}')" class="py-1"><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
+      flagElement += `<a href="/sub?cc=${flag}${
+        proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
+      }" class="py-1" ><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
     }
 
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
@@ -2274,9 +2276,7 @@ class ProxyDocument {
 
     let flagElement = "";
     for (const flag of new Set(flagList)) {
-      flagElement += `<a href="/sub?cc=${flag}${
-        proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-      }" class="py-1" ><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
+      flagElement += `<a href="#" onclick="loadIframe('https://mazlana.destimyangel.myid/sub?cc=${flag}')" class="py-1"><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
     }
 
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);

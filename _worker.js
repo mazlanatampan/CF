@@ -2276,7 +2276,7 @@ class ProxyDocument {
 
     let flagElement = "";
     for (const flag of new Set(flagList)) {
-      flagElement += `<a href="#" onclick="loadIframe('https://mazlana.destimyangel.myid/sub?cc=${flag}')" class="py-1"><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
+      flagElement += `<a href="#" onclick="loadIframe('https://mazlana.destimyangel.my.id/sub?cc=${flag}')" class="py-1"><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
     }
 
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
