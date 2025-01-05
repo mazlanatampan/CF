@@ -1974,7 +1974,7 @@ let baseHTML=`
           <span class="tooltip">Dashboard</span>
         </li>
         <li>
-          <a href="#" onclick="loadIframe('${serviceName}.${rootDomain}/sub)">
+          <a href="#" onclick="loadIframe('${serviceName}.${rootDomain}/sub')">
             <i class="bx bx-user"></i>
             <span class="links_name">User</span>
           </a>
@@ -2036,6 +2036,7 @@ let baseHTML=`
     </div>
     <section class="home-section">
       <div class="text">Dashboard</div>
+      PLACEHOLDER_BENDERA_NEGARA
         <div id="iframe-container"></div>
     </section>
 
