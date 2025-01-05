@@ -887,7 +887,7 @@ else if (url.pathname.startsWith("/cc")) {
   });
 }
 
-if (url.pathname.startsWith("/country")) {
+else if (url.pathname.startsWith("/country")) {
         const countryMatch = url.pathname.match(/^\/country\/([a-zA-Z]{2,3})$/);  // Match country code (e.g., /country/ID)
         const countryCode = countryMatch ? countryMatch[1].toUpperCase() : null;
 

@@ -857,7 +857,7 @@ export default {
   });
 }
 
-if (url.pathname.startsWith("/cc")) {
+else if (url.pathname.startsWith("/cc")) {
   const countrySelect = url.pathname.match(/^\/cc\/([a-zA-Z,]+)$/);  // Memastikan path /cc/ diikuti dengan kode negara
   const countries = countrySelect ? countrySelect[1].split(",") : [];  // Mengambil daftar kode negara dari URL
 
@@ -887,7 +887,24 @@ if (url.pathname.startsWith("/cc")) {
   });
 }
 
+if (url.pathname.startsWith("/country")) {
+        const countryMatch = url.pathname.match(/^\/country\/([a-zA-Z]{2,3})$/);  // Match country code (e.g., /country/ID)
+        const countryCode = countryMatch ? countryMatch[1].toUpperCase() : null;
 
+        if (countryCode) {
+          // Create DocumentForCountryFlags for the given country
+          const documentForFlags = new DocumentForCountryFlags(request);
+          documentForFlags.setTitle(`Bendera Negara: ${countryCode}`);
+          documentForFlags.buildCountryFlag(countryCode);  // Generate the country flag for the given country
+
+          return new Response(documentForFlags.html, {
+            status: 200,
+            headers: { "Content-Type": "text/html;charset=utf-8" },
+          });
+        } else {
+          return new Response("Country code not provided", { status: 400 });
+        }
+      }
       
        
          else if (url.pathname.startsWith("/check")) {
