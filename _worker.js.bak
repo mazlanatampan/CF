@@ -2323,7 +2323,7 @@ class Document {
 }
 
 class HomeDocument {
-
+proxies = [];
   constructor(request, cachedProxyList = []) {
     this.html = baseHTML; // Template HTML dasar
     this.request = request;

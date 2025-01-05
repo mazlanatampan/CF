@@ -2157,9 +2157,6 @@ function loadIframe(url) {
     // Membuat elemen iframe
     var iframe = document.createElement('iframe');
     iframe.src = url;  // URL yang diberikan
-    iframe.style.width = '100%';
-    iframe.style.height = '600px';
-    iframe.frameBorder = '0';
 
     // Mengosongkan konten .home-section dan memasukkan iframe
     homeSection.innerHTML = '';  // Hapus semua konten yang ada di dalam .home-section
