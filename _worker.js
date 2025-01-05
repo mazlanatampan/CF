@@ -894,7 +894,6 @@ else if (url.pathname.startsWith("/country")) {
         if (countryCode) {
           // Create DocumentForCountryFlags for the given country
           const documentForFlags = new DocumentForCountryFlags(request);
-          documentForFlags.setTitle(`Bendera Negara: ${countryCode}`);
           documentForFlags.buildCountryFlag(countryCode);  // Generate the country flag for the given country
 
           return new Response(documentForFlags.html, {
@@ -1740,24 +1739,31 @@ class DocumentForCountryFlags {
     const proxyBankUrl = this.url.searchParams.get("proxy-list");
     const flagList = [];
 
-    // Mengambil negara dari cachedProxyList
-    for (const proxy of cachedProxyList) { // Pastikan cachedProxyList sudah didefinisikan
+    // Mengambil negara dari cachedProxyList (pastikan cachedProxyList sudah didefinisikan)
+    for (const proxy of cachedProxyList) {
       flagList.push(proxy.country);
     }
 
     let flagElement = "";
+    // Menampilkan bendera untuk semua negara yang ada di cachedProxyList
     for (const flag of new Set(flagList)) {
+      // Membuat elemen untuk setiap bendera dengan link ke halaman /cc/{flag}
       flagElement += `<a href="/cc/${flag}${
         proxyBankUrl ? "?proxy-list=" + proxyBankUrl : ""
-      }" class="py-1" ><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
+      }" class="py-1" >
+                        <img width="20" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" />
+                      </a>`;
     }
 
+    // Memasukkan semua bendera yang telah dihasilkan ke dalam HTML template
     this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
   }
 
   build() {
+    // Memanggil method untuk membangun elemen bendera negara
     this.buildCountryFlag();
 
+    // Menghapus placeholder lain jika ada dan mengembalikan hasil HTML akhir
     return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
   }
 }
