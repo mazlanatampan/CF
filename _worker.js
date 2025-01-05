@@ -292,7 +292,7 @@ export default {
         }
       }
       
-      if (url.pathname.startsWith("")) {
+      if (url.pathname.startsWith("/home")) {
         const page = url.pathname.match(/^\/sub\/(\d+)$/);
         const pageIndex = parseInt(page ? page[1] : "0");
         const hostname = request.headers.get("Host");
@@ -2176,6 +2176,7 @@ class Document {
     return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
   }
 }
+
 
 
 class ProxyDocument {

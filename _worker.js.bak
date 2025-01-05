@@ -113,7 +113,7 @@ function getAllConfig(request, hostName, proxyList, page = 0) {
     uri.searchParams.set("host", hostName);
 
     // Build HTML
-    const document = new ProxyDocument(request);
+    const document = new Document(request);
     document.setTitle("Welcome to <span class='text-blue-500 font-semibold'>Nautica</span>");
     document.addInfo(`Total: ${proxyList.length}`);
     document.addInfo(`Page: ${page}/${Math.floor(proxyList.length / PROXY_PER_PAGE)}`);
@@ -177,7 +177,7 @@ function getAllConfig(request, hostName, proxyList, page = 0) {
 
 
 
-function getAllConfig(request, hostName, proxyList, page = 0) {
+function homeDocument(request, hostName, proxyList, page = 0) {
   const startIndex = PROXY_PER_PAGE * page;
 
   try {
@@ -2176,6 +2176,7 @@ class Document {
     return this.html.replaceAll(/PLACEHOLDER_\w+/gim, "");
   }
 }
+
 
 
 class ProxyDocument {
