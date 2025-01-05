@@ -888,23 +888,19 @@ else if (url.pathname.startsWith("/cc")) {
 }
 
 else if (url.pathname.startsWith("/country")) {
-        const countryMatch = url.pathname.match(/^\/country\/([a-zA-Z]{2,3})$/);  // Match country code (e.g., /country/ID)
-        const countryCode = countryMatch ? countryMatch[1].toUpperCase() : null;
+  // Buat instance dari DocumentForCountryFlags
+  const documentForFlags = new DocumentForCountryFlags(request);
 
-        if (countryCode) {
-          // Create DocumentForCountryFlags for the given country
-          const documentForFlags = new DocumentForCountryFlags(request);
-          documentForFlags.buildCountryFlag(countryCode);  // Generate the country flag for the given country
+  // Generate semua bendera negara (tanpa parameter countryCode)
+  documentForFlags.buildCountryFlag();
 
-          return new Response(documentForFlags.html, {
-            status: 200,
-            headers: { "Content-Type": "text/html;charset=utf-8" },
-          });
-        } else {
-          return new Response("Country code not provided", { status: 400 });
-        }
-      }
-      
+  // Mengembalikan HTML dengan semua bendera negara
+  return new Response(documentForFlags.html, {
+    status: 200,
+    headers: { "Content-Type": "text/html;charset=utf-8" },
+  });
+}
+
        
          else if (url.pathname.startsWith("/check")) {
         const target = url.searchParams.get("target").split(":");
