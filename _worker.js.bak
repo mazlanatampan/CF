@@ -201,10 +201,6 @@ function homeDocument(request, hostName, proxyList, page = 0) {
         },
         proxies
       );
-    }
-    }
-
-
     return document.build();
   } catch (error) {
     return `An error occurred while generating the VLESS configurations. ${error}`;
@@ -259,6 +255,13 @@ export default {
         
         const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
         let proxyList = (await getProxyList(proxyBankUrl)).filter((proxy) => {
+          // Filter proxies by Country
+          if (countrySelect) {
+            return countrySelect.includes(proxy.country);
+          }
+
+          return true;
+        });
 
         const result = homeDocument(request, hostname, proxyList, pageIndex);
         return new Response(result, {

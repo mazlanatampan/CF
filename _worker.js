@@ -256,6 +256,9 @@ export default {
         const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
         let proxyList = (await getProxyList(proxyBankUrl)).filter((proxy) => {
 
+          return true;
+        });
+
         const result = homeDocument(request, hostname, proxyList, pageIndex);
         return new Response(result, {
           status: 200,
