@@ -1235,7 +1235,7 @@ let lamaHTML = `
       </div>
     </div>
 <div>
-  
+  <!-- Sidebar -->
   <div
     id="sidebar"
     class="h-full fixed top-0 left-0 w-20 bg-white dark:bg-neutral-800 border-r-2 border-neutral-800 dark:border-white z-20 overflow-y-scroll scrollbar-hide transform transition-all duration-300"
@@ -2322,6 +2322,13 @@ class HomeDocument {
     this.request = request;
     this.url = new URL(this.request.url);
     this.cachedProxyList = cachedProxyList; // Proxies dari luar
+  }
+
+  registerProxies(data, proxies) {
+    this.proxies.push({
+      ...data,
+      list: proxies,
+    });
   }
 
   buildCountryFlag() {
