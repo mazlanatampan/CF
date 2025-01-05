@@ -2025,16 +2025,6 @@ iframe {
   margin-top: 10px;
 }
 
-.card-info h5 {
-  font-size: 1.2em;
-  margin: 10px 0;
-  color: #333;
-}
-
-.card-info p {
-  font-size: 1em;
-  color: #666;
-}
 
 .card-info a {
   margin-top: 10px;
@@ -2361,9 +2351,9 @@ registerProxies(data, proxies) {
           <img width="30" src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${countryName}" />
           <div class="card-info">
             <i class= "bx bx-globe"> </i>
-           <span class="links_name">COUNTRY :  ${countryName}</span>
+           <span class="links_name">COUNTRY :  ${countryName} <br></span>
             <i class= "bx bx-laptop"> </i>
-           <span class="links_name">TOTAL IP :  ${ipCount}</span>
+           <span class="links_name">TOTAL IP :  ${ipCount} <br></span>
             <a href="#" onclick="loadIframe('https://mazlana.destimyangel.my.id/sub?cc=${flag}')">View</a>
           </div>
       </div>
