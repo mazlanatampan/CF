@@ -177,38 +177,6 @@ function getAllConfig(request, hostName, proxyList, page = 0) {
 
 
 
-function homeDocument(request, hostName, proxyList, page = 0) {
-  const startIndex = PROXY_PER_PAGE * page;
-
-  try {
-    // Build HTML
-    const document = new FlagsDocument(request);
-
-    for (let i = startIndex; i < startIndex + PROXY_PER_PAGE; i++) {
-      const proxy = proxyList[i];
-      if (!proxy) break;
-
-      const { proxyIP, proxyPort, country, org } = proxy;
-
-      const proxies = [];
-      }
-      document.registerProxies(
-        {
-          proxyIP,
-          proxyPort,
-          country,
-          org,
-        },
-        proxies
-      );
-    return document.build();
-  } catch (error) {
-    return `An error occurred while generating the VLESS configurations. ${error}`;
-  }
-}
-
-
-
 
 export default {
   async fetch(request, env, ctx) {
@@ -248,23 +216,29 @@ export default {
         }
       }
       
-      if (url.pathname.startsWith("/home")) {
-        const page = url.pathname.match(/^\/sub\/(\d+)$/);
-        const pageIndex = parseInt(page ? page[1] : "0");
-        const hostname = request.headers.get("Host");
-        
-        const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
-        let proxyList = (await getProxyList(proxyBankUrl)).filter((proxy) => {
+if (url.pathname.startsWith("/home")) {
+    // Mendapatkan proxy list dari URL atau variabel lingkungan
+    const proxyBankUrl = url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
+    const cachedProxyList = await getProxyList(proxyBankUrl);
 
-          return true;
-        });
+    // Inisialisasi FlagsDocument dengan request dan proxy list yang telah diambil
+    const flagsDocument = new FlagsDocument(request, cachedProxyList);
 
-        const result = homeDocument(request, hostname, proxyList, pageIndex);
-        return new Response(result, {
-          status: 200,
-          headers: { "Content-Type": "text/html;charset=utf-8" },
-        });
-      } 
+    // Mendaftarkan proxies yang diambil ke dalam FlagsDocument
+    for (const proxy of cachedProxyList) {
+      flagsDocument.registerProxies({ country: proxy.country, countryName: proxy.countryName }, [proxy]);
+    }
+
+    // Bangun HTML untuk halaman /home
+    const result = flagsDocument.build();
+
+    // Kembalikan sebagai respons dengan status 200 dan header Content-Type yang sesuai
+    return new Response(result, {
+      status: 200,
+      headers: { "Content-Type": "text/html;charset=utf-8" },
+    });
+  }
+      
 
       else if (url.pathname.startsWith("/sub")) {
         const page = url.pathname.match(/^\/sub\/(\d+)$/);
@@ -2208,10 +2182,11 @@ class Document {
 class FlagsDocument {
   proxies = [];
 
-  constructor(request) {
-    this.html = baseHTML;
+    constructor(request, cachedProxyList = []) {
+    this.html = baseHTML; // Template HTML dasar
     this.request = request;
     this.url = new URL(this.request.url);
+    this.cachedProxyList = cachedProxyList; // Proxies dari luar
   }
 
 
