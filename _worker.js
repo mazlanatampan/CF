@@ -1974,7 +1974,7 @@ let baseHTML=`
           <span class="tooltip">Dashboard</span>
         </li>
         <li>
-          <a href="#" onclick="loadIframe()">
+          <a href="#" onclick="loadIframe('${serviceName}.${rootDomain}/sub')">
             <i class="bx bx-user"></i>
             <span class="links_name">User</span>
           </a>
