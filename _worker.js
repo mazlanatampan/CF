@@ -1678,6 +1678,8 @@ let baseHTML = `
     <link rel="stylesheet" href="style.css" />
     <!-- Boxicons CDN Link -->
     <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
 /* Google Font Link */
@@ -2115,12 +2117,12 @@ iframe {
           <span class="tooltip">Files</span>
         </li>
         <li>
-          <a href="#" onclick="loadIframe('https://trakteer.id/')">
-            <i class="bx bx-cart-alt"></i>
-            <span class="links_name">Order</span>
-          </a>
-          <span class="tooltip">Order</span>
-        </li>
+  <a href="#" onclick="showSweetAlert()">
+    <i class="bx bx-cart-alt"></i>
+    <span class="links_name">Order</span>
+  </a>
+  <span class="tooltip">Order</span>
+</li>
         <li>
           <a href="#">
             <i class="bx bx-heart"></i>
@@ -2199,8 +2201,24 @@ function menuBtnChange() {
    closeBtn.classList.replace("bx-menu-alt-right","bx-menu");//replacing the iocns class
  }
 }
-    
-    
+
+function showSweetAlert() {
+    Swal.fire({
+      title: 'Arahkan ke Trakteer?',
+      text: 'Anda akan diarahkan ke halaman Trakteer.id untuk melanjutkan.',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Lanjutkan',
+      cancelButtonText: 'Batal',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Jika pengguna menekan "Lanjutkan", arahkan ke Trakteer
+        window.open('https://trakteer.id/', '_blank');
+      }
+    });
+  }
     
     
     </script>
