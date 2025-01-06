@@ -1993,6 +1993,60 @@ let baseHTML = `
   }
 }
 
+
+.header-atas {
+  background-color: #11101d; /* Latar belakang gelap */
+  height: 100px;
+  width: 100%; /* Pastikan header mengambil seluruh lebar layar */
+  position: fixed; /* Membuat header tetap di posisi atas */
+  z-index:10;
+  top: 0; /* Posisi di bagian atas */
+  left: 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan jika diperlukan */
+}
+
+
+.header-atas .icon {
+  color: white;
+  height: 60px;
+  width: 100%;
+  display: flex;
+  justify-content: center; /* Menempatkan elemen secara horizontal di tengah */
+  align-items: center; /* Menempatkan elemen secara vertikal di tengah */
+  font-size: 4rem;
+}
+
+.icon-name {
+  color: white;
+  height: 60px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.marquee {
+  position: absolute;
+  font-size: 5px;
+  color: white;
+  bottom: 5px;
+  padding: 0px;
+  animation: marquee 20s linear infinite; /* Animasi teks berjalan */
+  white-space: nowrap; /* Mencegah teks membungkus */
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+
+
+
+
 iframe {
  width: 100%;       /* Lebar 100% dari container */
   height: 100vh;     /* Tinggi penuh dari viewport */
@@ -2145,7 +2199,13 @@ iframe {
       </ul>
     </div>
     <section class="home-section">
-      <div class="text">Dashboard</div>
+      <div class="header-atas">
+       <div class="icon">
+        <i class='bx bxl-slack'></i>
+       </div>
+         <div class="icon-name"> MAZLANA</div>
+        <div class="marquee" id="ip-info">Loading IP...</div>
+        </div>
       PLACEHOLDER_BENDERA_NEGARA
         <div id="iframe-container"></div>
     </section>
