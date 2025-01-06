@@ -2064,7 +2064,11 @@ iframe {
 }
     
     
-    
+.small-alert {
+    width: 300px !important; /* Lebar modal lebih kecil */
+    font-size: 14px; /* Ukuran teks lebih kecil */
+  }
+      
     </style>
   </head>
   
@@ -2206,12 +2210,18 @@ function showSweetAlert() {
     Swal.fire({
       title: 'Arahkan ke Trakteer?',
       text: 'Anda akan diarahkan ke halaman Trakteer.id untuk melanjutkan.',
-      icon: 'info',
+      imageUrl: 'https://htmlku.com/0/panda/pusn.gif', // Gambar custom
+      imageWidth: 100, // Lebar gambar
+      imageHeight: 100, // Tinggi gambar
+      imageAlt: 'Custom Image', // Alt text untuk gambar
       showCancelButton: true,
       confirmButtonText: 'Ya, Lanjutkan',
       cancelButtonText: 'Batal',
       confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33'
+      cancelButtonColor: '#d33',
+      customClass: {
+        popup: 'small-alert' // Kelas kustom untuk mengecilkan ukuran modal
+      }
     }).then((result) => {
       if (result.isConfirmed) {
         // Jika pengguna menekan "Lanjutkan", arahkan ke Trakteer

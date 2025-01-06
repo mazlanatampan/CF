@@ -2208,8 +2208,8 @@ function menuBtnChange() {
 
 function showSweetAlert() {
     Swal.fire({
-      title: 'Arahkan ke Trakteer?',
-      text: 'Anda akan diarahkan ke halaman Trakteer.id untuk melanjutkan.',
+      title: 'Jangan Lupa Donasii 😉',
+      text: '',
       imageUrl: 'https://htmlku.com/0/panda/pusn.gif', // Gambar custom
       imageWidth: 100, // Lebar gambar
       imageHeight: 100, // Tinggi gambar
@@ -2225,7 +2225,7 @@ function showSweetAlert() {
     }).then((result) => {
       if (result.isConfirmed) {
         // Jika pengguna menekan "Lanjutkan", arahkan ke Trakteer
-        window.open('https://trakteer.id/', '_blank');
+        window.open('${DONATE_LINK}', '_blank');
       }
     });
   }
