@@ -1913,6 +1913,7 @@ let baseHTML = `
   min-height: 100vh;
   top: 0;
   left: 78px;
+  overflow: hidden;
   width: calc(100% - 78px);
   transition: all 0.5s ease;
   z-index: 2;
@@ -1989,6 +1990,7 @@ let baseHTML = `
 width:100%;
 height: 100%;
 margin-top: 100px;
+overflow: auto;
 }
 
 

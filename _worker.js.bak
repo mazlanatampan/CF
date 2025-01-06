@@ -1913,6 +1913,7 @@ let baseHTML = `
   min-height: 100vh;
   top: 0;
   left: 78px;
+  overflow: hidden;
   width: calc(100% - 78px);
   transition: all 0.5s ease;
   z-index: 2;
@@ -2198,12 +2199,6 @@ function menuBtnChange() {
  }
 }
     
-
-window.addEventListener('scroll', function() {
-  const background = document.querySelector('.home-section');
-  let offset = window.pageYOffset;
-  background.style.backgroundPosition = `center ${offset * 0.5}px`; // Sesuaikan kecepatan parallax
-});
     
     
     
