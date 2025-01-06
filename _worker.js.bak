@@ -1211,7 +1211,7 @@ let lamaHTML = `
       }
     </script>
   </head>
-  <body class="bg-white dark:bg-neutral-800 bg-fixed">
+  <body>
     <!-- Notification -->
     <div
       id="notification-badge"
@@ -2084,7 +2084,7 @@ iframe {
           <span class="tooltip">Dashboard</span>
         </li>
         <li>
-          <a href="#" onclick="loadIframe('https://mazlana.destimyangel.my.id/sub')">
+          <a href="#" onclick="loadIframe('http:127.0.0.1:9090/ui')">
             <i class="bx bx-user"></i>
             <span class="links_name">User</span>
           </a>
