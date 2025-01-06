@@ -2045,7 +2045,7 @@ let baseHTML = `
 
 
 .home-content{
-width:100vh;
+width:100%;
 height: 100%;
 margin-top: 100px;
 }

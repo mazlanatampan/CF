@@ -2044,13 +2044,15 @@ let baseHTML = `
 }
 
 
-
+.home-content{
+width:100vh;
+margin-top: 100px;
+}
 
 
 iframe {
  width: 100%;       /* Lebar 100% dari container */
   height: 100vh;  
-  margin-top: 100px;   /* Tinggi penuh dari viewport */
   border: none;      /* Menghilangkan border iframe */
   display: block;    /* Pastikan iframe menjadi block element */
 }
