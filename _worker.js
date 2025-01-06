@@ -2201,6 +2201,13 @@ iframe {
       </ul>
     </div>
     <section class="home-section">
+      <div class="header-atas">
+       <div class="icon">
+        <i class='bx bxl-slack'></i>
+       </div>
+         <div class="icon-name"> MAZLANA</div>
+        <div class="marquee" id="ip-info">Loading IP...</div>
+        </div>
       PLACEHOLDER_BENDERA_NEGARA
         <div id="iframe-container"></div>
     </section>
@@ -2215,7 +2222,16 @@ function loadIframe(url) {
     iframe.src = url;  // URL yang diberikan
 
     // Mengosongkan konten .home-section dan memasukkan iframe
-    homeSection.innerHTML = '';  // Hapus semua konten yang ada di dalam .home-section
+    homeSection.innerHTML = '
+          <div class="header-atas">
+       <div class="icon">
+        <i class='bx bxl-slack'></i>
+       </div>
+         <div class="icon-name"> MAZLANA</div>
+        <div class="marquee" id="ip-info">Loading IP...</div>
+        </div>';
+    
+    // Hapus semua konten yang ada di dalam .home-section
     homeSection.appendChild(iframe);  // Masukkan iframe ke dalam .home-section
 }
 
