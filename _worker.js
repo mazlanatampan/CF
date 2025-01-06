@@ -1211,7 +1211,7 @@ let lamaHTML = `
       }
     </script>
   </head>
-  <body class="bg-white dark:bg-neutral-800 bg-fixed">
+  <body>
     <!-- Notification -->
     <div
       id="notification-badge"
