@@ -2115,7 +2115,7 @@ iframe {
           <span class="tooltip">Files</span>
         </li>
         <li>
-          <a href="#" onclick="loadIframe('https://trakteer.id/dickymuliafiqri/tip')">
+          <a href="#" onclick="loadIframe('https://trakteer.id/')">
             <i class="bx bx-cart-alt"></i>
             <span class="links_name">Order</span>
           </a>
