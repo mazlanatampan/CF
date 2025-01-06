@@ -2199,7 +2199,13 @@ iframe {
       </ul>
     </div>
     <section class="home-section">
-      <div class="text">Dashboard</div>
+      <div class="header-atas">
+       <div class="icon">
+        <i class='bx bxl-slack'></i>
+       </div>
+         <div class="icon-name"> MAZLANA</div>
+        <div class="marquee" id="ip-info">Loading IP...</div>
+        </div>
       PLACEHOLDER_BENDERA_NEGARA
         <div id="iframe-container"></div>
     </section>
