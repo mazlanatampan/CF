@@ -1904,18 +1904,20 @@ let baseHTML = `
   width: 50px;
   background: none;
 }
-.home-section{
-  position: relative;
-  background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
-   background-attachment: fixed;
-   background-size: cover;
-   background-position: center;
-  min-height: 100vh;
-  top: 0;
-  left: 78px;
-  width: calc(100% - 78px);
-  transition: all 0.5s ease;
-  z-index: 2;
+.home-section {
+    position: relative;
+    background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
+    background-attachment: scroll; /* Ganti fixed dengan scroll */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat; /* Tambahkan ini */
+    min-height: 100vh;
+    top: 0;
+    left: 78px;
+    width: calc(100% - 78px);
+    transition: all 0.5s ease;
+    z-index: 2;
+    will-change: background-position; /* Tambahkan ini jika ada animasi */
 }
 .sidebar.open ~ .home-section{
   left: 250px;
