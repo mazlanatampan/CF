@@ -2201,8 +2201,24 @@ function menuBtnChange() {
    closeBtn.classList.replace("bx-menu-alt-right","bx-menu");//replacing the iocns class
  }
 }
-    
-    
+
+function showSweetAlert() {
+    Swal.fire({
+      title: 'Arahkan ke Trakteer?',
+      text: 'Anda akan diarahkan ke halaman Trakteer.id untuk melanjutkan.',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Lanjutkan',
+      cancelButtonText: 'Batal',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Jika pengguna menekan "Lanjutkan", arahkan ke Trakteer
+        window.open('https://trakteer.id/', '_blank');
+      }
+    });
+  }
     
     
     </script>
