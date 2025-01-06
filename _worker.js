@@ -2201,26 +2201,9 @@ iframe {
       </ul>
     </div>
     <section class="home-section">
-      <div class="header-atas">
-       <div class="icon">
-        <i class='bx bxl-slack'></i>
-       </div>
-         <div class="icon-name"> MAZLANA</div>
-        <div class="marquee" id="ip-info">Loading IP...</div>
-        </div>
-      <section class="home-section">
-    <div class="header-atas">
-        <div class="icon">
-            <i class='bx bxl-slack'></i>
-        </div>
-        <div class="icon-name">MAZLANA</div>
-        <div class="marquee" id="ip-info">Loading IP...</div>
-    </div>
-    <!-- Placeholder untuk bendera negara -->
-    <div id="placeholder-bendera-negara">PLACEHOLDER_BENDERA_NEGARA</div>
-    <div id="iframe-container"></div>
-    </div>
-</section>
+      PLACEHOLDER_BENDERA_NEGARA
+        <div id="iframe-container"></div>
+    </section>
 
     <script>
 function loadIframe(url) {

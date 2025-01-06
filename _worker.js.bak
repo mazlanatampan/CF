@@ -2209,7 +2209,7 @@ iframe {
         <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
       <section class="home-section">
-    <div class="header-atas">
+       <div class="header-atas">
         <div class="icon">
             <i class='bx bxl-slack'></i>
         </div>
@@ -2221,7 +2221,6 @@ iframe {
     <div id="iframe-container"></div>
     </div>
 </section>
-    </section>
 
     <script>
 function loadIframe(url) {
