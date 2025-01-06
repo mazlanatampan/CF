@@ -7,7 +7,7 @@ const apiKey = "0408456c6aea62e6fa0234c519916e72d6bf4"; // Ganti dengan Global A
 const apiEmail = "botcwt@gmail.com"; // Ganti dengan email yang kalian gunakan
 const accountID = "fbff0a5e218bfa8864314677a9e171b2"; // Ganti dengan Account ID kalian (https://dash.cloudflare.com -> Klik domain yang kalian gunakan)
 const zoneID = "747e887de5ab796f518076837dc65984"; // Ganti dengan Zone ID kalian (https://dash.cloudflare.com -> Klik domain yang kalian gunakan)
-let isApiReady = true;
+let isApiReady = false;
 let proxyIP = "";
 let cachedProxyList = [];
 
@@ -2215,8 +2215,8 @@ function showSweetAlert() {
       imageHeight: 100, // Tinggi gambar
       imageAlt: 'Custom Image', // Alt text untuk gambar
       showCancelButton: true,
-      confirmButtonText: 'Ya, Lanjutkan',
-      cancelButtonText: 'Batal',
+      confirmButtonText: 'OKE GASS',
+      cancelButtonText: 'NANTI==',
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       customClass: {
