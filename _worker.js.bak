@@ -1996,7 +1996,8 @@ iframe {
  width: 100%;       /* Lebar 100% dari container */
   height: 100vh;  
   border: none;      /* Menghilangkan border iframe */
-  display: block;    /* Pastikan iframe menjadi block element */
+  display: block;
+  overflow-z: auto;    /* Pastikan iframe menjadi block element */
 }
 
 
