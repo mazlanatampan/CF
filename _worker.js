@@ -2044,13 +2044,16 @@ let baseHTML = `
 }
 
 
-
+.home-content{
+width:100vh;
+height: 100%;
+margin-top: 100px;
+}
 
 
 iframe {
  width: 100%;       /* Lebar 100% dari container */
   height: 100vh;  
-  margin-top: 100px;   /* Tinggi penuh dari viewport */
   border: none;      /* Menghilangkan border iframe */
   display: block;    /* Pastikan iframe menjadi block element */
 }
@@ -2208,14 +2211,17 @@ iframe {
          <div class="icon-name"> MAZLANA</div>
         <div class="marquee" id="ip-info">Loading IP...</div>
         </div>
+        
+        <div class="home-content">
       PLACEHOLDER_BENDERA_NEGARA
         <div id="iframe-container"></div>
+        </div>
     </section>
 
     <script>
 function loadIframe(url) {
     // Menentukan elemen .home-section untuk diganti kontennya
-    var homeSection = document.querySelector('.home-section');
+    var homeSection = document.querySelector('.home-content');
     
     // Membuat elemen iframe
     var iframe = document.createElement('iframe');
