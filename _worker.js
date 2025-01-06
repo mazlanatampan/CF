@@ -1907,7 +1907,7 @@ let baseHTML = `
 .home-section{
   position: relative;
   background-image: url('https://raw.githubusercontent.com/mazlanatampan/managercf/refs/heads/main/background.jpg');
-   background-repeat: no-repeat;
+   background-attachment: fixed;
    background-size: cover;
    background-position: center;
   min-height: 100vh;
@@ -2198,6 +2198,12 @@ function menuBtnChange() {
  }
 }
     
+
+window.addEventListener('scroll', function() {
+  const background = document.querySelector('.home-section');
+  let offset = window.pageYOffset;
+  background.style.backgroundPosition = `center ${offset * 0.5}px`; // Sesuaikan kecepatan parallax
+});
     
     
     
