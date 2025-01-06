@@ -1989,8 +1989,8 @@ let baseHTML = `
 .home-content{
 width:100%;
 height: 100%;
-margin-top: 80px;
-overflow: auto;
+margin-top: 100px;
+overflow-z: auto;
 }
 
 
@@ -1999,7 +1999,7 @@ iframe {
   height: 100vh;  
   border: none;      /* Menghilangkan border iframe */
   display: block;
-  overflow-z: auto;    /* Pastikan iframe menjadi block element */
+  
 }
 
 
@@ -2009,7 +2009,7 @@ iframe {
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   padding: 20px;
-  margin-top: 100px;
+  
 }
 
 /* Card Style */
