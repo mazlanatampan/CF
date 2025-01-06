@@ -2084,7 +2084,7 @@ iframe {
           <span class="tooltip">Dashboard</span>
         </li>
         <li>
-          <a href="#" onclick="loadIframe('http:127.0.0.1:9090/ui')">
+          <a href="#" onclick="loadIframe('http://127.0.0.1:9090/ui')">
             <i class="bx bx-user"></i>
             <span class="links_name">User</span>
           </a>
