@@ -3,7 +3,7 @@ import { connect } from "cloudflare:sockets";
 // Variables
 const rootDomain = "destimyangel.my.id"; // Ganti dengan domain utama kalian
 const serviceName = "mazlana"; // Ganti dengan nama workers kalian
-const apiKey = "0408456c6aea62e6fa0234c519916e72d6bf4"; // Ganti dengan Global API key kalian (https://dash.cloudflare.com/profile/api-tokens)
+const apiKey = "59aa2b6840747581525dc650400436079bea5"; // Ganti dengan Global API key kalian (https://dash.cloudflare.com/profile/api-tokens)
 const apiEmail = "botcwt@gmail.com"; // Ganti dengan email yang kalian gunakan
 const accountID = "fbff0a5e218bfa8864314677a9e171b2"; // Ganti dengan Account ID kalian (https://dash.cloudflare.com -> Klik domain yang kalian gunakan)
 const zoneID = "747e887de5ab796f518076837dc65984"; // Ganti dengan Zone ID kalian (https://dash.cloudflare.com -> Klik domain yang kalian gunakan)
@@ -306,7 +306,7 @@ export default {
           }
 
           const wildcardApiPath = apiPath.replace("/domains", "");
-          const  cloudflareApi = new CloudflareApi();
+          const < = new CloudflareApi();
 
           if (wildcardApiPath == "/get") {
             const domains = await cloudflareApi.getDomainList();
@@ -1113,100 +1113,73 @@ function getFlagEmoji(isoCode) {
 // CloudflareApi Class
 class CloudflareApi {
   constructor() {
-    this.bearer = `Bearer ${apiKey}`; // Bearer token untuk autentikasi
+    this.bearer = `Bearer ${apiKey}`;
     this.accountID = accountID;
     this.zoneID = zoneID;
     this.apiEmail = apiEmail;
     this.apiKey = apiKey;
 
     this.headers = {
-      Authorization: this.bearer, // Header Bearer Token
+      Authorization: this.bearer,
+      "X-Auth-Email": this.apiEmail,
+      "X-Auth-Key": this.apiKey,
     };
   }
+  
+  
 
-  // Mendapatkan daftar domain yang terdaftar pada Cloudflare Workers
   async getDomainList() {
     const url = `https://api.cloudflare.com/client/v4/accounts/${this.accountID}/workers/domains`;
+    const res = await fetch(url, {
+      headers: {
+        ...this.headers,
+      },
+    });
 
-    try {
-      const res = await fetch(url, {
-        headers: this.headers,
-      });
+    if (res.status == 200) {
+      const respJson = await res.json();
 
-      if (res.status === 200) {
-        const respJson = await res.json();
-
-        return respJson.result
-          .filter((data) => data.service === serviceName) // Filter domain berdasarkan serviceName
-          .map((data) => data.hostname); // Ambil hostname dari data
-      } else {
-        console.error("Gagal mendapatkan daftar domain:", res.status);
-        return [];
-      }
-    } catch (error) {
-      console.error("Error saat mendapatkan daftar domain:", error.message);
-      return [];
+      return respJson.result
+        .filter((data) => data.service == serviceName)
+        .map((data) => data.hostname);
     }
+
+    return [];
   }
 
-  // Mendaftarkan domain baru ke Cloudflare Workers
   async registerDomain(domain) {
-    domain = domain.toLowerCase(); // Pastikan domain menggunakan huruf kecil
-    const registeredDomains = await this.getDomainList(); // Ambil daftar domain yang sudah terdaftar
+    domain = domain.toLowerCase();
+    const registeredDomains = await this.getDomainList();
 
-    // Validasi domain
-    if (!domain.endsWith(rootDomain)) {
-      console.error("Domain tidak sesuai dengan rootDomain");
-      return 400; // Bad Request
-    }
-    if (registeredDomains.includes(domain)) {
-      console.error("Domain sudah terdaftar");
-      return 409; // Conflict
-    }
+    if (!domain.endsWith(rootDomain)) return 400;
+    if (registeredDomains.includes(domain)) return 409;
 
     try {
-      // Cek apakah domain bisa diakses (opsional)
-      const domainTest = await fetch(`https://${domain}`);
-      if (domainTest.status === 530) {
-        console.error("Domain tidak dapat diakses (530)");
-        return 530;
-      }
+      const domainTest = await fetch(
+        `https://${domain.replaceAll("." + APP_DOMAIN, "")}`,
+      );
+      if (domainTest.status == 530) return 530;
     } catch (e) {
-      console.error("Error saat memvalidasi domain:", e.message);
       return 400;
     }
 
-    // Lakukan pendaftaran domain
     const url = `https://api.cloudflare.com/client/v4/accounts/${this.accountID}/workers/domains`;
-    try {
-      const res = await fetch(url, {
-        method: "PUT",
-        body: JSON.stringify({
-          environment: "production", // Pilih environment (production atau preview)
-          hostname: domain,
-          service: serviceName,
-          zone_id: this.zoneID,
-        }),
-        headers: {
-          ...this.headers,
-          "Content-Type": "application/json", // Pastikan body JSON
-        },
-      });
+    const res = await fetch(url, {
+      method: "PUT",
+      body: JSON.stringify({
+        environment: "production",
+        hostname: domain,
+        service: serviceName,
+        zone_id: this.zoneID,
+      }),
+      headers: {
+        ...this.headers,
+      },
+    });
 
-      if (res.status === 200) {
-        console.log("Domain berhasil didaftarkan:", domain);
-      } else {
-        console.error("Gagal mendaftarkan domain:", res.status);
-      }
-
-      return res.status;
-    } catch (error) {
-      console.error("Error saat mendaftarkan domain:", error.message);
-      return 500; // Internal Server Error
-    }
+    return res.status;
   }
 }
-
 
 // HTML page base
 /**
