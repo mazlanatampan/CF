@@ -306,7 +306,7 @@ export default {
           }
 
           const wildcardApiPath = apiPath.replace("/domains", "");
-          const < = new CloudflareApi();
+          const cloudflareApi = new CloudflareApi();
 
           if (wildcardApiPath == "/get") {
             const domains = await cloudflareApi.getDomainList();
